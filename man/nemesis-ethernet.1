@@ -1,0 +1,91 @@
+.\" 
+.\" $Id: nemesis-ethernet.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\" 
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS-ETHERNET 1 "16 May 2003" 
+.SH NAME
+nemesis-ethernet \- Ethernet Protocol (The Nemesis Project)
+.SH SYNOPSIS
+.B nemesis-ethernet [-vZ?] [-d
+.I Ethernet-device
+.B ] [-H
+.I source-MAC-address
+.B ] [-M
+.I destination-MAC-address
+.B ] [-P
+.I payload-file
+.B ] [-T
+.I Ethernet-type
+.B ]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts. 
+.PP
+.B nemesis-ethernet
+provides an interface to craft and inject Ethernet frames allowing the user to 
+inject an entirely arbitrary Ethernet frame.
+.SH ETHERNET OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I destintion-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-P payload-file"
+This will cause nemesis-ethernet to use the specified
+.I payload-file
+as the payload when injecting Ethernet frames.  The maximum payload size is 
+1500 bytes in order to account for the maximum Ethernet frame size.  Payloads
+can also be read from stdin by specifying '-P -'
+instead of a payload-file.
+
+The payload file can consist of any arbitrary data though it will be most useful
+to create a payload resembling the structure of a packet type not supported by
+nemesis.  Used in this manner, virtually any link layer frame can be injected. 
+.IP "-T Ethernet-type"
+Specify the
+.I Ethernet-type
+as an integer.  Valid Ethernet types include:
+
+.in +.51
+.nf
+512   (PUP)
+2048  (IP)
+2054  (ARP)
+32821 (RARP)
+33024 (802.1q)
+34525 (IPv6)
+34915 (PPPOE discovery)
+34916 (PPPOE session)
+.fi
+.in -.51
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three 
+times for a hexdump without decoded ASCII.
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-ethernet returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-icmp(1), nemesis-igmp(1), "
+.BR "nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
+.BE "nemesis-udp(1)"

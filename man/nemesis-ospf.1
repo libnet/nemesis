@@ -1,0 +1,190 @@
+.\"
+.\" $Id: nemesis-ospf.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\"
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
+.\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" 
+.TH NEMESIS-OSPF 1 "20 June 2001" 
+.SH NAME
+nemesis-ospf \- OSPF Protocol (The Nemesis Project)
+.SH SYNOPSIS
+\fBnemesis-ospf\fP [-vZ] [\fIoptlist\fP] 
+.SH DESCRIPTION
+\fBThe Nemesis Project\fP is designed to be a
+commandline-based, \fBportable\fP human IP stack
+for UNIX/Linux.  The suite is broken down by
+protocol, and should allow for useful scripting
+of injected packet streams from simple shell scripts. 
+.SS OSPF Packet Types
+.TP
+\fB-p\fP \fIOSPF Protocol (-pH, -pL, -pR)\fR
+Hello (-pH), Database Description (-pD), 
+Link State Request (-pL),
+Link State Update (-pU),
+Router Links Advertisement (-pR),
+Network Links Advertisement (-pN),
+IP Summary Links Advertisement (-pM),
+AS External Link Advertisement (-pA),
+.SS OSPF HELLO options
+.TP
+\fB-N\fP \fINeighbor Router Address\fR
+Neighbor Router Address.
+.TP
+\fB-i\fP \fIDead Router Interval\fR
+Dead Router Interval.
+.TP
+\fB-l\fP \fIOSPF Interval\fR
+OSPF Interval.
+.SS OSPF Database Description (DBD) options
+.TP
+\fB-z\fP \fIMAX DGRAM Length\fR
+OSPF Maximum Datagram Length
+.TP
+\fB-x\fP \fIExchange Type\fR
+OSPF DBD Exchange Type
+.SS OSPF Link State Update (LSU) options
+.TP
+\fB-x\fP \fINum LSAs to bcast\fR
+Number of Link State Advertisements to broadcast
+.SS OSPF Link State Advertisement (LSA) related options
+\fB-L\fP \fIRouter ID\fR
+Router ID for Link State Advertisement packets.
+.TP
+\fB-G\fP \fILSA Age\fR
+Link State Advertisement Age.
+.SS OSPF Router Links Advertisement (LSA_RTR) options
+\fB-u\fP \fILSA_RTR Number\fR
+Router Links Advertisement Number
+.TP
+\fB-y\fP \fILSA_RTR Router Type\fR
+Router Links Advertisement Router Type
+.TP
+\fB-k\fP \fILSA_RTR Router Data\fR
+Router Links Advertisement Router Data
+.SS OSPF Autonomous System External Link Advertisement (LSA_AS_EXT) options
+\fB-f\fP \fILSA_AS_EXT Forward Address\fR
+Autonomous System Forward Address
+.TP
+\fB-g\fP \fILSA_AS_EXT Tag\fR
+Autonomous System Tag
+.SS OSPF options
+\fB-m\fP \fIOSPF Metric\fR
+OSPF Metric
+.TP
+\fB-s\fP \fIOSPF Sequence Number\fR
+OSPF Sequence Number 
+.TP
+\fB-r\fP \fIOSPF Advertising Router Address\fR
+OSPF Advertising Router Address
+.TP
+\fB-n\fP \fIOSPF Netmask\fR
+OSPF Netmask Address
+.TP
+\fB-O\fP \fIOSPF Options\fR
+OSPF Options
+.TP
+\fB-R\fP \fIOSPF Router ID\fR
+OSPF Router Identifier
+.TP
+\fB-A\fP \fIOSPF Area ID\fR
+OSPF Area Identifier
+.TP
+\fB-P\fP \fIPayload File\fR
+Filename to read for packet payload.
+.TP
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected package with printable ASCII characters on the right.  Use three
+times for a hexdump without decoded ASCII.
+.SH IP OPTIONS
+.IP "-D destination-IP-address"
+Specify the
+.I destination-IP-address
+within the IP header.
+.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+Specify the
+.I fragmentation options:
+
+.in +.51
+.nf
+.I -FD (don't fragment)
+.I -FM (more fragments)
+.I -FR (reserved flag)
+.I -F <offset>
+.fi
+.in -.51
+
+within the IP header.  IP fragmentation options can be specified individually 
+or combined into a single argument to the -F command line switch by separating 
+the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+are 1-bit fields.  
+
+NOTE: Under normal conditions, the reserved flag is unset.
+.IP "-I IP-ID"
+Specify the
+.I IP-ID
+within the IP header.
+.IP "-O IP-options-file"
+This will cause nemesis-ospf to use the specified
+.I IP-options-file
+as the options when building the IP header for the injected packet.  IP 
+options can be up to 40 bytes in length.  The IP options file must be created
+manually based upon the desired options.  IP options can also be read from 
+stdin by specifying '-O -' instead of an IP-options-file.
+.IP "-S source-IP-address"
+Specify the
+.I source-IP-address
+within the IP header.
+.I IP-type-of-service (TOS)
+within the IP header.  Valid type of service values:
+
+.in +.51
+.nf
+2  (Minimize monetary cost)
+4  (Maximize reliability)
+8  (Maximize throughput)
+24 (Minimize delay)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only one type of service is set within a 
+packet.  To specify multiple types, specify the sum of the desired values as
+the type of service.
+.IP "-T IP-TTL"
+Specify the
+.I IP-time-to-live (TTL)
+within the IP header.
+.SH DATA LINK OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I destintion-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-ospf returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+
+Originally developed by Mark Grimes <mark@stateful.net>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-icmp(1), "
+.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-rip(1), nemesis-tcp(1), "
+.BR "nemesis-udp(1)"

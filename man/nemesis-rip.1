@@ -1,0 +1,264 @@
+.\"
+.\" $Id: nemesis-rip.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\"
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
+.\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS-RIP 1 "18 May 2003" 
+.SH NAME
+nemesis-rip \- RIP Protocol (The Nemesis Project)
+.SH SYNOPSIS
+nemesis-rip [-vZ?] [-a
+.I RIP-address-family
+.B ] [-c
+.I RIP-command
+.B ] [-d
+.I Ethernet-device
+.B ] [-D
+.I destination-IP-address
+.B ] [-F
+.I fragmentation-options
+.B ] [-h
+.I RIP-next-hop-address
+.B ] [-H
+.I source-MAC-address
+.B ] [-i
+.I RIP-route-address
+.B ] [-I
+.I IP-ID
+.B ] [-k
+.I RIP-network-address-mask
+.B ] [-m
+.I RIP-metric
+.B ] [-M
+.I destination-MAC-address
+.B ] [-O
+.I IP-options-file
+.B ] [-P
+.I payload-file
+.B ] [-r
+.I RIP-routing-domain
+.B ] [-R
+.I RIP-route-tag
+.B ] [-S
+.I source-IP-address
+.B ] [-t
+.I IP-TOS
+.B ] [-T
+.I IP-TTL
+.B ] [-V
+.I RIP-version
+.B ] [-x
+.I source-port
+.B ] [-y
+.I destination-port
+.B ]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts. 
+.PP
+.B nemesis-rip
+provides an interface to craft and inject RIP packets allowing the user to 
+specify any portion of a RIP packet as well as lower-level IP packet
+information.
+.SH RIP Options
+.IP "-a RIP-address-family"
+Specify the
+.I RIP-address-family
+within the RIP header.
+
+NOTE: Under normal conditions, the address-family value is 2 - indicating IP.
+.IP "-c RIP-command"
+Specify the
+.I RIP-command
+within the RIP header.  Valid RIP command values:
+
+.in +.51
+.nf
+1  (Request)
+2  (Reply)
+3  (Trace on - obsolete)
+4  (Trace off - obsolete)
+5  (Poll)
+6  (Poll entry)
+7  (Max)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only commands 1 (Request) and 2 (Reply) are 
+valid.
+.IP "-h RIP-next-hop address"
+Specify the
+.I RIP-next-hop-address
+within the RIP header.  The next hop address value is 0 for RIP version 1.  
+For RIP version 2 the next hop address specifies the IP address of the next 
+route in the path to the destination host or network.  Also for RIP version 2, 
+if this value is 0, the next hop address is the IP address of the router 
+originating the RIP update.
+.IP "-i RIP-route-address"
+Specify the
+.I RIP-route-address
+within the RIP header.  This value species the destination network, subnet or
+host of route in the form of an IP address.
+.IP "-k RIP-network-address-mask"
+Specify the
+.I RIP-network-address-mask
+within the RIP header.  The network address mask value is 0 for RIP version 1.  
+For RIP version 2 the network address mask specifies the mask associated with 
+the route.
+.IP "-m RIP-metric"
+Specify the
+.I RIP-metric
+within the RIP header.  Valid RIP-metric values range from 1 to 16.  A 
+RIP-metric value of 16 (infinity) is used to invalidate  a route.
+.IP "-P payload-file"
+This will case nemesis-rip to use the specified
+.I payload-file
+as the payload when injecting RIP packets.  For packets injected using the
+raw interface (where -d is not used), the maximum payload size is
+65393 bytes.  For packets injected using the link layer interface
+(where -d IS used), the maximum payload size is 1358 bytes.  Payloads can also
+be read from stdin by specifying '-P -' instead of a payload file.
+
+Windows systems are limited to a maximum payload size of 1358 bytes for RIP
+packets.
+.IP "-r RIP-routing-domain"
+Specify the
+.I RIP-routing-domain
+within the RIP header.  A routing domain value of 0 is used for RIP version 1. 
+For RIP version 2 the routing domain field is used to identify a unique RIP 
+process on the host or router.
+.IP "-R RIP-route-tag"
+Specify the
+.I RIP-route-tag
+within the RIP header.  The RIP route tag value is used to support exterior 
+gatetway protocols.  A route tag value of 0 is used for RIP version 1.
+For RIP version 2 the route tag field will contain the autonomous system (AS)
+number for exterior gateway protocol (EGP) and border gateway protocol (BGP).
+RIP version 2 preserves this value when a route is re-advertised.
+.IP "-V RIP-version"
+Specify the
+.I RIP-version
+within the RIP header.
+
+NOTE: Under normal conditions only versions 1 and 2 are valid.
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three
+times for a hexdump without decoded ASCII.
+.SH UDP OPTIONS
+.IP "-x source-port"
+Specify the
+.I source-port
+within the UDP header.
+.IP "-y destination-port"
+Specify the
+.I destination-port
+within the UDP header.
+.SH IP OPTIONS
+.IP "-D destination-IP-address"
+Specify the
+.I destination-IP-address
+within the IP header.  If a destination IP address is not specified, one will
+automatically be selected depending on the RIP version.  By default, RIP 
+version 2 is used in which case the default destination IP address is 
+'224.0.0.9'.  If RIP version 1 is used (using the -v command line switch) an
+IP address is automatically generated and the last octet (least significant
+bits) are set to 0xff; this is an attempt to emulate a network broadcast to
+a C class network.  If a RIP version other than 1 or 2 is specified, the
+destination IP address is entirely random.
+.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+Specify the
+.I fragmentation options:
+
+.in +.51
+.nf
+.I -FD (don't fragment)
+.I -FM (more fragments)
+.I -FR (reserved flag)
+.I -F <offset>
+.fi
+.in -.51
+
+within the IP header.  IP fragmentation options can be specified individually 
+or combined into a single argument to the -F command line switch by separating 
+the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+are 1-bit fields.  
+
+NOTE: Under normal conditions, the reserved flag is unset.
+.IP "-I IP-ID"
+Specify the
+.I IP-ID
+within the IP header.
+.IP "-O IP-options-file"
+This will cause nemesis-rip to use the specified
+.I IP-options-file
+as the options when building the IP header for the injected packet.  IP 
+options can be up to 40 bytes in length.  The IP options file must be created
+manually based upon the desired options.  IP options can also be read from 
+stdin by specifying '-O -' instead of an IP-options-file.
+.IP "-S source-IP-address"
+Specify the
+.I source-IP-address
+within the IP header.
+.IP "-t IP-TOS"
+Specify the
+.I IP-type-of-service (TOS)
+within the IP header.  Valid type of service values:
+
+.in +.51
+.nf
+2  (Minimize monetary cost)
+4  (Maximize reliability)
+8  (Maximize throughput)
+24 (Minimize delay)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only one type of service is set within a 
+packet.  To specify multiple types, specify the sum of the desired values as
+the type of service.
+.IP "-T IP-TTL"
+Specify the
+.I IP-time-to-live (TTL)
+within the IP header.
+.SH DATA LINK OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I defination-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-rip returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+Currently, only one RIP entry is supported using the command line switches.
+To add more entries to a RIP update packet, a binary payload file must be
+created by hand containing the additional (up to 24) RIP entries.
+
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+
+Originally developed by Mark Grimes <mark@stateful.net>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-icmp(1), "
+.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-tcp(1), "
+.BR "nemesis-udp(1)"

@@ -1,0 +1,276 @@
+.\"
+.\" $Id: nemesis-icmp.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\"
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
+.\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS-ICMP 1 "16 May 2003" 
+.SH NAME
+nemesis-icmp \- ICMP Protocol (The Nemesis Project)
+.SH SYNOPSIS
+.B nemesis-icmp [-vZ?] [-a 
+.I ICMP-timestamp-request-reply-transmit-time
+.B ] [-b
+.I original-destination-IP-address
+.B ] [-B
+.I original-source-IP-address
+.B ] [-c
+.I ICMP-code
+.B ] [-d
+.I Ethernet-device
+.B ] [-D
+.I destination-IP-address
+.B ] [-e
+.I ICMP-ID
+.B ] [-f
+.I original-IP-fragmentation
+.B ] [-F
+.I fragmentation-options
+.B ] [-G
+.I preferred-gateway
+.B ] [-H
+.I source-MAC-address
+.B ] [-i
+.I ICMP-type
+.B ] [-I
+.I IP-ID
+.B ] [-j
+.I original-IP-TOS
+.B ] [-J
+.I original-IP-TTL
+.B ] [-l
+.I original-IP-options-file
+.B ] [-m
+.I ICMP-mask
+.B ] [-M
+.I destination-MAC-address
+.B ] [-o
+.I ICMP-timestamp-request-transmit-time
+.B ] [-O
+.I IP-options-file
+.B ] [-p
+.I original-IP-protocol
+.B ] [-P
+.I payload-file
+.B ] [-q
+.I ICMP-injection-mode
+.B ] [-r
+.I ICMP-timestamp-request-reply-received-time
+.B ] [-S
+.I source-IP-address
+.B ] [-t
+.I IP-TOS
+.B ] [-T
+.I IP-TTL
+.B ]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts.
+.PP
+.B nemesis-icmp
+provides an interface to craft and inject ICMP packets allowing the user to
+specify any portion of an ICMP packet as well as lower-level IP packet
+information.
+.SH ICMP Options
+.IP "-c ICMP-type"
+Specify the
+.I ICMP-code
+within the ICMP header.
+.IP "-e ICMP-ID"
+Specify the
+.I ICMP-ID
+within the ICMP header.
+.IP "-G preferred-gateway"
+Specify the
+.I preferred-gateway-IP-address
+for ICMP redirect injection.
+.IP "-i ICMP-type"
+Specify the
+.I ICMP-type
+within the ICMP header.
+.IP "-m address-mask"
+Specify the
+.I IP-address-mask 
+for ICMP address mask packets.
+.IP "-P payload-file"
+This will case nemesis-icmp to use the specified
+.I payload-file
+as the payload when injecting ICMP packets.  For packets injected using the
+raw interface (where -d is not used), the maximum payload size is
+65387 bytes.  For packets injected using the link layer interface
+(where -d IS used), the maximum payload size is 1352 bytes.  Payloads can also
+be read from stdin by specifying '-P -' instead of a payload file.
+
+Windows systems are limited to a maximum payload size of 1352 bytes for ICMP 
+packets.
+.IP "-q ICMP-injection-mode"
+Specify the
+.I ICMP-injection-mode 
+to use when injecting.  Valid modes are:
+
+.in +.51
+.nf
+.I -qE (ICMP echo)
+.I -qM (ICMP address mask)
+.I -qU (ICMP unreachable)
+.I -qX (ICMP time exceeded)
+.I -qR (ICMP redirect)
+.I -qT (ICMP timestamp)
+.fi
+.in -.51
+
+Only one mode may be specified at a time.
+.IP "-s ICMP-sequence-number"
+Specify the
+.I ICMP-sequence-number
+within the ICMP header.
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three 
+times for a hexdump without decoded ASCII.
+.SH ICMP TIMESTAMP OPTIONS
+.IP "-a ICMP-timestamp-request-reply-transmit-time"
+Specify the
+.I ICMP-timestamp-request-reply-transmit-time
+(the time a reply to an ICMP timestamp request was transmitted)
+within the ICMP timestamp header.
+.IP "-o ICMP-timestamp-request-transmit-time"
+Specify the
+.I ICMP-timestamp-request-transmit-time
+(the time an ICMP timestamp request was transmitted)
+within the ICMP timestamp header.
+.IP "-r ICMP-timestamp-request-reply-received-time"
+Specify the
+.I ICMP-timestamp-request-reply-received-time
+(the time a reply to an ICMP timestamp request was received)
+within the ICMP timestamp header.
+.SH ICMP ORIGINAL DATAGRAM OPTIONS
+.IP "-b original-destination-IP-address"
+Specify the
+.I original-destination-IP-address
+within an ICMP unreachable, redirect or time exceeded packet.
+.IP "-B original-source-IP-address"
+Specify the
+.I original-source-IP-address
+within an ICMP unreachable, redirect or time exceeded packet.
+.IP "-f original-fragmentation-options"
+Specify the
+.I original-IP-fragmentation-options
+within an ICMP unreachable, redirect or time exceeded packet.  For more 
+information reference the '-F' command line switch.
+.IP "-j original-IP-TOS"
+Specify the
+.I original-IP-type-of-service (TOS)
+within an ICMP unreachable, redirect or time exceeded packet.
+.IP "-J original-IP-TTL"
+Specify the
+.I original-IP-time-to-live (TTL)
+within an ICMP unreachable, redirect or time exceeded packet.
+.IP "-l original-IP-options-file"
+This will cause nemesis-icmp to use the specified
+.I original-IP-options-file
+as the options when building the original IP header for the injected ICMP 
+unreachable, redirect or time exceeded packet.  IP options can be up to 40 
+bytes in length.  The IP options file must be created manually based upon the 
+desired options.  IP options can also be read from stdin by specifying '-O -' 
+instead of an IP-options-file.
+.IP "-p original-IP-protocol"
+Specify the
+.I original-IP-protocol
+within an ICMP unrechable, redirect or time exceeded packet.
+.SH IP OPTIONS
+.IP "-D destination-IP-address"
+Specify the
+.I destination-IP-address
+within the IP header.
+.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+Specify the
+.I fragmentation options:
+
+.in +.51
+.nf
+.I -FD (don't fragment)
+.I -FM (more fragments)
+.I -FR (reserved flag)
+.I -F <offset>
+.fi
+.in -.51
+
+
+within the IP header.  IP fragmentation options can be specified individually 
+or combined into a single argument to the -F command line switch by separating 
+the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+are 1-bit fields.
+
+NOTE: Under normal conditions, the reserved flag is unset.
+.IP "-I IP-ID"
+Specify the
+.I IP-ID
+within the IP header.
+.IP "-O IP-options-file"
+This will cause nemesis-icmp to use the specified
+.I IP-options-file
+as the options when building the IP header for the injected packet.  IP 
+options can be up to 40 bytes in length.  The IP options file must be created
+manually based upon the desired options.  IP options can also be read from 
+stdin by specifying '-O -' instead of an IP-options-file.
+.IP "-S source-IP-address"
+Specify the
+.I source-IP-address
+within the IP header.
+.IP "-t IP-TOS"
+Specify the
+.I IP-type-of-service (TOS)
+within the IP header.  Valid type of service values:
+
+.in +.51
+.nf
+2  (Minimize monetary cost)
+4  (Maximize reliability)
+8  (Maximize throughput)
+24 (Minimize delay)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only one type of service is set within a 
+packet.  To specify multiple types, specify the sum of the desired values as
+the type of service.
+.IP "-T IP-TTL"
+.I IP-time-to-live (TTL)
+within the IP header.
+.SH DATA LINK OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I destintion-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-icmp returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+
+Originally   developed  by  Mark  Grimes  <mark@stateful.net>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-igmp(1), "
+.BR "nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
+.BR "nemesis-udp(1)"

@@ -1,0 +1,52 @@
+.\" 
+.\" $Id: nemesis.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\" 
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS 1 "10 December 2002" 
+.SH NAME
+nemesis \- (The Nemesis Project)
+.SH SYNOPSIS
+.B nemesis [mode] [options]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts. 
+.PP
+.B nemesis
+provides an interface to craft and inject a variety of arbitrary packet types.
+Nemesis Supports the following protocols:
+
+.in +.51
+.nf
+arp
+dns
+ethernet
+icmp
+igmp
+ip
+ospf
+rip
+tcp
+udp
+.fi
+.in -.51
+
+A list of supported options for each protocol is displayed by supplying a 
+protocol name on the command line followed by the option "help"
+(eg: nemesis ethernet help).
+
+.SH DIAGNOSTICS
+Nemesis modules return 0 on a successful exit, 1 upon exiting on an error.
+.SH BUGS
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snorg.org>
+
+Originally developed by Mark Grimes <mark@stateful.net>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-icmp(1), "
+.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), "
+.BR "nemesis-tcp(1), nemesis-udp(1)"

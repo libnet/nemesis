@@ -1,0 +1,269 @@
+.\" 
+.\" $Id: nemesis-ip.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\" 
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS-IP 1 "16 May 2003" 
+.SH NAME
+nemesis-ip \- IP Protocol (The Nemesis Project)
+.SH SYNOPSIS
+.B nemesis-ip [-vZ?] [-d
+.I Ethernet-device
+.B ] [-D
+.I destination-IP-address
+.B ] [-F
+.I fragmentation-options
+.B ] [-H
+.I source-MAC-address
+.B ] [-I
+.I IP-ID
+.B ] [-M
+.I destination-MAC-address
+.B ] [-p
+.I IP-protocol-number
+.B ] [-P
+.I payload-file
+.B ] [-S
+.I source-IP-address
+.B ] [-t
+.I IP-TOS
+.B ] [-T
+.I IP-TTL
+.B ]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts. 
+.PP
+.B nemesis-ip
+provides an interface to craft and inject IP packets allowing the user to 
+inject an entirely arbitrary IP packet.
+.SH IP OPTIONS
+.IP "-D destination-IP-address"
+Specify the
+.I destination-IP-address
+within the IP header.
+.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+Specify the
+.I fragmentation options:
+
+.in +.51
+.nf
+.I -FD (don't fragment)
+.I -FM (more fragments)
+.I -FR (reserved flag)
+.I -F <offset>
+.fi
+.in -.51
+
+within the IP header.  IP fragmentation options can be specified individually 
+or combined into a single argument to the -F command line switch by separating 
+the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+are 1-bit fields.
+
+NOTE: Under normal conditions, the reserved flag is unset.
+.IP "-I IP-ID"
+Specify the
+.I IP-ID
+within the IP header.
+.IP "-O IP-options-file"
+This will cause nemesis-ip to use the specified
+.I IP-options-file
+as the options when building the IP header for the injected packet.  IP 
+options can be up to 40 bytes in length.  The IP options file must be created
+manually based upon the desired options.  IP options can also be read from 
+stdin by specifying '-O -' instead of an IP-options-file.
+.IP "-p IP-protocol-number"
+Specify the
+.I IP-protocol-number
+as an integer within the IP header.  Valid IP-protocol-numbers include:
+.in +.51
+.nf
+.\" 
+.\" stolen from the OpenBSD project's /etc/protocols
+.\"
+
+0	IP          (pseudo protocol number)
+1	ICMP        (internet control message protocol)
+2	IGMP        (Internet Group Management)
+3	GGP         (gateway-gateway protocol)
+4	IP-ENCAP    (IP encapsulated in IP (officially ``IP''))
+5	ST          (ST datagram mode)
+6	TCP         (transmission control protocol)
+7	UCL         (UCL)
+8	EGP         (exterior gateway protocol)
+9	IGP         (any private interior gateway)
+10	BBN-RCC-MON (BBN RCC Monitoring)
+11	NVP-II      (Network Voice Protocol)
+12	PUP         (PARC universal packet protocol)
+13	ARGUS       (ARGUS)
+14	EMCON       (EMCON)
+15	XNET        (Cross Net Debugger)
+16	CHAOS       (Chaos)
+17	UDP         (user datagram protocol)
+18	MUX         (Multiplexing)
+19	DCN-MEAS    (DCN Measurement Subsystems)
+20	HMP         (host monitoring protocol)
+21	PRM         (Packet Radio Measurement)
+22	XNS-IDP     (Xerox NS IDP)
+23	TRUNK-1     (Trunk-1)
+24	TRUNK-2     (Trunk-2)
+25	LEAF-1      (Leaf-1)
+26	LEAF-2      (Leaf-2)
+27	RDP         ("reliable datagram" protocol)
+28	IRTP        (Internet Reliable Transaction)
+29	ISO-TP4     (ISO Transport Protocol class 4)
+30	NETBLT      (Bulk Data Transfer Protocol)
+31	MFE-NSP     (MFE Network Services Protocol)
+32	MERIT-INP   (MERIT Internodal Protocol)
+33	SEP         (Sequential Exchange Protocol)
+34	3PC         (Third Party Connect Protocol)
+35	IDPR        (Inter-Domain Policy Routing Protocol)
+36	XTP         (Xpress Tranfer Protocol)
+37	DDP         (Datagram Delivery Protocol)
+38	IDPR-CMTP   (IDPR Control Message Transport Protocol)
+39	IDPR-CMTP   (IDPR Control Message Transport)
+40	IL          (IL Transport Protocol)
+41	IPv6        (Internet Protocol version 6)
+42	SDRP        (Source Demand Routing Protocol)
+43	SIP-SR      (SIP Source Route)
+44	SIP-FRAG    (SIP Fragment)
+45	IDRP        (Inter-Domain Routing Protocol)
+46	RSVP        (Reservation Protocol)
+47	GRE         (General Routing Encapsulation)
+48	MHRP        (Mobile Host Routing Protocol)
+49	BNA         (BNA)
+50	IPSEC-ESP   (Encap Security Payload)
+51	IPSEC-AH    (Authentication Header)
+52	I-NLSP      (Integrated Net Layer Security TUBA)
+53	SWIPE       (IP with Encryption)
+54	NHRP        (NBMA Next Hop Resolution Protocol)
+55	MOBILEIP    (MobileIP encapsulation)
+57	SKIP        (SKIP)
+58	IPv6-ICMP   (ICMP for IPv6)
+59	IPv6-NoNxt  (No Next Header for IPv6)
+60	IPv6-Opts   (Destination Options for IPv6)
+61	any         (host internal protocol)
+62	CFTP        (CFTP)
+63	any         (local network)
+64	SAT-EXPAK   (SATNET and Backroom EXPAK)
+65	KRYPTOLAN   (Kryptolan)
+66	RVD         (MIT Remote Virtual Disk Protocol)
+67	IPPC        (Internet Pluribus Packet Core)
+68	any         (distributed file system)
+69	SAT-MON     (SATNET Monitoring)
+70	VISA        (VISA Protocol)
+71	IPCV        (Internet Packet Core Utility)
+72	CPNX        (Computer Protocol Network Executive)
+73	CPHB        (Computer Protocol Heart Beat)
+74	WSN         (Wang Span Network)
+75	PVP         (Packet Video Protocol)
+76	BR-SAT-MON  (Backroom SATNET Monitoring)
+77	SUN-ND      (SUN ND PROTOCOL-Temporary)
+78	WB-MON      (WIDEBAND Monitoring)
+79	WB-EXPAK    (WIDEBAND EXPAK)
+80	ISO-IP      (ISO Internet Protocol)
+81	VMTP        (Versatile Message Transport)
+82	SECURE-VMTP (SECURE-VMTP)
+83	VINES       (VINES)
+84	TTP         (TTP)
+85	NSFNET-IGP  (NSFNET-IGP)
+86	DGP         (Dissimilar Gateway Protocol)
+87	TCF         (TCF)
+88	IGRP        (IGRP)
+89	OSPFIGP     (Open Shortest Path First IGP)
+90	Sprite-RPC  (Sprite RPC Protocol)
+91	LARP        (Locus Address Resolution Protocol)
+92	MTP         (Multicast Transport Protocol)
+93	AX.25       (AX.25 Frames)
+94	IPIP        (Yet Another IP encapsulation)
+95	MICP        (Mobile Internetworking Control Protocol)
+96	SCC-SP      (Semaphore Communications Sec. Protocol)
+97	ETHERIP     (Ethernet-within-IP Encapsulation)
+98	ENCAP       (Yet Another IP encapsulation)
+99	any         (private encryption scheme)
+100	GMTP        (GMTP)
+103	PIM         (Protocol Independent Multicast)
+108	IPComp      (IP Payload Compression Protocol)
+112	VRRP        (Virtual Router Redundancy Protocol)
+255	Reserved
+.fi
+.in -.51
+
+.IP "-P payload-file"
+This will cause nemesis-ip to use the specified
+.I payload-file
+as the payload when injecting IP packets.  For packets injected using the
+raw interface (where -d is not used) the maximum payload size is 65475 bytes.
+For packets injected using the link layer interface (where -d IS used), the
+maximum payload size is 1440 bytes.  Payloads can also be read from stdin by 
+specifying '-P -' instead of a payload-file.
+
+Windows systems are limited to a maximum payload size of 1440 bytes for IP
+packets.
+
+The payload file can consist of any arbitary data though it will be most useful
+to create a payload resembling the structure of a packet type not supported by
+nemesis.  Used in this manner, virtually any IP packet can be injected. 
+.IP "-S source-IP-address"
+Specify the
+.I source-IP-address
+within the IP header.
+.IP "-t IP-TOS"
+Specify the
+.I IP-type-of-service (TOS)
+within the IP header.  Valid type of service values:
+
+.in +.51
+.nf
+2  (Minimize monetary cost)
+4  (Maximize reliability)
+8  (Maximize throughput)
+24 (Minimize delay)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only one type of service is set within a 
+packet.  To specify multiple types, specify the sum of the desired values as
+the type of service.
+.IP "-T IP-TTL"
+Specify the
+.I IP-time-to-live (TTL)
+within the IP header.
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three
+times for a hexdump without decoded ASCII.
+.SH DATA LINK OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I destintion-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-ip returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-icmp(1), "
+.BR "nemesis-igmp(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
+.BR "nemesis-udp(1)"

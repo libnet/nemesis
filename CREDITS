@@ -1,0 +1,61 @@
+$Id: CREDITS,v 1.1 2003/10/31 21:29:35 jnathan Exp $
+====================================================================
+N E M E S I S  -  TCP/IP Packet Injection  [CREDITS]
+====================================================================
+
+bind
+    * Early release framework
+
+#propecia/EFnet
+    * Protocol testing
+
+Alexey Mavrin   <lha@elco.spb.ru>
+    * Physical address casting bugfix
+
+Kyle Hargraves  <halogen@nol.net>
+    * OpenBSD port
+
+Brad Smith  <brad@comstyle.com>
+    * autoconf fixes
+
+Stephane Tsacas <Stephane.Tsacas@curie.fr>
+    * Payload fixes / sanity checking
+
+CiR and Caezar of GhettoHackers
+    * Payload fixes
+
+Jeff Nathan <jeff@snort.org>
+    * Pointing out rarp libnet options
+
+ocsic   <pisco@private.as>
+    * 2000+ line diff including many fixes & nemesis-ip
+
+Dragos Ruiu	<dr@kyx.net>
+    * New hexdump code and suggestions on an improved output format.
+    * Lots of mentoring and helping me solve problems without simply handing
+      me the answer.
+
+Jed Haile <jed@grep.net>
+    * Lots of mentoring and helping me solve problems without simply handing
+      me the answer.
+
+Caesium	<cesium@dopesquad.net>
+    * nemesis-tcp.c -f parsing error and typo in tcp_usage and 
+      nemesis.c argv[0] error in nemesis-udp
+
+Thomas Schmid   <thomas.schmid@ascom.ch>
+    * Found and corrected a payload bug in nemesis-proto_ethernet.c
+
+Tutaepaki   <tutaepaki@paradise.net.nz>
+    * Found and corrected some byte ordering problems in nemesis_proto_rip.c
+
+Marty Roesch    <roesch@sourcefire.com>
+    * Tweaked parsefragoptions() to use a tokenized parser.
+
+Jose Nazario    <jose@monkey.org>
+    * Showed me the "ways of the force" when it came to using gprof for 
+      profiling and more importantly, helped me with some frustrating linking 
+      problems.
+
+nnposter@users.sourceforge.net
+    * Updated several manpages to correct some spelling mistakes.

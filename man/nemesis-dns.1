@@ -1,0 +1,272 @@
+.\"
+.\" $Id: nemesis-dns.1,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+.\"
+.\" THE NEMESIS PROJECT
+.\" Copyright (C) 1999, 2000 , 2001 Mark Grimes <mark@stateful.net>
+.\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\"
+.TH NEMESIS-DNS 1 "17 May 2003" 
+.SH NAME
+nemesis-dns \- DNS Protocol (The Nemesis Project)
+.SH SYNOPSIS
+.B nemesis-dns [-kvZ?] [-a
+.I ack-number
+.B ] [-A
+.I number-of-authoritative-DNS-resource-records
+.B ] [-b
+.I number-of-DNS-answers
+.B ] [-d
+.I Ethernet-device
+.B ] [-D
+.I destination-IP-address
+.B ] [-f
+.I TCP-flags
+.B ] [-F
+.I fragmentation-options
+.B ] [-g
+.I DNS-flags
+.B ] [-H
+.I source-MAC-address
+.B ] [-i
+.I DNS-ID
+.B ] [-I
+.I IP-ID
+.B ] [-M
+.I destination-MAC-address
+.B ] [-o
+.I TCP-options-file
+.B ] [-O
+.I IP-options-file
+.B ] [-P
+.I payload-file
+.B ] [-q
+.I number-of-DNS-questions
+.B ] [-r
+.I number-of-additional-DNS-resource-records
+.B ] [-s
+.I sequence-number
+.B ] [-S
+.I source-IP-address
+.B ] [-t
+.I IP-TOS
+.B ] [-T
+.I IP-TTL
+.B ] [-u
+.I urgent-pointer
+.B ] [-w
+.I window-size
+.B ] [-x
+.I TCP/UDP-source-port
+.B ] [-y
+.I TCP/UDP-destination-port
+.B ]
+.SH DESCRIPTION
+.B The Nemesis Project
+is designed to be a command line-based, portable human IP stack for UNIX-like 
+and Windows systems.  The suite is broken down by protocol, and should allow 
+for useful scripting of injected packets from simple shell scripts. 
+.PP
+.B nemesis-dns
+provides an interface to craft and inject DNS packets allowing the user to 
+specify any portion of a DNS packet as well as lower-level IP and TCP/UDP 
+packet information.
+.SH DNS OPTIONS
+.IP "-A number-of-authoritative-resource-records"
+Specify the
+.I number-of-authoritative-resource-records
+within the DNS header.
+.IP "-b Number-of-answer-resource-records"
+Specify the
+.I number-of-answer-resource-records
+within the DNS header.
+.IP "-g DNS-flags"
+Specify the
+.I DNS-flags
+within the DNS header.
+.IP "-i DNS-ID
+Specify the
+.I DNS-ID
+within the DNS header.
+.IP "-k TCP-transport-mode"
+Enables the use of TCP when injecting DNS packets.
+.IP "-P payload-file"
+This will cause nemesis-dns to use the specified
+.I payload-file
+as the payload when injecting DNS packets.  For packets injected using the
+raw interface (where -d is not used), the maximum payload size is 
+65443 bytes for DNS packets injected using TCP and 65455 for DNS packets 
+injected using UDP.  For packets injected using the link layer interface
+(where -d IS used), the maximum payload size is 1368 bytes for TCP DNS packets
+and 1420 bytes for UDP DNS packets.  Payloads can also be read from stdin by 
+specifying '-P -' instead of a payload-file.
+
+Windows systems are limited to a maximum payload size of 1368 bytes for TCP
+DNS packets and 1420 bytes for UDP DNS packets.
+
+The payload file can consist of any arbitrary data though it will be most useful
+to create a payload resembling the structure of the DNS packet specified 
+using the command-line options.  In order to send real DNS packets, a payload
+containing the appropriate record data (as specified in the DNS header)
+must be created manually.
+.IP "-q Number-of-questions"
+Specify the
+.I number-of-questions
+within the DNS header.
+.IP "-r Number-of-additional-resource-records"
+Specify the
+.I number-of-additional-resource-records
+within the DNS header.
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three
+times for a hexdump without decoded ASCII.
+.SH TCP OPTIONS (enabled via -k)
+.IP "-a Acknowledgement-Number"
+Specify the
+.I acknowledgement-number (ACK number)
+within the TCP header.
+.IP "-f TCP flags (-fS/-fA/-fR/-fP/-fF/-fU/-fE/-fC)"
+Specify the
+.I TCP flags:
+
+.in +.51
+.nf
+.I -fS (SYN)
+.I -fA (ACK)
+.I -fR (RST)
+.I -fP (PSH)
+.I -fF (FIN)
+.I -fU (URG)
+.I -fE (ECE)
+.I -fC (CWR)
+.fi
+.in -.51
+
+within the TCP header.  Flags can be combined in the form '-fPA'.
+.IP "-o TCP-options-file"
+This will cause nemesis-dns to use the specified
+.I TCP-options-file
+as the options when building the TCP header for the injected packet.  TCP
+options can be up to 40 bytes in length.  The TCP options file must be created
+manually based upon the desired options.  TCP options can also be read from
+stdin by specifying '-o -' instead of a TCP-options-file.
+.IP "-s  sequence-number"
+Specify the
+.I sequence-number
+within the TCP header.
+.IP "-u urgent-pointer-offset"
+Specify the
+.I urgent-pointer-offset
+within the TCP header.
+.IP "-w window-size"
+Specify the
+.I window-size
+within the TCP header.
+.IP "-x TCP-source-port"
+Specify the
+.I TCP-source-port
+packet within the TCP header.
+.IP "-y TCP-destination port"
+Specify the
+.I TCP-destintion-port
+within the TCP header.
+.SH UDP OPTIONS
+.IP "-x UDP-source-port"
+Source Port of injected packet.
+.IP "-y UDP-Destination-Port"
+Target Port of injected packet.
+.SH IP OPTIONS
+.IP "-D destination-IP-address"
+Specify the
+.I destination-IP-address
+within the IP header.
+.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+Specify the
+.I fragmentation options:
+
+.in +.51
+.nf
+.I -FD (don't fragment)
+.I -FM (more fragments)
+.I -FR (reserved flag)
+.I -F <offset>
+.fi
+.in -.51
+
+within the IP header.  IP fragmentation options can be specified individually 
+or combined into a single argument to the -F command line switch by separating 
+the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+are 1-bit fields.  
+
+NOTE: Under normal conditions, the reserved flag is unset.
+.IP "-I IP-ID"
+Specify the
+.I IP-ID
+within the IP header.
+.IP "-O IP-options-file"
+This will cause nemesis-dns to use the specified
+.I IP-options-file
+as the options when building the IP header for the injected packet.  IP 
+options can be up to 40 bytes in length.  The IP options file must be created
+manually based upon the desired options.  IP options can also be read from 
+stdin by specifying '-O -' instead of an IP-options-file.
+.IP "-S source-IP-address"
+Specify the
+.I source-IP-address
+within the IP header.
+.IP "-t IP-TOS"
+Specify the
+.I IP-type-of-service (TOS)
+within the IP header.  Valid type of service values:
+
+.in +.51
+.nf
+2  (Minimize monetary cost)
+4  (Maximize reliability)
+8  (Maximize throughput)
+24 (Minimize delay)
+.fi
+.in -.51
+
+NOTE: Under normal conditions, only one type of service is set within a 
+packet.  To specify multiple types, specify the sum of the desired values as
+the type of service.
+.IP "-T IP-TTL"
+Specify the
+.I IP-time-to-live (TTL)
+within the IP header.
+.SH DATA LINK OPTIONS
+.IP "-d Ethernet-device"
+Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+of the
+.I Ethernet-device
+to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H source-MAC-address"
+Specify the
+.I source-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-M destination-MAC-address"
+Specify the
+.I defination-MAC-address
+(XX:XX:XX:XX:XX:XX).
+.IP "-Z list-network-interfaces"
+Lists the available network interfaces by number for use in link-layer 
+injection.
+
+NOTE: This feature is only relevant to Windows systems.
+.SH DIAGNOSTICS
+Nemesis-dns returns 0 on a successful exit, 1 if it exits on an error.
+.SH BUGS
+An interface for users to create DNS packet payloads should be created.
+
+Send concise and clearly written bug reports to jeff@snort.org
+.SH "AUTHOR"
+Jeff Nathan <jeff@snort.org>
+
+Originally developed by Mark Grimes <mark@stateful.net>
+.SH "SEE ALSO"
+.BR "nemesis-arp(1), nemesis-ethernet(1), nemesis-icmp(1), nemesis-igmp(1), "
+.BR "nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
+.BR "nemesis-udp(1)"
