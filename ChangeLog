@@ -1,4 +1,4 @@
-$Id: ChangeLog,v 1.1 2003/10/31 21:29:33 jnathan Exp $
+$Id: ChangeLog,v 1.2 2003/11/07 19:05:28 jnathan Exp $
 ======================================================
 N E M E S I S  -  TCP/IP Packet Injection  [ChangeLog]
 ======================================================
@@ -142,3 +142,10 @@ somehow try to fill Mark's shoes.
 2003-10-30  Jeff Nathan  <jeff@snort.org>
         * Removed struct OptionsData and PayloadData in favor of FileData
         * Changed builddatafromfile() to accept a FileData *
+
+2003-11-07  Jeff Nathan  <jeff@snort.org>
+        * nemesis-proto_ip.c:
+          -    ip_meta_packetlen = ip_packetlen - (link_offet + LIBNET_IP_H);
+          +    ip_meta_packetlen = ip_packetlen - (link_offset + LIBNET_IP_H);
+
+        * added .cvsignore to CVS

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-proto_ip.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-proto_ip.c,v 1.2 2003/11/07 19:05:29 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -58,7 +58,7 @@ int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod,
 
     ip_packetlen = link_offset + LIBNET_IP_H + pd->file_s + ipod->file_s;
 
-    ip_meta_packetlen = ip_packetlen - (link_offet + LIBNET_IP_H);
+    ip_meta_packetlen = ip_packetlen - (link_offset + LIBNET_IP_H);
 
 #ifdef DEBUG
     printf("DEBUG: IP packet length %u.\n", ip_packetlen);
