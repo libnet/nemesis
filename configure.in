@@ -1,5 +1,5 @@
 dnl
-dnl $Id: configure.in,v 1.2 2003/11/09 08:33:43 jnathan Exp $
+dnl $Id: configure.in,v 1.3 2004/10/07 01:23:25 jnathan Exp $
 dnl
 dnl configure.in
 dnl
@@ -9,7 +9,7 @@ dnl Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press
 
 AC_INIT(src/nemesis.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(nemesis, 1.4beta4)
+AM_INIT_AUTOMAKE(nemesis, 1.4)
 
 AH_TOP(
 #undef PACKAGE
