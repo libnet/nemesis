@@ -4,11 +4,12 @@
 .DS_Store
 .deps
 Makefile
-autom4te-*cache
+autom4te.cache
 config.cache
 config.h
 config.log
 config.status
-nemesis
-stamp-h
-stamp-h.in
+man/Makefile
+src/Makefile
+src/nemesis
+stamp-h*
