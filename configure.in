@@ -1,5 +1,5 @@
 dnl
-dnl $Id: configure.in,v 1.1 2003/10/31 21:29:35 jnathan Exp $
+dnl $Id: configure.in,v 1.2 2003/11/09 08:33:43 jnathan Exp $
 dnl
 dnl configure.in
 dnl
@@ -9,42 +9,51 @@ dnl Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press
 
 AC_INIT(src/nemesis.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(nemesis,1.4beta4)
+AM_INIT_AUTOMAKE(nemesis, 1.4beta4)
+
+AH_TOP(
+#undef PACKAGE
+#undef VERSION
+#undef FREEBSD
+#undef LINUX
+#undef MACOS
+#undef OPENBSD
+#undef NETBSD
+#undef SOLARIS
+#undef u_int8_t
+#undef u_int16_t
+#undef u_int32_t
+)
+
+dnl Determine host type before performing further tests.
+AC_CANONICAL_HOST
+
+dnl Set the default prefix.
+if test "$prefix" = "NONE"; then
+    prefix="/usr/local"
+fi
+
 AM_PROG_CC_STDC
 
 AC_PROG_CC
-AC_MSG_CHECKING(to see if we can add '-Wall' to CFLAGS)
-  if test -n "$GCC"; then
+
+AC_PROG_GCC_TRADITIONAL
+if test -n "$GCC"; then
     CFLAGS="${CFLAGS} -Wall"
-    AC_MSG_RESULT(yes)
-  else
-    AC_MSG_RESULT(no)
-  fi
+fi
 
 AC_ARG_ENABLE(debug,
     [  --enable-debug          enable debugging options (bugreports and developers)],
         [ if test -n "$GCC"; then
               CFLAGS="-g -O0 -Wall"
-              DEBUGGED_BULD=yes
-              DEFS="${DEFS} -DDEBUG"
-          else
-              DEFS="${DEFS} -DDEBUG"
-          fi ],)
+          fi
+          CPPFLAGS="${CPPFLAGS} -DDEBUG" ],)
 
 AC_ARG_ENABLE(profile,
     [  --enable-profile        enable profiling options (developers only)],
         [ if test -n "$GCC"; then
-              if test "$DEBUGGED_BUILD" = "yes"; then
-                  CFLAGS="${CFLAGS} -pg -static"
-              else
-                  CFLAGS="-g -O0 -Wall -pg -static"
-              fi
+              CFLAGS="${CFLAGS} -pg -static"
           fi ],)
-
-dnl Determine hosttype.
-AC_CANONICAL_HOST
-
-SHELL="/bin/sh"
 
 case "$host" in
   *-linux*)
@@ -137,8 +146,6 @@ else
     LIBS="${LIBS} `libnet-config --libs | sed s/\-lnet//`"
 fi
 
-default_directory="/usr /usr/local"
-       
 AC_DEFUN(HEADER_FAIL_MESSAGE,[
    echo
    echo
@@ -166,10 +173,12 @@ AC_DEFUN(FUNCTION_FAIL_MESSAGE,[
 
 AC_C_CONST
 
+dnl Program tests
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 
+dnl Library tests
 AC_CHECK_LIB(m, fabs)
 AC_CHECK_LIB(nsl, inet_ntoa)
 AC_CHECK_LIB(socket, socket)

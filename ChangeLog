@@ -1,4 +1,4 @@
-$Id: ChangeLog,v 1.2 2003/11/07 19:05:28 jnathan Exp $
+$Id: ChangeLog,v 1.3 2003/11/09 08:33:43 jnathan Exp $
 ======================================================
 N E M E S I S  -  TCP/IP Packet Injection  [ChangeLog]
 ======================================================
@@ -149,3 +149,11 @@ somehow try to fill Mark's shoes.
           +    ip_meta_packetlen = ip_packetlen - (link_offset + LIBNET_IP_H);
 
         * added .cvsignore to CVS
+
+2003-11-09  Jeff Nathan  <jeff@snort.org>
+        * added src/memcmp.c to satisfy automake dependency
+        * debug fixes to configure.in
+        * removed acconfig.h and replaced with AH_TOP macro in configre.in
+        * updated aclocal.m4, missing, mkinstalldirs, configure, configure.in,
+          config.guess, Makefile.in, man/Makefile.in and src/Makefile.in as
+          part of autotools updates
