@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-tcp.c,v 1.2 2004/10/07 01:20:56 jnathan Exp $
+ * $Id: nemesis-tcp.c,v 1.2.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -19,7 +19,6 @@ static ETHERhdr etherhdr;
 static IPhdr iphdr;
 static TCPhdr tcphdr;
 static FileData pd, ipod, tcpod;
-static int got_payload;
 static char *payloadfile = NULL;       /* payload file name */
 static char *ipoptionsfile = NULL;     /* IP options file name */
 static char *tcpoptionsfile = NULL;    /* IP options file name */
@@ -32,12 +31,12 @@ static void tcp_cmdline(int, char **);
 static int tcp_exit(int);
 static void tcp_initdata(void);
 static void tcp_usage(char *);
-static void tcp_validatedata(void);
 static void tcp_verbose(void);
 
 void nemesis_tcp(int argc, char **argv)
 {
     const char *module = "TCP Packet Injection";
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
@@ -48,8 +47,21 @@ void nemesis_tcp(int argc, char **argv)
         fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 
     tcp_initdata();
-    tcp_cmdline(argc, argv);    
-    tcp_validatedata();
+    tcp_cmdline(argc, argv);  
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+        tcp_exit(1);
+    if (got_link)
+    {
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
+        {
+            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
+                    device);
+            tcp_exit(1);
+        }
+    }
+      
     tcp_verbose();
 
     if (got_payload)
@@ -79,7 +91,7 @@ void nemesis_tcp(int argc, char **argv)
             tcp_exit(1);
     }
 
-    if (buildtcp(&etherhdr, &iphdr, &tcphdr, &pd, &ipod, &tcpod, device) < 0)
+    if (buildtcp(&etherhdr, &iphdr, &tcphdr, &pd, &ipod, &tcpod, l) < 0)
     {
         puts("\nTCP Injection Failure");
         tcp_exit(1);
@@ -97,13 +109,15 @@ static void tcp_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
-    memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
-    memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
+    
+    iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
+    iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
     iphdr.ip_tos = 0;                       /* IP type of service */
     iphdr.ip_id = (u_int16_t)libnet_get_prand(PRu16);   /* IP ID */
     iphdr.ip_p = IPPROTO_TCP;               /* IP protocol TCP */
     iphdr.ip_off = 0;                       /* IP fragmentation offset */
     iphdr.ip_ttl = 255;                     /* IP TTL */
+    
     tcphdr.th_sport = (u_int16_t)libnet_get_prand(PRu16);
                                             /* TCP source port */
     tcphdr.th_dport = (u_int16_t)libnet_get_prand(PRu16);
@@ -114,59 +128,13 @@ static void tcp_initdata(void)
                                             /* randomize ack number */
     tcphdr.th_flags |= TH_SYN;              /* TCP flags */
     tcphdr.th_win = 4096;                   /* TCP window size */
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
     ipod.file_mem = NULL;
     ipod.file_s = 0;
     tcpod.file_mem = NULL;
     tcpod.file_s = 0;
-    return;
-}
-
-static void tcp_validatedata(void)
-{
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (iphdr.ip_src.s_addr == 0)
-        iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (iphdr.ip_dst.s_addr == 0)
-        iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            tcp_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
-    /* if a device was specified and the user has not specified a source 
-     * hardware address, try to determine the source address automatically
-     */
-    if (got_link)
-    {
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
-        {
-            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
-                    device);
-            tcp_exit(1);
-        }
-    }
-
     return;
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-ethernet.h,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-ethernet.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -47,6 +47,6 @@
 #define ETHERTYPE_PPPOE         0x8864  /* PPP Over Ethernet Session Stage */
 #endif
 
-int buildether(ETHERhdr *, FileData *, char *);
+int buildether(ETHERhdr *, FileData *, libnet_t *);
 
 #endif /* __NEMESIS_ETHERNET_H__ */

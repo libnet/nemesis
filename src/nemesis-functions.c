@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-functions.c,v 1.3 2004/10/07 02:46:35 jnathan Exp $
+ * $Id: nemesis-functions.c,v 1.3.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -321,21 +321,15 @@ int nemesis_name_resolve(char *hostname, u_int32_t *address)
  *
  * @return 0 on sucess, -1 on failure
  */
-int nemesis_check_link(ETHERhdr *eth, char *device)
+int nemesis_check_link(ETHERhdr *eth, libnet_t* l)
 {
     int i;
-    struct ether_addr *e = NULL;
-    struct libnet_link_int l2;
+    struct libnet_ether_addr *e = NULL;
 
-    memset(&l2, 0, sizeof(struct libnet_link_int));
-#ifdef DEBUG
-    printf("DEBUG: determining if device %s\n       has a hardware address "
-            "assigned.\n", device);
-#endif
+
     if (!memcmp(eth->ether_shost, zero, 6))
     {
-        memset(&l2, 0, sizeof(l2));
-        if ((e = libnet_get_hwaddr(&l2, device, errbuf)) == NULL)
+        if ((e = libnet_get_hwaddr(l)) == NULL)
             return -1;
 
         for (i = 0; i < 6; i++)
@@ -356,7 +350,7 @@ int nemesis_check_link(ETHERhdr *eth, char *device)
  * @return char * containing the appropriate linktype or Unknown on a failed
  *         match.
  */
-char *nemesis_lookup_linktype(int linktype)
+char* nemesis_lookup_linktype(int linktype)
 {
     char *dlt;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-arp.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-arp.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -19,7 +19,6 @@ static ETHERhdr etherhdr;
 static ARPhdr arphdr;
 static FileData pd;
 static int solarismode;
-static int got_payload;
 static int arp_src, arp_dst;    /* modify hardware addresses independantly 
                                    within arp frame */
 static int rarp;                /* RARP */
@@ -40,6 +39,7 @@ static void arp_verbose(void);
 void nemesis_arp(int argc, char **argv)
 {
     const char *module= "ARP/RARP Packet Injection";
+    libnet_t* l = NULL; 
 
     nemesis_maketitle(title, module, version);
 
@@ -47,10 +47,28 @@ void nemesis_arp(int argc, char **argv)
         arp_usage(argv[0]);
 
     arp_initdata();
-    arp_cmdline(argc, argv);
+    arp_cmdline(argc, argv);  
+    
+    //create by Jacyu, create the libnet handler
+    l = libnet_init(LIBNET_LINK_ADV, device, errbuf);
+    if (l == NULL)
+    { 
+    	fprintf(stderr, "ERROR: Device not specified and unable to automatically select a device.\n");
+        arp_exit(1);
+    }
+    
     arp_validatedata();
+    
+    /* Determine if there's a source hardware address set */
+    if ((nemesis_check_link(&etherhdr, l)) < 0)
+    {
+        fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", 
+                device);
+        arp_exit(1);
+    }
+    
     arp_verbose();
-
+ 
     if (got_payload)
     {
         if (builddatafromfile(ARPBUFFSIZE, &pd, (const char *)file, 
@@ -58,7 +76,7 @@ void nemesis_arp(int argc, char **argv)
             arp_exit(1);
     }
 
-    if (buildarp(&etherhdr, &arphdr, &pd, device, reply) < 0)
+    if (buildarp(&etherhdr, &arphdr, &pd, l) < 0)
     {
         printf("\n%s Injection Failure\n", (rarp == 0 ? "ARP" : "RARP"));
         arp_exit(1);
@@ -76,63 +94,37 @@ static void arp_initdata(void)
     etherhdr.ether_type = ETHERTYPE_ARP;    /* Ethernet type ARP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
+    
     arphdr.ar_op = ARPOP_REQUEST;           /* ARP opcode: request */
     arphdr.ar_hrd = ARPHRD_ETHER;           /* hardware format: Ethernet */
     arphdr.ar_pro = ETHERTYPE_IP;           /* protocol format: IP */
     arphdr.ar_hln = 6;                      /* 6 byte hardware addresses */
     arphdr.ar_pln = 4;                      /* 4 byte protocol addresses */
-    memset(arphdr.ar_sha, 0, 6);            /* ARP frame sender address */
-    memset(arphdr.ar_spa, 0, 4);            /* ARP sender protocol (IP) addr */
-    memset(arphdr.ar_tha, 0, 6);            /* ARP frame target address */
-    memset(arphdr.ar_tpa, 0, 4);            /* ARP target protocol (IP) addr */
-    pd.file_mem = NULL;
-    pd.file_s = 0;
+    
+    memset(ar_sha, 0, 6);            /* ARP frame sender address */
+    memset(ar_spa, 0, 4);            /* ARP sender protocol (IP) addr */
+    memset(ar_tha, 0, 6);            /* ARP frame target address */
+    memset(ar_tpa, 0, 4);            /* ARP target protocol (IP) addr */
+    
+    pd.file_mem = NULL;                     /* payload */
+    pd.file_s = 0;			    /* paload size */
     return;
 }
 
-static void arp_validatedata(void)
+static void arp_validatedata()
 {
-    struct sockaddr_in sin;
-
     /* validation tests */
-    if ((!memcmp(arphdr.ar_spa, zero, 4)) || (!memcmp(arphdr.ar_tpa, zero, 4)))
+    if ((!memcmp(ar_spa, zero, 4)) || (!memcmp(ar_tpa, zero, 4)))
     {
-        fprintf(stderr, "ERROR: Source and/or Destination IP address "
-                "missing.\n");
+        fprintf(stderr, "ERROR: Source and/or Destination IP address missing.\n");
         arp_exit(1);
-    }
-
-    if (device == NULL)
-    { 
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            arp_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-        }
     }
 
     if (solarismode && arp_dst)
     {
-        fprintf(stderr, "ERROR: Using -s and -m is redundant, choose one or "
-                "the other.\n");
+        fprintf(stderr, "ERROR: Using -s and -m is redundant, choose one or the other.\n");
         arp_exit(1);
-    }
-
-    /* Determine if there's a source hardware address set */
-    if ((nemesis_check_link(&etherhdr, device)) < 0)
-    {
-        fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", 
-                device);
-        arp_exit(1);
-    } 
+    }    
 
     /* for RARP functionality, set the appropriate opcode in the ARP frame */
     if (rarp)
@@ -142,6 +134,13 @@ static void arp_validatedata(void)
         else
             arphdr.ar_op = ARPOP_REVREQUEST;
     }
+    else
+    {
+    	if (reply)
+    	    arphdr.ar_op = ARPOP_REPLY;
+    	else
+            arphdr.ar_op = ARPOP_REQUEST;
+    }
 
     /* If separate hardware addresses have been specified for ARP frame use
      * them.  Otherwise, use the values from the Ethernet frame.
@@ -149,14 +148,14 @@ static void arp_validatedata(void)
     if (reply)
     {
         if (!arp_src)
-            memcpy(arphdr.ar_sha, etherhdr.ether_shost, 6);
+            memcpy(ar_sha, etherhdr.ether_shost, 6);
         if (!arp_dst)
-            memcpy(arphdr.ar_tha, etherhdr.ether_dhost, 6);
+            memcpy(ar_tha, etherhdr.ether_dhost, 6);
     }
     else
     {
         if (!arp_src)
-            memcpy(arphdr.ar_sha, etherhdr.ether_shost, 6);
+            memcpy(ar_sha, etherhdr.ether_shost, 6);
     }
     return;
 }
@@ -238,11 +237,9 @@ static void arp_cmdline(int argc, char **argv)
 #endif
                 break;
             case 'D':    /* ARP target IP address */
-                if (nemesis_name_resolve(optarg, 
-                        (u_int32_t *)&arphdr.ar_tpa) < 0)
+                if (nemesis_name_resolve(optarg, (u_int32_t *)ar_tpa) < 0)
                 {
-                    fprintf(stderr, "ERROR: Invalid destination IP address: "
-                            "\"%s\".\n", optarg);
+                    fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
                     arp_exit(1);
                 }
                 break;
@@ -253,7 +250,7 @@ static void arp_cmdline(int argc, char **argv)
                         &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4],
                         &addr_tmp[5]);
                 for (i = 0; i < 6; i++) 
-                    arphdr.ar_sha[i] = (u_int8_t)addr_tmp[i];
+                    ar_sha[i] = (u_int8_t)addr_tmp[i];
                 break;
             case 'H':    /* Ethernet source address */
                 memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -270,7 +267,7 @@ static void arp_cmdline(int argc, char **argv)
                         &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4],
                         &addr_tmp[5]);
                 for (i = 0; i < 6; i++)
-                    arphdr.ar_tha[i] = (u_int8_t)addr_tmp[i];
+                    ar_tha[i] = (u_int8_t)addr_tmp[i];
                 break; 
             case 'M':    /* Ethernet destination address */
                 memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -294,7 +291,6 @@ static void arp_cmdline(int argc, char **argv)
                 }
                 break;
             case 'r':    /* ARP/RARP reply */
-                arphdr.ar_op = ARPOP_REPLY;
                 reply = 1;
                 break;
             case 'R':    /* RARP */
@@ -303,14 +299,12 @@ static void arp_cmdline(int argc, char **argv)
                 break;
             case 's':
                 solarismode = 1;
-                memset(arphdr.ar_tha, 0xff, 6);
+                memset(ar_tha, 0xff, 6);
                 break;
             case 'S':    /* ARP sender IP address */
-                if (nemesis_name_resolve(optarg, 
-                        (u_int32_t *)&arphdr.ar_spa) < 0)
+                if (nemesis_name_resolve(optarg, (u_int32_t *)ar_spa) < 0)
                 {
-                    fprintf(stderr, "ERROR: Invalid source IP address: \"%s\"."
-                            "\n", optarg);
+                    fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
                     arp_exit(1);
                 }
                 break;

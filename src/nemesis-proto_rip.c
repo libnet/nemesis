@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-proto_rip.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-proto_rip.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT 
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -13,14 +13,13 @@
 #include "nemesis.h"
 
 int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, 
-        FileData *pd, FileData *ipod, char *device)
+        FileData *pd, FileData *ipod, libnet_t *l)
 {
    int n;
    u_int32_t rip_packetlen = 0, rip_meta_packetlen = 0;
    static u_int8_t *pkt;
-   static int sockfd = -1;
-   struct libnet_link_int *l2 = NULL;
    u_int8_t link_offset = 0;
+   
 #if !defined(WIN32)
     int sockbuff = IP_MAXPACKET;
 #endif
@@ -32,34 +31,12 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip,
 
     if (got_link)   /* data link layer transport */
     {
-        if ((l2 = libnet_open_link_interface(device, errbuf)) == NULL)
-        {
-            nemesis_device_failure(INJECTION_LINK, (const char *)device);
-            return -1;
-        }
         link_offset = LIBNET_ETH_H;
     }
-    else
-    {
-        if ((sockfd = libnet_open_raw_sock(IPPROTO_RAW)) < 0)
-        {
-            nemesis_device_failure(INJECTION_RAW, (const char *)NULL);
-            return -1;
-        }
-#if !defined(WIN32)
-        if ((setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, (const void *)&sockbuff, 
-                sizeof(sockbuff))) < 0)
-        {
-            fprintf(stderr, "ERROR: setsockopt() failed.\n");
-            return -1;
-        }
-#endif
-    }
 
-    rip_packetlen = link_offset + LIBNET_IP_H + LIBNET_UDP_H + LIBNET_RIP_H + 
-            pd->file_s + ipod->file_s;
+    rip_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + LIBNET_RIP_H + pd->file_s + ipod->file_s;
 
-    rip_meta_packetlen = rip_packetlen - (link_offset + LIBNET_IP_H);
+    rip_meta_packetlen = rip_packetlen - link_offset;
 
 #ifdef DEBUG
     printf("DEBUG: RIP packet length %u.\n", rip_packetlen);
@@ -67,49 +44,55 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip,
     printf("DEBUG: RIP payload size  %u.\n", pd->file_s);
 #endif
 
-    if (libnet_init_packet(rip_packetlen, &pkt) == -1)
-    {
-        fprintf(stderr, "ERROR: Unable to allocate packet memory.\n");
-        return -1;
-    }
-
-    if (got_link)
-        libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP,
-                NULL, 0, pkt);
-
-    libnet_build_ip(rip_meta_packetlen, ip->ip_tos, ip->ip_id, ip->ip_off, 
-            ip->ip_ttl, ip->ip_p, ip->ip_src.s_addr, ip->ip_dst.s_addr, 
-            NULL, 0, pkt + link_offset);
-
-    libnet_build_udp(udp->uh_sport, udp->uh_dport, NULL, 0, pkt + link_offset + 
-            LIBNET_IP_H);
-
-    libnet_build_rip(rip->cmd, rip->ver, rip->rd, rip->af, rip->rt, 
-            ntohl(rip->addr), ntohl(rip->mask), ntohl(rip->next_hop), 
-            rip->metric, pd->file_mem, pd->file_s, pkt + link_offset + 
-            LIBNET_IP_H + LIBNET_UDP_H);
-
+    (void)libnet_build_rip(rip->rip_cmd, 
+                           rip->rip_ver, 
+                           rip->rip_rd, 
+                           rip->rip_af, 
+                           rip->rip_rt, 
+                           ntohl(rip->rip_addr), 
+                           ntohl(rip->rip_mask), 
+                           ntohl(rip->rip_next_hop), 
+                           rip->rip_metric, 
+                           pd->file_mem, 
+                           pd->file_s, 
+                           l,
+                           0);
+    (void)libnet_build_udp(udp->uh_sport, 
+                           udp->uh_dport, 
+                           LIBNET_UDP_H + pd->file_s + LIBNET_RIP_H,
+                           0, 
+                           NULL, 
+                           0, 
+                           l, 
+                           0);
+    
     if (got_ipoptions)
     {
-        if ((libnet_insert_ipo((struct ipoption *)ipod->file_mem, 
-                ipod->file_s, pkt + link_offset)) == -1)
+        if (libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0) == -1)
         {
-            fprintf(stderr, "ERROR: Unable to add IP options, discarding "
-                    "them.\n");
+            fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
         }
     }
 
-    if (got_link)
-        libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H + 
-                ipod->file_s);
+    (void)libnet_build_ipv4(rip_meta_packetlen, 
+                            ip->ip_tos, 
+                            ip->ip_id, 
+                            ip->ip_off, 
+                            ip->ip_ttl, 
+                            ip->ip_p, 
+                            0,
+                            ip->ip_src.s_addr, 
+                            ip->ip_dst.s_addr, 
+                            NULL, 
+                            0, 
+                            l,
+                            0);
 
-    libnet_do_checksum(pkt + link_offset, IPPROTO_UDP, LIBNET_UDP_H + 
-            pd->file_s + ipod->file_s);
-
     if (got_link)
-        n = libnet_write_link_layer(l2, device, pkt, rip_packetlen);
-    else
-        n = libnet_write_ip(sockfd, pkt, rip_packetlen);
+        (void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost,ETHERTYPE_IP,NULL,0, l,0);
+        
+    (void)libnet_pblock_coalesce(l, &pkt, &rip_packetlen);
+    n = libnet_write(l);
 
     if (verbose == 2)
         nemesis_hexdump(pkt, rip_packetlen, HEX_ASCII_DECODE);
@@ -127,15 +110,11 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip,
         {
             if (got_link)
                 printf("Wrote %d byte RIP packet through linktype %s.\n", n, 
-                        nemesis_lookup_linktype(l2->linktype));
+                        nemesis_lookup_linktype(l->link_type));
             else
                 printf("Wrote %d byte RIP packet.\n", n);
         }
     }
-    libnet_destroy_packet(&pkt);
-    if (got_link)
-        libnet_close_link_interface(l2);
-    else
-        libnet_close_raw_sock(sockfd);
+    libnet_destroy(l);
     return n;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-igmp.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-igmp.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -19,7 +19,6 @@ static ETHERhdr etherhdr;
 static IPhdr iphdr;
 static IGMPhdr igmphdr;
 static FileData pd, ipod;
-static int got_payload;
 static int got_group, got_type, got_code;
 static char *payloadfile = NULL;       /* payload file name */
 static char *ipoptionsfile = NULL;     /* IP options file name */
@@ -38,6 +37,7 @@ static void igmp_verbose(void);
 void nemesis_igmp(int argc, char **argv)
 {
     const char *module = "IGMP Packet Injection";
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
@@ -49,6 +49,11 @@ void nemesis_igmp(int argc, char **argv)
 
     igmp_initdata();
     igmp_cmdline(argc, argv);
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+        igmp_exit(1);
+    
     igmp_validatedata();
     igmp_verbose();
 
@@ -72,7 +77,7 @@ void nemesis_igmp(int argc, char **argv)
             igmp_exit(1);
     }
 
-    if (buildigmp(&etherhdr, &iphdr, &igmphdr, &pd, &ipod, device) < 0)
+    if (buildigmp(&etherhdr, &iphdr, &igmphdr, &pd, &ipod, l) < 0)
     {
         puts("\nIGMP Injection Failure");
         igmp_exit(1);
@@ -90,16 +95,19 @@ static void igmp_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
-    memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
+    
+    iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);     /* IP source address */
     memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
     iphdr.ip_tos = 0;                       /* IP type of service */
     iphdr.ip_id = (u_int16_t)libnet_get_prand(PRu16);   /* IP ID */
     iphdr.ip_p = IPPROTO_IGMP;              /* IP protocol IGMP */
     iphdr.ip_off = 0;                       /* IP fragmentation offset */
     iphdr.ip_ttl = 1;                       /* IP TTL - set to 1 purposely */
+    
     igmphdr.igmp_type = 0;                  /* IGMP type */
     igmphdr.igmp_code = 0;                  /* IGMP code */
     igmphdr.igmp_group.s_addr = 0;          /* IGMP group IP address */
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
     ipod.file_mem = NULL;
@@ -109,33 +117,7 @@ static void igmp_initdata(void)
 
 static void igmp_validatedata(void)
 {
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (iphdr.ip_src.s_addr == 0)
-        iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            igmp_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
+    
     /* if a device was specified and the user has not specified a source 
      * hardware address, try to determine the source address automatically
      */
@@ -143,8 +125,7 @@ static void igmp_validatedata(void)
     { 
         if ((nemesis_check_link(&etherhdr, device)) < 0)
         {
-            fprintf(stderr, "ERROR: Cannot retrieve hardware address of "
-                    "%s.\n", device);
+            fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", device);
             igmp_exit(1);
         }
     }
@@ -158,8 +139,7 @@ static void igmp_validatedata(void)
         igmphdr.igmp_code = 0;
     if (!got_group)
     {
-        nemesis_name_resolve("224.0.0.1", 
-                (u_int32_t *)&igmphdr.igmp_group.s_addr);
+        nemesis_name_resolve("224.0.0.1", (u_int32_t *)&igmphdr.igmp_group.s_addr);
         nemesis_name_resolve("224.0.0.1", (u_int32_t *)&iphdr.ip_dst.s_addr);
     }
     return;

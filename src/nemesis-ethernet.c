@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-ethernet.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-ethernet.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -16,7 +16,6 @@
 
 static ETHERhdr etherhdr;
 static FileData pd;
-static int got_payload;
 static char *payloadfile = NULL;        /* payload file name */
 static char *device = NULL;            /* Ethernet device */
 #if defined(WIN32)
@@ -33,6 +32,7 @@ static void ethernet_verbose(void);
 void nemesis_ethernet(int argc, char **argv)
 {
     const char *module = "Ethernet Packet Injection";
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
   
@@ -41,7 +41,18 @@ void nemesis_ethernet(int argc, char **argv)
 
     ethernet_initdata();
     ethernet_cmdline(argc, argv);    
-    ethernet_validatedata();
+    
+    l = libnet_init(LIBNET_LINK_ADV, device, errbuf);
+    if(!l)
+    	ethernet_exit(1);
+    	
+    if ((nemesis_check_link(&etherhdr, l)) < 0)
+    {
+        fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", 
+                device);
+        ethernet_exit(1);
+    } 
+    	
     ethernet_verbose();
 
     if (got_payload)
@@ -51,7 +62,7 @@ void nemesis_ethernet(int argc, char **argv)
             ethernet_exit(1);
     }
 
-    if (buildether(&etherhdr, &pd, device) < 0)
+    if (buildether(&etherhdr, &pd, l) < 0)
     {
         puts("\nEthernet Injection Failure");
         ethernet_exit(1);
@@ -69,40 +80,9 @@ static void ethernet_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
-    return;
-}
-
-static void ethernet_validatedata(void)
-{
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (device == NULL)
-    { 
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            ethernet_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-        }
-    }
-
-    /* Determine if there's a source hardware address set */
-    if ((nemesis_check_link(&etherhdr, device)) < 0)
-    {
-        fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", 
-                device);
-        ethernet_exit(1);
-    } 
     return;
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-rip.c,v 1.2 2004/03/06 22:13:30 jnathan Exp $
+ * $Id: nemesis-rip.c,v 1.2.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -20,7 +20,7 @@ static IPhdr iphdr;
 static UDPhdr udphdr;
 static RIPhdr riphdr;
 static FileData pd, ipod;
-static int got_payload, got_domain;
+static int got_domain;
 static char *payloadfile = NULL;       /* payload file name */
 static char *ipoptionsfile = NULL;     /* IP options file name */
 static char *device = NULL;            /* Ethernet device */
@@ -38,6 +38,7 @@ static void rip_verbose(void);
 void nemesis_rip(int argc, char **argv)
 {
     const char *module = "RIP Packet Injection";
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
@@ -48,7 +49,21 @@ void nemesis_rip(int argc, char **argv)
         fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 
     rip_initdata();
-    rip_cmdline(argc, argv);    
+    rip_cmdline(argc, argv);   
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+        rip_exit(1);
+    if (got_link)
+    {
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
+        {
+            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
+                    device);
+            rip_exit(1);
+        }
+    }
+    
     rip_validatedata();
     rip_verbose();
 
@@ -72,7 +87,7 @@ void nemesis_rip(int argc, char **argv)
             rip_exit(1);
     }
 
-    if (buildrip(&etherhdr, &iphdr, &udphdr, &riphdr, &pd, &ipod, device) < 0)
+    if (buildrip(&etherhdr, &iphdr, &udphdr, &riphdr, &pd, &ipod, l) < 0)
     {
         puts("\nRIP Injection Failure");
         rip_exit(1);
@@ -90,6 +105,7 @@ static void rip_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
+    
     memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
     memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
     iphdr.ip_tos = IPTOS_RELIABILITY;       /* IP type of service */
@@ -97,18 +113,20 @@ static void rip_initdata(void)
     iphdr.ip_p = IPPROTO_UDP;               /* IP protocol UDP */
     iphdr.ip_off = 0;                       /* IP fragmentation offset */
     iphdr.ip_ttl = 255;                     /* IP TTL */
+    
     udphdr.uh_sport = 520;                  /* UDP source port */
     udphdr.uh_dport = 520;                  /* UDP destination port */
-    riphdr.cmd = RIPCMD_REQUEST;            /* RIP command */
-    riphdr.ver = 2;                         /* RIP version */
-    riphdr.rd = 0;                          /* RIP routing domain */
-    riphdr.af = 2;                          /* RIP address family */
-    riphdr.rt = (u_int16_t)libnet_get_prand(PRu16);
-                                            /* RIP route tag */
-    riphdr.addr = 0;                        /* RIP address */
-    riphdr.mask = 0;                        /* RIP subnet mask */
-    riphdr.next_hop = 0;                    /* RIP next-hop IP address */
-    riphdr.metric = 1;                      /* RIP metric */
+    
+    riphdr.rip_cmd = RIPCMD_REQUEST;            /* RIP command */
+    riphdr.rip_ver = 2;                         /* RIP version */
+    riphdr.rip_rd = 0;                          /* RIP routing domain */
+    riphdr.rip_af = 2;                          /* RIP address family */
+    riphdr.rip_rt = (u_int16_t)libnet_get_prand(PRu16); /* RIP route tag */
+    riphdr.rip_addr = 0;                        /* RIP address */
+    riphdr.rip_mask = 0;                        /* RIP subnet mask */
+    riphdr.rip_next_hop = 0;                    /* RIP next-hop IP address */
+    riphdr.rip_metric = 1;                      /* RIP metric */
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
     ipod.file_mem = NULL;
@@ -118,24 +136,24 @@ static void rip_initdata(void)
 
 static void rip_validatedata(void)
 {
-    struct sockaddr_in sin;
+    
     u_int32_t tmp;
 
     /* validation tests */
-    if (riphdr.ver == 2)
+    if (riphdr.rip_ver == 2)
     {
         /* allow routing domain 0 in RIP2 if specified by the user */
-        if (riphdr.rd == 0 && got_domain == 0)
-            riphdr.rd = (u_int16_t)libnet_get_prand(PRu16);
-        if (riphdr.mask == 0)
-            nemesis_name_resolve("255.255.255.0", (u_int32_t *)&riphdr.mask);
+        if (riphdr.rip_rd == 0 && got_domain == 0)
+            riphdr.rip_rd = (u_int16_t)libnet_get_prand(PRu16);
+        if (riphdr.rip_mask == 0)
+            nemesis_name_resolve("255.255.255.0", (u_int32_t *)&riphdr.rip_mask);
     }
 
     if (iphdr.ip_src.s_addr == 0)
         iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
     if (iphdr.ip_dst.s_addr == 0)
     {
-        switch(riphdr.ver)
+        switch(riphdr.rip_ver)
         {
             case 1:
                 tmp = (u_int32_t)libnet_get_prand(PRu32);
@@ -152,46 +170,9 @@ static void rip_validatedata(void)
         }
     }
 
-    if (riphdr.addr == 0)
-        riphdr.addr = (u_int32_t)libnet_get_prand(PRu32); 
+    if (riphdr.rip_addr == 0)
+        riphdr.rip_addr = (u_int32_t)libnet_get_prand(PRu32); 
 
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            rip_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
-    /* if a device was specified and the user has not specified a source 
-     * hardware address, try to determine the source address automatically
-     */
-    if (got_link)
-    {
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
-        {
-            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
-                    device);
-            rip_exit(1);
-        }
-    }
-
-    /* Attempt to send valid packets if the user hasn't decided to craft an
-     * anomolous packet
-     */
     return;
 }
 
@@ -265,10 +246,10 @@ static void rip_cmdline(int argc, char **argv)
         switch (opt)
         {
             case 'a':   /* RIP address family */
-                riphdr.af = xgetint16(optarg);
+                riphdr.rip_af = xgetint16(optarg);
                 break;
             case 'c':   /* RIP command */
-                riphdr.cmd = xgetint8(optarg);
+                riphdr.rip_cmd = xgetint8(optarg);
                 break;
             case 'd':    /* Ethernet device */
 #if defined(WIN32)
@@ -307,7 +288,7 @@ static void rip_cmdline(int argc, char **argv)
                 break;
             case 'h':   /* RIP next hop address */
                 if ((nemesis_name_resolve(optarg,
-                        (u_int32_t *)&riphdr.next_hop)) < 0)
+                        (u_int32_t *)&riphdr.rip_next_hop)) < 0)
                 {
                     fprintf(stderr, "ERROR: Invalid next hop IP address: "
                             "\"%s\".\n", optarg);
@@ -324,7 +305,7 @@ static void rip_cmdline(int argc, char **argv)
                 break;
             case 'i':    /* RIP route address */
                 if ((nemesis_name_resolve(optarg, 
-                        (u_int32_t *)&riphdr.addr)) < 0)
+                        (u_int32_t *)&riphdr.rip_addr)) < 0)
                 {
                     fprintf(stderr, "ERROR: Invalid destination IP address: "
                             "\"%s\".\n", optarg);
@@ -336,7 +317,7 @@ static void rip_cmdline(int argc, char **argv)
                 break;
             case 'k':   /* RIP netmask address */
                 if ((nemesis_name_resolve(optarg, 
-                        (u_int32_t *)&riphdr.mask)) < 0)
+                        (u_int32_t *)&riphdr.rip_mask)) < 0)
                 {
                     fprintf(stderr, "ERROR: Invalid RIP mask IP address: "
                             "\"%s\".\n", optarg);
@@ -344,7 +325,7 @@ static void rip_cmdline(int argc, char **argv)
                 }
                 break;
             case 'm':   /* RIP metric */
-                riphdr.metric = xgetint32(optarg);
+                riphdr.rip_metric = xgetint32(optarg);
                 break;
             case 'M':    /* Ethernet destination address */
                 memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -381,11 +362,11 @@ static void rip_cmdline(int argc, char **argv)
                 }
                 break;
             case 'r':   /* RIP routing domain */
-                riphdr.rd = xgetint16(optarg);
+                riphdr.rip_rd = xgetint16(optarg);
                 got_domain = 1;
                 break;
             case 'R':   /* RIP route tag */
-                riphdr.rt = xgetint16(optarg);
+                riphdr.rip_rt = xgetint16(optarg);
                 break;
             case 'S':    /* source IP address */
                 if ((nemesis_name_resolve(optarg, 
@@ -408,7 +389,7 @@ static void rip_cmdline(int argc, char **argv)
                     nemesis_printtitle((const char *)title);
                 break;
             case 'V':   /* RIP version */
-                riphdr.ver = xgetint8(optarg);
+                riphdr.rip_ver = xgetint8(optarg);
                 break;
             case 'x':   /* UDP source port */
                 udphdr.uh_sport = xgetint16(optarg);

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.h,v 1.3 2004/10/07 02:46:35 jnathan Exp $
+ * $Id: nemesis.h,v 1.3.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
@@ -87,16 +87,22 @@
 #define PAYLOADMODE 0
 #define OPTIONSMODE 1
 #define OPTIONSBUFFSIZE 40
+#define PR2 LIBNET_PR2
+#define PR8 LIBNET_PR8
+#define PR16 LIBNET_PR16
+#define PR32 LIBNET_PR32
+#define PRu16 LIBNET_PRu16
+#define PRu32 LIBNET_PRu32
 
 typedef struct libnet_arp_hdr ARPhdr;
 typedef struct libnet_as_lsa_hdr ASLSAhdr;
 typedef struct libnet_auth_hdr AUTHhdr;
 typedef struct libnet_dbd_hdr DBDhdr;
-typedef struct libnet_dns_hdr DNShdr;
+typedef struct libnet_dnsv4_hdr DNShdr;
 typedef struct libnet_ethernet_hdr ETHERhdr;
-typedef struct libnet_icmp_hdr ICMPhdr;
+typedef struct libnet_icmpv4_hdr ICMPhdr;
 typedef struct libnet_igmp_hdr IGMPhdr;
-typedef struct libnet_ip_hdr IPhdr;
+typedef struct libnet_ipv4_hdr IPhdr;
 typedef struct libnet_lsa_hdr LSAhdr;
 typedef struct libnet_lsr_hdr LSRhdr;
 typedef struct libnet_lsu_hdr LSUhdr;
@@ -118,9 +124,10 @@ extern char *pcap_outfile;
 extern char *validtcpflags;
 extern const char *version;
 extern int verbose;
-extern int got_link;
-extern int got_ipoptions;
-extern int got_tcpoptions;
+int got_link;
+int got_payload;
+int got_ipoptions;
+int got_tcpoptions;
 
 typedef struct _FileData
 {
@@ -134,7 +141,7 @@ u_int16_t xgetint16(const char *);
 u_int8_t xgetint8(const char *);
 //int gmt2local(time_t);
 int nemesis_name_resolve(char *, u_int32_t *);
-int nemesis_check_link(ETHERhdr *, char *);
+int nemesis_check_link(ETHERhdr *, libnet_t *);
 int nemesis_getdev(int, char **);
 char *nemesis_lookup_linktype(int);
 int nemesis_seedrand(void);

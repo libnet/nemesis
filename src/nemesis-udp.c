@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-udp.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: nemesis-udp.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -19,7 +19,6 @@ static ETHERhdr etherhdr;
 static IPhdr iphdr;
 static UDPhdr udphdr;
 static FileData pd, ipod;
-static int got_payload;
 static char *payloadfile = NULL;   /* payload file name */
 static char *ipoptionsfile = NULL; /* IP options file name */
 static char *device = NULL;        /* Ethernet device */
@@ -31,12 +30,12 @@ static void udp_cmdline(int, char **);
 static int udp_exit(int);
 static void udp_initdata(void);
 static void udp_usage(char *);
-static void udp_validatedata(void);
 static void udp_verbose(void);
 
 void nemesis_udp(int argc, char **argv)
 {
     const char *module = "UDP Packet Injection";
+    libnet_t *l = NULL;
     
     nemesis_maketitle(title, module, version);
 
@@ -47,8 +46,21 @@ void nemesis_udp(int argc, char **argv)
         fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 
     udp_initdata();
-    udp_cmdline(argc, argv);    
-    udp_validatedata();
+    udp_cmdline(argc, argv);  
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+        udp_exit(1);
+    if (got_link)
+    {
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
+        {
+            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
+                    device);
+            udp_exit(1);
+        }
+    }
+
     udp_verbose();
 
     if (got_payload)
@@ -71,7 +83,7 @@ void nemesis_udp(int argc, char **argv)
             udp_exit(1);
     }
 
-    if (buildudp(&etherhdr, &iphdr, &udphdr, &pd, &ipod, device) < 0)
+    if (buildudp(&etherhdr, &iphdr, &udphdr, &pd, &ipod, l) < 0)
     {
         puts("\nUDP Injection Failure");
         udp_exit(1);
@@ -89,8 +101,9 @@ static void udp_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
-    memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
-    memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
+    
+    iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
+    iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
     iphdr.ip_tos = 0;                       /* IP type of service */
     iphdr.ip_id = (u_int16_t)libnet_get_prand(PRu16);   /* IP ID */
     iphdr.ip_p = IPPROTO_UDP;               /* IP protocol TCP */
@@ -103,52 +116,6 @@ static void udp_initdata(void)
     pd.file_s = 0;
     ipod.file_mem = NULL;
     ipod.file_s = 0;
-    return;
-}
-
-static void udp_validatedata(void)
-{
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (iphdr.ip_src.s_addr == 0)
-        iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (iphdr.ip_dst.s_addr == 0)
-        iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            udp_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
-    /* if a device was specified and the user has not specified a source 
-     * hardware address, try to determine the source address automatically
-     */
-    if (got_link)
-    {
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
-        {
-            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
-                    device);
-            udp_exit(1);
-        }
-    }
     return;
 }
 

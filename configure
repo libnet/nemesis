@@ -4709,9 +4709,9 @@ fi
 
 LNET=""
 
-echo "$as_me:$LINENO: checking for libnet_build_ip in -lnet" >&5
-echo $ECHO_N "checking for libnet_build_ip in -lnet... $ECHO_C" >&6
-if test "${ac_cv_lib_net_libnet_build_ip+set}" = set; then
+echo "$as_me:$LINENO: checking for libnet_build_ipv4 in -lnet" >&5
+echo $ECHO_N "checking for libnet_build_ipv4 in -lnet... $ECHO_C" >&6
+if test "${ac_cv_lib_net_libnet_build_ipv4+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -4729,11 +4729,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char libnet_build_ip ();
+char libnet_build_ipv4 ();
 int
 main ()
 {
-libnet_build_ip ();
+libnet_build_ipv4 ();
   ;
   return 0;
 }
@@ -5421,8 +5421,8 @@ if test "$LNET" = "no"; then
    exit
 fi
 
-echo "$as_me:$LINENO: checking for libnet version 1.0.2a" >&5
-echo $ECHO_N "checking for libnet version 1.0.2a... $ECHO_C" >&6
+echo "$as_me:$LINENO: checking for libnet version 1.1.2.1" >&5
+echo $ECHO_N "checking for libnet version 1.1.2.1... $ECHO_C" >&6
 if test "${LIBNET_CONFIG_BROKEN_CFLAGS}" = "yes"; then
     if test -n "$with_libnet_includes" -a "$with_libnet_includes" != "no"; then
         libnet_dir="${with_libnet_includes}"
@@ -5441,7 +5441,7 @@ for i in $libnet_dir; do
 done
 
 if test "$LIBNET_INC_DIR" != ""; then
-    if eval "grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | grep -v 1.0.2a >/dev/null"; then
+    if eval "grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | grep -v 1.1.2.1 >/dev/null"; then
         echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
         echo

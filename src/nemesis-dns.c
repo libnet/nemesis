@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-dns.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-dns.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -21,7 +21,6 @@ static TCPhdr tcphdr;
 static UDPhdr udphdr;
 static DNShdr dnshdr;
 static FileData pd, ipod, tcpod;
-static int got_payload;
 static char *payloadfile = NULL;       /* payload file name */
 static char *ipoptionsfile = NULL;     /* TCP options file name */
 static char *tcpoptionsfile = NULL;    /* IP options file name */
@@ -40,6 +39,7 @@ static void dns_verbose(void);
 void nemesis_dns(int argc, char **argv)
 {
     const char *module = "DNS Packet Injection";
+    struct libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
@@ -51,9 +51,24 @@ void nemesis_dns(int argc, char **argv)
 
     dns_initdata();
     dns_cmdline(argc, argv);
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+       dns_exit(1);
+
+    if (got_link)
+    {
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
+        {
+            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
+                    device);
+            dns_exit(1);
+        }
+    }
+ 
     dns_validatedata();
     dns_verbose();
-
+    
     if (got_payload)
     {
         if (state)
@@ -99,7 +114,7 @@ void nemesis_dns(int argc, char **argv)
     }
        
     if (builddns(&etherhdr, &iphdr, &tcphdr, &udphdr, &dnshdr, &pd, &ipod, 
-                &tcpod, device) < 0)
+                &tcpod, l) < 0)
     {
         puts("\nDNS Injection Failure");
         dns_exit(1);
@@ -117,25 +132,33 @@ static void dns_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
-    memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
-    memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
+    
+    iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
+    iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
     iphdr.ip_tos = IPTOS_LOWDELAY;          /* IP type of service */
     iphdr.ip_id = (u_int16_t)libnet_get_prand(PRu16);   /* IP ID */
     iphdr.ip_p = IPPROTO_UDP;
     iphdr.ip_off = 0;                       /* IP fragmentation offset */
     iphdr.ip_ttl = 255;                     /* IP TTL */
-    tcphdr.th_sport = (u_int16_t)libnet_get_prand(PRu16);
-                                            /* TCP source port */
+ 
+    tcphdr.th_sport = (u_int16_t)libnet_get_prand(PRu16); /* TCP source port */
     tcphdr.th_dport = 53;                   /* TCP destination port */
-    tcphdr.th_seq = (u_int32_t)libnet_get_prand(PRu32);
-                                            /* randomize sequence number */
-    tcphdr.th_ack = (u_int32_t)libnet_get_prand(PRu32);
-                                            /* randomize ack number */
+    tcphdr.th_seq = (u_int32_t)libnet_get_prand(PRu32);  /* randomize sequence number */
+    tcphdr.th_ack = (u_int32_t)libnet_get_prand(PRu32);  /* randomize ack number */
     tcphdr.th_flags = 0;                    /* TCP flags */
     tcphdr.th_win = 4096;                   /* TCP window size */
-    udphdr.uh_sport = (u_int16_t)libnet_get_prand(PRu16);
-                                            /* UDP source port */
+    tcphdr.th_urp = (u_int16_t)libnet_get_prand(PRu16);
+    
+    udphdr.uh_sport = (u_int16_t)libnet_get_prand(PRu16); /* UDP source port */
     udphdr.uh_dport = 53;                   /* UDP destination port */
+    
+    dnshdr.id = (u_int16_t)libnet_get_prand(PRu16);             /* DNS packet ID */
+    dnshdr.flags = (u_int16_t)libnet_get_prand(PRu16);          /* DNS flags */
+    dnshdr.num_q = (u_int16_t)libnet_get_prand(PRu16);          /* Number of questions */
+    dnshdr.num_answ_rr = (u_int16_t)libnet_get_prand(PRu16);    /* Number of answer resource records */
+    dnshdr.num_auth_rr = (u_int16_t)libnet_get_prand(PRu16);    /* Number of authority resource records */
+    dnshdr.num_addi_rr = (u_int16_t)libnet_get_prand(PRu16); 
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
     ipod.file_mem = NULL;
@@ -147,51 +170,6 @@ static void dns_initdata(void)
 
 static void dns_validatedata(void)
 {
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (iphdr.ip_src.s_addr == 0)
-        iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (iphdr.ip_dst.s_addr == 0)
-        iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            dns_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
-    /* if a device was specified and the user has not specified a source 
-     * hardware address, try to determine the source address automatically
-     */
-    if (got_link)
-    {
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
-        {
-            fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n",
-                    device);
-            dns_exit(1);
-        }
-    }
-
-    /* Attempt to send valid packets if the user hasn't decided to craft an
-     * anomolous packet
-     */
     if (state && tcphdr.th_flags == 0)
         tcphdr.th_flags |= TH_SYN;
     return;

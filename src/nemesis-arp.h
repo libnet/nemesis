@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-arp.h,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-arp.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -32,6 +32,11 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int buildarp(ETHERhdr *, ARPhdr *, FileData *, char *, int);
+u_int8_t ar_sha[6];
+u_int8_t ar_spa[4];
+u_int8_t ar_tha[6];
+u_int8_t ar_tpa[4];
+
+int buildarp(ETHERhdr *, ARPhdr *, FileData *, libnet_t *);
 
 #endif /* __NEMESIS_ARP_H__ */

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-icmp.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-icmp.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -21,7 +21,6 @@ static IPhdr ipunreach;
 static ICMPhdr icmphdr;
 static UDPhdr udphdr;
 static FileData pd, ipod, origod;
-static int got_payload;
 static int got_mode, got_type, got_code;
 static char *payloadfile = NULL;   /* payload file name */
 static char *ipoptionsfile = NULL; /* IP options file name */
@@ -41,6 +40,7 @@ static void icmp_verbose(void);
 void nemesis_icmp(int argc, char **argv)
 {
     const char *module = "ICMP Packet Injection";
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
@@ -51,7 +51,22 @@ void nemesis_icmp(int argc, char **argv)
             fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 
     icmp_initdata();
-    icmp_cmdline(argc, argv);    
+    icmp_cmdline(argc, argv);   
+    
+    l = libnet_init(LIBNET_RAW4, device, errbuf);
+    if(!l)
+    	icmp_exit(1);
+    	
+    if (got_link)
+    { 
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
+        {
+            fprintf(stderr, "ERROR: Cannot retrieve hardware address of "
+                    "%s.\n", device);
+            icmp_exit(1);
+        }
+    }
+     
     icmp_validatedata();
     icmp_verbose();
 
@@ -82,8 +97,7 @@ void nemesis_icmp(int argc, char **argv)
             icmp_exit(1);
     }
 
-    if (buildicmp(&etherhdr, &iphdr, &icmphdr, &ipunreach, &pd, &ipod, &origod, 
-            device) < 0)
+    if (buildicmp(&etherhdr, &iphdr, &icmphdr, &ipunreach, &pd, &ipod, &origod, l) < 0)
     {
         puts("\nICMP Injection Failure");
         icmp_exit(1);
@@ -101,33 +115,34 @@ static void icmp_initdata(void)
     etherhdr.ether_type = ETHERTYPE_IP;     /* Ethernet type IP */
     memset(etherhdr.ether_shost, 0, 6);     /* Ethernet source address */
     memset(etherhdr.ether_dhost, 0xff, 6);  /* Ethernet destination address */
-    memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
-    memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
+    
+    iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
+    iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
     iphdr.ip_tos = 0;                       /* IP type of service (TOS)*/
     iphdr.ip_id = (u_int16_t)libnet_get_prand(PRu16);   /* IP ID */
     iphdr.ip_p = IPPROTO_ICMP;              /* IP protocol ICMP */ 
     iphdr.ip_off = 0;                       /* IP fragmentation offset */
     iphdr.ip_ttl = 255;                     /* IP TTL */
-    ipunreach.ip_src.s_addr = 0;            /* ICMP unreach IP src address */
-    ipunreach.ip_dst.s_addr = 0;            /* ICMP unreach IP dst address */
+    
+    ipunreach.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
+    ipunreach.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);         /* ICMP unreach IP dst address */
     ipunreach.ip_tos = 0;                   /* ICMP unreach IP TOS */
-    ipunreach.ip_id = (u_int16_t)libnet_get_prand(PRu16);
-                                            /* ICMP unreach IP ID */
+    ipunreach.ip_id = (u_int16_t)libnet_get_prand(PRu16); /* ICMP unreach IP ID */
     ipunreach.ip_off = 0;                   /* ICMP unreach IP frag offset */
     ipunreach.ip_ttl = 255;                 /* ICMP unreach IP TTL */
     ipunreach.ip_p = 17;                    /* ICMP unreach IP protocol */
+    
     mode = ICMP_ECHO;                       /* default to ICMP echo */
     icmphdr.icmp_type = 0;                  /* ICMP type */
     icmphdr.icmp_code = 0;                  /* ICMP code */
     icmphdr.hun.echo.id = 0;                /* ICMP ID */
     icmphdr.hun.echo.seq = 0;               /* ICMP sequence number */
-    icmphdr.hun.gateway = (u_int32_t)libnet_get_prand(PRu32);
-                                            /* ICMP preferred gateway */
-    icmphdr.dun.ts.its_otime = (n_time) time(NULL);
-                                            /* ICMP timestamp req. orig time */
+    icmphdr.hun.gateway = (u_int32_t)libnet_get_prand(PRu32);  /* ICMP preferred gateway */
+    icmphdr.dun.ts.its_otime = (n_time) time(NULL);  /* ICMP timestamp req. orig time */
     icmphdr.dun.ts.its_rtime = 0;           /* ICMP timestamp rea. recv time */
     icmphdr.dun.ts.its_ttime = 0;           /* ICMP timestamp rep. trans time */
     icmphdr.dun.mask = 0;                   /* ICMP address mask */
+    
     pd.file_mem = NULL;
     pd.file_s = 0;
     ipod.file_mem = NULL;
@@ -139,57 +154,9 @@ static void icmp_initdata(void)
 
 static void icmp_validatedata(void)
 {
-    struct sockaddr_in sin;
-
-    /* validation tests */
-    if (iphdr.ip_src.s_addr == 0)
-        iphdr.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (iphdr.ip_dst.s_addr == 0)
-        iphdr.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (ipunreach.ip_src.s_addr == 0)
-        ipunreach.ip_src.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-    if (ipunreach.ip_dst.s_addr == 0)
-        ipunreach.ip_dst.s_addr = (u_int32_t)libnet_get_prand(PRu32);
-
-
-    /* if the user has supplied a source hardware addess but not a device
-     * try to select a device automatically
-     */
-    if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device)
-    {
-        if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0)
-        {
-            fprintf(stderr, "ERROR: Device not specified and unable to "
-                    "automatically select a device.\n");
-            icmp_exit(1);
-        }
-        else
-        {
-#ifdef DEBUG
-            printf("DEBUG: automatically selected device: "
-                    "       %s\n", device);
-#endif
-            got_link = 1;
-        }
-    }
-
-    /* if a device was specified and the user has not specified a source 
-     * hardware address, try to determine the source address automatically
-     */
-    if (got_link)
-    { 
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
-        {
-            fprintf(stderr, "ERROR: Cannot retrieve hardware address of "
-                    "%s.\n", device);
-            icmp_exit(1);
-        }
-    }
-
     if (got_mode > 1)
     {
-        fprintf(stderr, "ERROR: ICMP injection mode multiply specified - "
-                "select only one.\n");
+        fprintf(stderr, "ERROR: ICMP injection mode multiply specified - select only one.\n");
         icmp_exit(1);
     }
 
