@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-tcp.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-tcp.c,v 1.2 2004/10/07 01:20:56 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -112,7 +112,7 @@ static void tcp_initdata(void)
                                             /* randomize sequence number */
     tcphdr.th_ack = (u_int32_t)libnet_get_prand(PRu32);
                                             /* randomize ack number */
-    tcphdr.th_flags = 0;                    /* TCP flags */
+    tcphdr.th_flags |= TH_SYN;              /* TCP flags */
     tcphdr.th_win = 4096;                   /* TCP window size */
     pd.file_mem = NULL;
     pd.file_s = 0;
@@ -167,11 +167,6 @@ static void tcp_validatedata(void)
         }
     }
 
-    /* Attempt to send valid packets if the user hasn't decided to craft an
-     * anomolous packet
-     */
-    if (tcphdr.th_flags == 0)
-        tcphdr.th_flags |= TH_SYN;
     return;
 }
 
@@ -280,15 +275,18 @@ static void tcp_cmdline(int argc, char **argv)
                 break;
             case 'f':    /* TCP flags */
                 p = optarg;
+                tcphdr.th_flags = 0;
                 while (*p != '\0')
                 { 
                     c = *p;
                     flag = strchr(validtcpflags, c) - validtcpflags;
-                    if (flag < 0 || flag > 7)
+                    if (flag < 0 || flag > 8)
                     {
                         printf("ERROR: Invalid TCP flag: %c.\n", c);
                         tcp_exit(1);
                     }
+                    if (flag == 8)
+                        break;
                     else
                     {
                         tcphdr.th_flags |= 1 << flag;

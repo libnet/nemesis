@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-functions.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-functions.c,v 1.2 2004/10/07 01:20:56 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -52,13 +52,13 @@
     static int winstrerror(LPSTR, int);
 #endif
 
-const char *version = " -=- The NEMESIS Project Version 1.4beta4";
+const char *version = " -=- The NEMESIS Project Version 1.4";
 
 char zero[ETHER_ADDR_LEN];
 char one[ETHER_ADDR_LEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 char title[TITLEBUFFSIZE];
 char errbuf[ERRBUFFSIZE];   /* all-purpose error buffer */
-char *validtcpflags = "FSRPAUEC";   /* TCP flag index */
+char *validtcpflags = "FSRPAUEC-";   /* TCP flag index */
 int verbose;    /* verbosity */
 int got_link;
 int got_ipoptions;

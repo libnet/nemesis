@@ -1,5 +1,5 @@
 .\"
-.\" $Id: nemesis-tcp.1,v 1.2 2003/11/09 10:21:00 jnathan Exp $
+.\" $Id: nemesis-tcp.1,v 1.3 2004/10/07 01:20:56 jnathan Exp $
 .\"
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -61,7 +61,7 @@ information.
 Specify the
 .I acknowledgement-number (ACK number)
 within the TCP header.
-.IP "-f TCP flags (-fS/-fA/-fR/-fP/-fF/-fU/-fE/-fC)"
+.IP "-f TCP flags (-fS/-fA/-fR/-fP/-fF/-fU/-fE/-fC/-f-)"
 Specify the
 .I TCP flags:
 
@@ -75,10 +75,13 @@ Specify the
 .I -fU (URG)
 .I -fE (ECE)
 .I -fC (CWR)
+.I -f- NONE
 .fi
 .in -.51
 
-within the TCP header.  Flags can be combined in the form '-fPA'.
+within the TCP header.  Flags can be combined in the form '-fPA'.  If flags 
+are specified in the form '-f-' then the TCP header will be built without 
+flags.
 .IP "-o TCP-options-file"
 This will cause nemesis-dns to use the specified
 .I TCP-options-file
