@@ -1,4 +1,4 @@
-$Id: ChangeLog,v 1.3 2003/11/09 08:33:43 jnathan Exp $
+$Id: ChangeLog,v 1.4 2003/11/09 10:35:31 jnathan Exp $
 ======================================================
 N E M E S I S  -  TCP/IP Packet Injection  [ChangeLog]
 ======================================================
@@ -157,3 +157,4 @@ somehow try to fill Mark's shoes.
         * updated aclocal.m4, missing, mkinstalldirs, configure, configure.in,
           config.guess, Makefile.in, man/Makefile.in and src/Makefile.in as
           part of autotools updates
+        * minor man page cleanup
