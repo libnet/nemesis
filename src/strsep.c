@@ -1,4 +1,4 @@
-/*	$Id: strsep.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $	*/
+/*	$Id: strsep.c,v 1.1.1.1 2003/10/31 21:29:38 jnathan Exp $	*/
 /*	$OpenBSD: strsep.c,v 1.3 1997/08/20 04:28:14 millert Exp $	*/
 
 /*-

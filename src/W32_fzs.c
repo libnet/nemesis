@@ -1,5 +1,5 @@
 /*
- * $Id: W32_fzs.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: W32_fzs.c,v 1.1.1.1 2003/10/31 21:29:38 jnathan Exp $
  *
  * Copyright (c) 1999, 2000
  *	Politecnico di Torino.  All rights reserved.

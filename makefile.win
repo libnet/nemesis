@@ -1,4 +1,4 @@
-## $Id: makefile.win,v 1.1 2003/10/31 21:29:35 jnathan Exp $
+## $Id: makefile.win,v 1.1.1.1 2003/10/31 21:29:35 jnathan Exp $
 
 OBJS =	src/getopt.o src/inet_aton.o \
 src/nemesis-arp.o src/nemesis-dns.o src/nemesis-ethernet.o \

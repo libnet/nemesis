@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.h,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: nemesis.h,v 1.1.1.1 2003/10/31 21:29:38 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>

@@ -1,4 +1,4 @@
-/*	$Id: strlcpy.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $	*/
+/*	$Id: strlcpy.c,v 1.1.1.1 2003/10/31 21:29:38 jnathan Exp $	*/
 /*	$OpenBSD: strlcpy.c,v 1.8 2003/06/17 21:56:24 millert Exp $	*/
 
 /*
