@@ -1,4 +1,4 @@
-$Id: ChangeLog,v 1.5 2004/03/06 22:13:30 jnathan Exp $
+$Id: ChangeLog,v 1.6 2004/05/12 23:21:38 jnathan Exp $
 ======================================================
 N E M E S I S  -  TCP/IP Packet Injection  [ChangeLog]
 ======================================================
@@ -161,3 +161,6 @@ somehow try to fill Mark's shoes.
 
 2004-03-06  Jeff Nathan  <jeff@snort.org>
         * allow RIP routing domain value to be 0 with RIP2
+
+2004-05-12  Jeff Nathan  <jeff@snort.org>
+        * correct mistakes in specifying payload sizes for ICMP and RIP

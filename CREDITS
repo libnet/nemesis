@@ -1,4 +1,4 @@
-$Id: CREDITS,v 1.1 2003/10/31 21:29:35 jnathan Exp $
+$Id: CREDITS,v 1.2 2004/05/12 23:21:38 jnathan Exp $
 ====================================================================
 N E M E S I S  -  TCP/IP Packet Injection  [CREDITS]
 ====================================================================
@@ -59,3 +59,6 @@ Jose Nazario    <jose@monkey.org>
 
 nnposter@users.sourceforge.net
     * Updated several manpages to correct some spelling mistakes.
+
+Eric Sattler <esattler@lucent.com>
+	* Found incorrect defines for ICMP and RIP buffer sizes.

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.h,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: nemesis.h,v 1.2 2004/05/12 23:21:38 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
@@ -52,9 +52,9 @@
 
 #define ETHERBUFFSIZE 1500          /* max frame size */
 
-#define ICMP_RAWBUFFSIZE 65387      /* plan for IP options & max ICMP header 
+#define ICMP_RAWBUFFSIZE 65399      /* plan for IP options & max ICMP header 
                                        len */
-#define ICMP_LINKBUFFSIZE 1352      /* link-layer version of above */
+#define ICMP_LINKBUFFSIZE 1364      /* link-layer version of above */
 
 #define IGMP_RAWBUFFSIZE 65467      /* plan for IP options */
 #define IGMP_LINKBUFFSIZE 1432      /* link-layer version of above */
@@ -62,9 +62,9 @@
 #define IP_RAWBUFFSIZE 65475        /* plan for IP options */
 #define IP_LINKBUFFSIZE 1440        /* link-layer version of above */
 
-#define RIP_RAWBUFFSIZE 65393       /* plan for IP options & max RIP header 
+#define RIP_RAWBUFFSIZE 65451       /* plan for IP options & max RIP header 
                                        len */
-#define RIP_LINKBUFFSIZE 1358       /* link-layer version of above */
+#define RIP_LINKBUFFSIZE 1416       /* link-layer version of above */
 
 #define TCP_RAWBUFFSIZE 65415       /* plan for IP and TCP options */
 #define TCP_LINKBUFFSIZE 1380       /* link-layer version of above */
@@ -72,7 +72,7 @@
 #define UDP_RAWBUFFSIZE 65467       /* plan for IP options */
 #define UDP_LINKBUFFSIZE 1432       /* link-layer version of above */
 
-#define BUILD 25                /* build number, update for each build */
+#define BUILD 26                /* build number, update for each build */
 #define FP_MAX_ARGS 4           /* number of IP fragment parsing tokens */
 #define ERRBUFFSIZE 256
 #define TITLEBUFFSIZE 81
