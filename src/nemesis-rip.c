@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-rip.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-rip.c,v 1.2 2004/03/06 22:13:30 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -20,7 +20,7 @@ static IPhdr iphdr;
 static UDPhdr udphdr;
 static RIPhdr riphdr;
 static FileData pd, ipod;
-static int got_payload;
+static int got_payload, got_domain;
 static char *payloadfile = NULL;       /* payload file name */
 static char *ipoptionsfile = NULL;     /* IP options file name */
 static char *device = NULL;            /* Ethernet device */
@@ -124,7 +124,8 @@ static void rip_validatedata(void)
     /* validation tests */
     if (riphdr.ver == 2)
     {
-        if (riphdr.rd == 0)
+        /* allow routing domain 0 in RIP2 if specified by the user */
+        if (riphdr.rd == 0 && got_domain == 0)
             riphdr.rd = (u_int16_t)libnet_get_prand(PRu16);
         if (riphdr.mask == 0)
             nemesis_name_resolve("255.255.255.0", (u_int32_t *)&riphdr.mask);
@@ -381,6 +382,7 @@ static void rip_cmdline(int argc, char **argv)
                 break;
             case 'r':   /* RIP routing domain */
                 riphdr.rd = xgetint16(optarg);
+                got_domain = 1;
                 break;
             case 'R':   /* RIP route tag */
                 riphdr.rt = xgetint16(optarg);

@@ -1,4 +1,4 @@
-$Id: ChangeLog,v 1.4 2003/11/09 10:35:31 jnathan Exp $
+$Id: ChangeLog,v 1.5 2004/03/06 22:13:30 jnathan Exp $
 ======================================================
 N E M E S I S  -  TCP/IP Packet Injection  [ChangeLog]
 ======================================================
@@ -158,3 +158,6 @@ somehow try to fill Mark's shoes.
           config.guess, Makefile.in, man/Makefile.in and src/Makefile.in as
           part of autotools updates
         * minor man page cleanup
+
+2004-03-06  Jeff Nathan  <jeff@snort.org>
+        * allow RIP routing domain value to be 0 with RIP2
