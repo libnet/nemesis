@@ -1,5 +1,5 @@
 /*
- * $Id: getopt.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: getopt.c,v 1.2 2004/10/07 02:46:35 jnathan Exp $
  *
  * Copyright (c) 1987, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
@@ -118,4 +118,4 @@ getopt(nargc, nargv, ostr)
 	}
 	return (optopt);			/* dump back option letter */
 }
-#endif !HAVE_GETOPT || WIN32 */
+#endif /* !HAVE_GETOPT || WIN32 */

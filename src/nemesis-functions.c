@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-functions.c,v 1.2 2004/10/07 01:20:56 jnathan Exp $
+ * $Id: nemesis-functions.c,v 1.3 2004/10/07 02:46:35 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -47,10 +47,6 @@
 #endif
 #include <libnet.h>
 #include "nemesis.h"
-
-#if defined(WIN32)
-    static int winstrerror(LPSTR, int);
-#endif
 
 const char *version = " -=- The NEMESIS Project Version 1.4";
 
@@ -492,7 +488,7 @@ int gmt2local(time_t t)
  *
  * @return void function.
  */
-static int winstrerror(LPSTR str, int size)
+int winstrerror(LPSTR str, int size)
 {
     LPVOID lpMsgBuf;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.h,v 1.2 2004/05/12 23:21:38 jnathan Exp $
+ * $Id: nemesis.h,v 1.3 2004/10/07 02:46:35 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
@@ -135,6 +135,7 @@ u_int8_t xgetint8(const char *);
 //int gmt2local(time_t);
 int nemesis_name_resolve(char *, u_int32_t *);
 int nemesis_check_link(ETHERhdr *, char *);
+int nemesis_getdev(int, char **);
 char *nemesis_lookup_linktype(int);
 int nemesis_seedrand(void);
 int parsefragoptions(IPhdr *, char *);
@@ -145,14 +146,20 @@ int parsefragoptions(IPhdr *, char *);
 #if defined(WIN32) || !defined(HAVE_GETOPT)
     int getopt(int, char * const *argv, const char *);
 #endif
+#if defined(WIN32) || !defined(HAVE_STRLCAT)
+        size_t strlcat(char *, const char *, size_t);
+#endif
+#if defined(WIN32) || !defined(HAVE_STRLCPY)
+	    size_t strlcpy(char *, const char *, size_t);
+#endif
 #if defined(WIN32) || !defined(HAVE_STRSEP)
     char *strsep(char **, const char *);
 #endif
-
 #if defined(WIN32)
     void PrintDeviceList(const char *);
     void *GetAdapterFromList(void *, int);
     int getdev(int, char **);
+    int winstrerror(LPSTR, int);
 #endif
 
 /* file I/O functions */
