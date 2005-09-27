@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-dns.h,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-dns.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -32,9 +32,9 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int state;  /* default to UDP */
+int state;	/* default to UDP */
 
-int builddns(ETHERhdr *, IPhdr *, TCPhdr *, UDPhdr *, DNShdr *, FileData *,
-        FileData *, FileData *, char *);
+int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
+    FileData *pd, FileData *ipod, FileData *tcpod, char *device);
 
 #endif /* __NEMESIS_DNS_H__ */

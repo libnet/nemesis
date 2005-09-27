@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.h,v 1.3 2004/10/07 02:46:35 jnathan Exp $
+ * $Id: nemesis.h,v 1.4 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
@@ -15,6 +15,7 @@
     #include "config.h"
 #endif
 
+#include <stdint.h>
 #include <libnet.h>
 
 #ifndef IPTOS_LOWDELAY
@@ -39,6 +40,10 @@
 #ifndef ETHERTYPE_IPV6
 #define ETHERTYPE_IPV6 0x86dd
 #endif
+
+#define getint32(s, d) getint((s), (void *)(d), 32)
+#define getint16(s, d) getint((s), (void *)(d), 16)
+#define getint8(s, d) getint((s), (void *)(d), 8)
 
 #define STPUTC(c) putchar(c);
 #define STPUTS(s) { const char *p; p = s; while(*p) STPUTC(*(p++)); }
@@ -125,72 +130,70 @@ extern int got_tcpoptions;
 typedef struct _FileData
 {
     int32_t file_s;         /* file size */
-    u_int8_t *file_mem;     /* pointer to file memory */
+    uint8_t *file_mem;     /* pointer to file memory */
 } FileData;
 
 /* support functions */
-u_int32_t xgetint32(const char *);
-u_int16_t xgetint16(const char *);
-u_int8_t xgetint8(const char *);
+int getint(const char *str, void *data, int size);
 //int gmt2local(time_t);
-int nemesis_name_resolve(char *, u_int32_t *);
-int nemesis_check_link(ETHERhdr *, char *);
-int nemesis_getdev(int, char **);
-char *nemesis_lookup_linktype(int);
+int nemesis_name_resolve(char *hostname, uint32_t *address);
+int nemesis_check_link(ETHERhdr *eth, char *device);
+int nemesis_getdev(int devnum, char **device);
+char *nemesis_lookup_linktype(int linktype);
 int nemesis_seedrand(void);
-int parsefragoptions(IPhdr *, char *);
+int parsefragoptions(char *str, IPhdr *iph);
+int parsetcpflags(char *str, TCPhdr *tcp);
 
 #if defined(WIN32) || !defined(HAVE_INET_ATON)
-    int inet_aton(const char *, struct in_addr *);
+    int inet_aton(const char *cp, struct in_addr *addr);
 #endif
 #if defined(WIN32) || !defined(HAVE_GETOPT)
-    int getopt(int, char * const *argv, const char *);
+    int getopt(int nargc, char * const *nargv, const char *ostr);
 #endif
 #if defined(WIN32) || !defined(HAVE_STRLCAT)
-        size_t strlcat(char *, const char *, size_t);
+    size_t strlcat(char *dst, const char *src, size_t size);
 #endif
 #if defined(WIN32) || !defined(HAVE_STRLCPY)
-	    size_t strlcpy(char *, const char *, size_t);
+    size_t strlcpy(char *dst, const char *src, size_t size);
 #endif
 #if defined(WIN32) || !defined(HAVE_STRSEP)
-    char *strsep(char **, const char *);
+    char *strsep(register char **stringp, const char *delim);
 #endif
 #if defined(WIN32)
-    void PrintDeviceList(const char *);
-    void *GetAdapterFromList(void *, int);
-    int getdev(int, char **);
-    int winstrerror(LPSTR, int);
+    void PrintDeviceList(const char *device);
+    void *GetAdapterFromList(void *device, int index);
+    int nemesis_getdev(int devnum, char **device);
 #endif
 
 /* file I/O functions */
-int builddatafromfile(const size_t, FileData *, const char *, 
-        const u_int32_t);
+int builddatafromfile(const size_t buffsize, FileData *memory, 
+        const char *file, const uint32_t mode);
 
 /* printout functions */
-void nemesis_hexdump(char *, u_int32_t, int);
-void nemesis_device_failure(int, const char *);
-void nemesis_maketitle(char *, const char *, const char *);
-void nemesis_printeth(ETHERhdr *);
-void nemesis_printarp(ARPhdr *);
-void nemesis_printip(IPhdr *);
-void nemesis_printtcp(TCPhdr *);
-void nemesis_printudp(UDPhdr *);
-void nemesis_printicmp(ICMPhdr *, int);
-void nemesis_printrip(RIPhdr *);
-void nemesis_printospf(OSPFhdr *);
-void nemesis_printtitle(const char *);
-void nemesis_usage(char *);
+void nemesis_hexdump(char *buf, uint32_t len, int mode);
+void nemesis_device_failure(int mode, const char *device);
+void nemesis_maketitle(char *title, const char *module, const char *version);
+void nemesis_printeth(ETHERhdr *eth);
+void nemesis_printarp(ARPhdr *arp);
+void nemesis_printip(IPhdr *ip);
+void nemesis_printtcp(TCPhdr *tcp);
+void nemesis_printudp(UDPhdr *udp);
+void nemesis_printicmp(ICMPhdr *icmp, int mode);
+void nemesis_printrip(RIPhdr *rip);
+void nemesis_printospf(OSPFhdr *ospf);
+void nemesis_printtitle(const char *title);
+void nemesis_usage(char *arg);
 
 /* injection functions */
-void nemesis_arp(int, char **);
-void nemesis_dns(int, char **);
-void nemesis_ethernet(int, char **);
-void nemesis_icmp(int, char **);
-void nemesis_igmp(int, char **);
-void nemesis_ip(int, char **);
-void nemesis_ospf(int, char **);
-void nemesis_rip(int, char **);
-void nemesis_tcp(int, char **);
-void nemesis_udp(int, char **);
+void nemesis_arp(int argc, char **argv);
+void nemesis_dns(int argc, char **argv);
+void nemesis_ethernet(int argc, char **argv);
+void nemesis_icmp(int argc, char **argv);
+void nemesis_igmp(int argc, char **argv);
+void nemesis_ip(int argc, char **argv);
+void nemesis_ospf(int argc, char **argv);
+void nemesis_rip(int argc, char **argv);
+void nemesis_tcp(int argc, char **argv);
+void nemesis_udp(int argc, char **argv);
 
 #endif /* __NEMESIS_H__ */

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-ip.h,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-ip.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -28,6 +28,7 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int buildip(ETHERhdr *, IPhdr *, FileData *, FileData *, char *);
+int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, 
+    char *device);
 
 #endif /* __NEMESIS_IP_H__ */

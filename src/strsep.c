@@ -1,4 +1,4 @@
-/*	$Id: strsep.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $	*/
+/*	$Id: strsep.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $	*/
 /*	$OpenBSD: strsep.c,v 1.3 1997/08/20 04:28:14 millert Exp $	*/
 
 /*-
@@ -51,9 +51,7 @@
  * If *stringp is NULL, strsep returns NULL.
  */
 char *
-strsep(stringp, delim)
-	register char **stringp;
-	register const char *delim;
+strsep(register char **stringp, register const char *delim)
 {
 	register char *s;
 	register const char *spanp;

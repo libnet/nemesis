@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-ospf.h,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-ospf.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -66,7 +66,7 @@ u_int dead_int,        /* dead router interval in secs */
       rtrdata,         /* LSA_RTR router data */
       rtrid;           /* router id for LSA */
 
-int mode;   /* OSPF injection mode */
+int mode;	/* OSPF injection mode */
 
 int buildospf(ETHERhdr *, IPhdr *, FileData *, FileData *, char *);
 

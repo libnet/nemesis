@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-udp.h,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: nemesis-udp.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -32,7 +32,7 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int buildudp(ETHERhdr *, IPhdr *, UDPhdr *, FileData *, FileData *,
-        char *);
+int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, FileData *pd,
+    FileData *ipod, char *device);
 
 #endif /* __NEMESIS_UDP_H__ */

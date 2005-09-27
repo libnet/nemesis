@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-rip.h,v 1.1 2003/10/31 21:29:37 jnathan Exp $
+ * $Id: nemesis-rip.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -35,7 +35,7 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int buildrip(ETHERhdr *, IPhdr *, UDPhdr *, RIPhdr *, FileData *,
-        FileData *, char *);
+int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, FileData *pd, 
+    FileData *ipod, char *device);
 
 #endif /* __NEMESIS_RIP_H__ */

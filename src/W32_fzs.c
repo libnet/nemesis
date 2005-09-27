@@ -1,5 +1,5 @@
 /*
- * $Id: W32_fzs.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $
+ * $Id: W32_fzs.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * Copyright (c) 1999, 2000
  *	Politecnico di Torino.  All rights reserved.
@@ -26,7 +26,8 @@
 #include <signal.h>
 #include <windows.h>
 
-void* GetAdapterFromList(void* device,int index)
+void *
+GetAdapterFromList(void *device, int index)
 {
 	DWORD dwVersion;
 	DWORD dwWindowsMajorVersion;
@@ -34,106 +35,107 @@ void* GetAdapterFromList(void* device,int index)
 	WCHAR* Adapter;
 	int i;
 
-	dwVersion=GetVersion();
-	dwWindowsMajorVersion =  (DWORD)(LOBYTE(LOWORD(dwVersion)));
-	if (dwVersion >= 0x80000000 && dwWindowsMajorVersion >= 4)  // Windows '95
-	{
-		Adapter95=device;
-		for(i=0;i<index-1;i++){
-			while(*Adapter95++!=0);
-			if(*Adapter95==0)return NULL; 
+	dwVersion = GetVersion();
+	dwWindowsMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
+
+	/* XXX _ Windows 95 */
+	if (dwVersion >= 0x80000000 && dwWindowsMajorVersion >= 4) {
+		Adapter95 = device;
+		for (i=0; i < index -1; i++) {
+			while (*Adapter95++ != 0) {
+				if (*Adapter95 == 0)
+					return (NULL);
+			}
 		}
-		return	Adapter95;
-	}
-	else{
-		Adapter=(WCHAR*)device;
-		for(i=0;i<index-1;i++){
-			while(*Adapter++!=0);
-			if(*Adapter==0)return NULL; 
+		return (Adapter95);
+	} else {
+		Adapter = (WCHAR*)device;
+		for (i = 0; i < index - 1; i++) {
+			while (*Adapter++ != 0) {
+				if (*Adapter == 0)
+					return (NULL);
+			}
 		}
-		return	Adapter;
+		return (Adapter);
 	}
 	
 }
 
-void PrintDeviceList(const char* device)
+void
+PrintDeviceList(const char *device)
 {
 	DWORD dwVersion;
 	DWORD dwWindowsMajorVersion;
 	const WCHAR* t;
 	const char* t95;
-	int i=0;
-	int DescPos=0;
+	int i = 0;
+	int DescPos = 0;
 	char *Desc;
-	int n=1;
+	int n = 1;
 
-	dwVersion=GetVersion();
-	dwWindowsMajorVersion =  (DWORD)(LOBYTE(LOWORD(dwVersion)));
-	if (dwVersion >= 0x80000000 && dwWindowsMajorVersion >= 4)  // Windows '95
-	{
-		t95=(char*)device;
+	dwVersion = GetVersion();
+	dwWindowsMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
 
-		while(*(t95+DescPos)!=0 || *(t95+DescPos-1)!=0){
+	/* XXX - Windows 95 */
+	if (dwVersion >= 0x80000000 && dwWindowsMajorVersion >= 4) {
+		t95 = (char*)device;
+
+		while (*(t95+DescPos) != 0 || *(t95+DescPos - 1) != 0) {
 			DescPos++;
 		}
 
-		Desc=(char*)t95+DescPos+1;
-        printf("\nInterface\tDevice\t\t\t\t\tDescription\n-------------------------------------------\n");
-		printf("%d ",n++);
+		Desc = (char*)t95 + DescPos + 1;
+		printf("\nInterface\tDevice\t\t\t\t\tDescription\n-------------------------------------------\n");
+		printf("%d ", n++);
 
-		while (!(t95[i]==0 && t95[i-1]==0))
-		{
-			if (t95[i]==0){
+		while (!(t95[i] == 0 && t95[i - 1] == 0)) {
+			if (t95[i] == 0) {
 				putchar(' ');
 				putchar('(');
-				while(*Desc!=0){
+				while(*Desc != 0) {
 					putchar(*Desc);
 					Desc++;
 				}
 				Desc++;
 				putchar(')');
 				putchar('\n');
-			}
-			else putchar(t95[i]);
+			} else
+				putchar(t95[i]);
 
-			if((t95[i]==0) && (t95[i+1]!=0)){
-				printf("%d ",n++);
+			if ((t95[i] == 0) && (t95[i + 1] != 0)) {
+				printf("%d ", n++);
 			}
 
 			i++;
 		}
 		putchar('\n');
-	}
-	
-	else{		//Windows NT
+	} else {		//Windows NT
 
-		t=(WCHAR*)device;
-		while(*(t+DescPos)!=0 || *(t+DescPos-1)!=0){
+		t = (WCHAR*)device;
+		while (*(t+DescPos) != 0 || *(t+DescPos - 1) != 0) {
 			DescPos++;
 		}
 
-		DescPos<<=1;
-		Desc=(char*)t+DescPos+2;
+		DescPos <<= 1;
+		Desc = (char*)t + DescPos + 2;
         printf("\nInterface\tDevice\t\t\t\t\tDescription\n----------------------------------------------------------------------------\n");
 		printf("%d ",n++);
-		while (!(t[i]==0 && t[i-1]==0))
-		{
-			if (t[i]==0)
-			{
+		while (!(t[i] == 0 && t[i - 1] == 0)) {
+			if (t[i] == 0) {
 				putchar(' ');
 				putchar('(');
-				while(*Desc!=0){
+				while (*Desc != 0) {
 					putchar(*Desc);
 					Desc++;
 				}
 				Desc++;
 				putchar(')');
 				putchar('\n');
-			}
-			else putchar(t[i]);
+			} else
+				putchar(t[i]);
 
-			if(t[i]==0 && t[i+1]!=0)printf("%d ",n++);
-
+			if (t[i] == 0 && t[i + 1] != 0)
+				printf("%d ", n++);
 			i++;
 		}
 		putchar('\n');

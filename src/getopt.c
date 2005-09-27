@@ -1,5 +1,5 @@
 /*
- * $Id: getopt.c,v 1.2 2004/10/07 02:46:35 jnathan Exp $
+ * $Id: getopt.c,v 1.3 2005/09/27 19:46:19 jnathan Exp $
  *
  * Copyright (c) 1987, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
@@ -34,7 +34,7 @@
 #include <string.h>
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #if !defined(HAVE_GETOPT) || defined(WIN32)

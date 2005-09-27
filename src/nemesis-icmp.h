@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-icmp.h,v 1.1 2003/10/31 21:29:36 jnathan Exp $
+ * $Id: nemesis-icmp.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -42,10 +42,10 @@
 #include <libnet.h>
 #include "nemesis.h"
 
-int mode;   /* ICMP injection mode */
+int mode;	/* ICMP injection mode */
 int got_origoptions;
 
-int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, FileData *, FileData *, 
-        FileData *, char *);
+int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
+    FileData *pd, FileData *ipod, FileData *origod, char *device);
 
 #endif /* __NEMESIS_ICMP_H__ */
