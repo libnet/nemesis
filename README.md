@@ -1,7 +1,7 @@
 N E M E S I S  -  TCP/IP Packet Injection
 =========================================
 
-> Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
+> Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>  
 > Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
 ----------------------------------------------------------------
 
