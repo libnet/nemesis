@@ -596,9 +596,9 @@ void nemesis_printtcp(TCPhdr *tcp)
         printf("[TCP Urgent Pointer] %u\n", tcp->th_urp);
         printf("   [TCP Window Size] %u\n", tcp->th_win);
         if (tcp->th_flags & TH_ACK)
-            printf("    [TCP Ack number] %lu\n", tcp->th_ack);
+            printf("    [TCP Ack number] %u\n", tcp->th_ack);
         if (tcp->th_flags & TH_SYN)
-            printf("    [TCP Seq number] %lu\n", tcp->th_seq);
+            printf("    [TCP Seq number] %u\n", tcp->th_seq);
 
         putchar('\n');
         return;
