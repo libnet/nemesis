@@ -841,11 +841,11 @@ void nemesis_printrip(RIPhdr *rip)
     char *family = "Unknown";
     char *addr = NULL, *mask = NULL, *hop = NULL;
 
-    addr = strdup(inet_ntoa(*(struct in_addr *)&rip->addr));
-    mask = strdup(inet_ntoa(*(struct in_addr *)&rip->mask));
-    hop = strdup(inet_ntoa(*(struct in_addr *)&rip->next_hop));
+    addr = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_addr));
+    mask = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_mask));
+    hop = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_next_hop));
 
-    switch(rip->cmd)
+    switch(rip->rip_cmd)
     {
         case RIPCMD_REQUEST:
             cmd = "Request";
@@ -871,18 +871,18 @@ void nemesis_printrip(RIPhdr *rip)
         default:
             break;
     }
-    printf("       [RIP Command] %s (%hu)\n", cmd, (u_int16_t)rip->cmd);
-    printf("       [RIP Version] %hu\n", (u_int16_t)rip->ver);
-    printf("[RIP Routing domain] %hu\n", (u_int16_t)rip->rd);
-    if (rip->af == 2)
+    printf("       [RIP Command] %s (%hu)\n", cmd, (u_int16_t)rip->rip_cmd);
+    printf("       [RIP Version] %hu\n", (u_int16_t)rip->rip_ver);
+    printf("[RIP Routing domain] %hu\n", (u_int16_t)rip->rip_rd);
+    if (rip->rip_af == 2)
         family = "IP";
 
-    printf("[RIP Address family] %s (%hu)\n", family, (u_int16_t)rip->af);
-    printf("     [RIP Route tag] %hu\n", (u_int16_t)rip->rt);
+    printf("[RIP Address family] %s (%hu)\n", family, (u_int16_t)rip->rip_af);
+    printf("     [RIP Route tag] %hu\n", (u_int16_t)rip->rip_rt);
     printf("       [RIP Address] %s\n", addr);
     printf("  [RIP Network mask] %s\n", mask);
     printf("      [RIP Next hop] %s\n", hop);
-    printf("        [RIP Metric] %u\n", (u_int32_t)rip->metric);
+    printf("        [RIP Metric] %u\n", (u_int32_t)rip->rip_metric);
 
     putchar('\n');
 
