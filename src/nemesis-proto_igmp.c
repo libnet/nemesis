@@ -18,9 +18,6 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
     u_int32_t igmp_packetlen = 0, igmp_meta_packetlen = 0;
     static u_int8_t *pkt;
     u_int8_t link_offset = 0;
-#if !defined(WIN32)
-    int sockbuff = IP_MAXPACKET;
-#endif
 
     if (pd->file_mem == NULL)
         pd->file_s = 0;
@@ -79,9 +76,9 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
     printf("%d\n", libnet_pblock_coalesce(l, &pkt, &igmp_packetlen));
     n = libnet_write(l);
     if (verbose == 2)
-        nemesis_hexdump(pkt, igmp_packetlen, HEX_ASCII_DECODE);
+        nemesis_hexdump((char *)pkt, igmp_packetlen, HEX_ASCII_DECODE);
     if (verbose == 3)
-        nemesis_hexdump(pkt, igmp_packetlen, HEX_RAW_DECODE);
+        nemesis_hexdump((char *)pkt, igmp_packetlen, HEX_RAW_DECODE);
 
     if (n != igmp_packetlen)
     {
