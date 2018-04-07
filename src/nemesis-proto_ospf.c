@@ -24,7 +24,7 @@ int build_hello(FileData *pd, libnet_t *l)
           ospfhellohdr.hello_dead_intvl,                   /* dead int */
           ospfhellohdr.hello_des_rtr.s_addr,                      /* router */
           ospfhellohdr.hello_bkup_rtr.s_addr,                    /* router */
-          ospfhellohdr.hello_nbr.s_addr,                          /* neighbor */
+//          ospfhellohdr.hello_nbr.s_addr,                          /* neighbor */
           pd->file_mem,                                       /* payload */
           pd->file_s,                                          /* payload size */
           l,                                          /* libnet handle */
