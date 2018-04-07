@@ -137,8 +137,8 @@ static void icmp_initdata(void)
     icmphdr.icmp_code = 0;                  /* ICMP code */
     icmphdr.hun.echo.id = 0;                /* ICMP ID */
     icmphdr.hun.echo.seq = 0;               /* ICMP sequence number */
-    icmphdr.hun.gateway = (u_int32_t)libnet_get_prand(PRu32);  /* ICMP preferred gateway */
-    icmphdr.dun.ts.its_otime = (n_time) time(NULL);  /* ICMP timestamp req. orig time */
+    icmphdr.hun.gateway = libnet_get_prand(PRu32);  /* ICMP preferred gateway */
+    icmphdr.dun.ts.its_otime = time(NULL);  /* ICMP timestamp req. orig time */
     icmphdr.dun.ts.its_rtime = 0;           /* ICMP timestamp rea. recv time */
     icmphdr.dun.ts.its_ttime = 0;           /* ICMP timestamp rep. trans time */
     icmphdr.dun.mask = 0;                   /* ICMP address mask */
