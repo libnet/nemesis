@@ -94,7 +94,24 @@
 #define PRu16 LIBNET_PRu16
 #define PRu32 LIBNET_PRu32
 
-typedef struct libnet_arp_hdr ARPhdr;
+/*
+ * XXX: Hack to preserve libnet0 struct libnet_arp_hdr
+ *      A proper fix is to refactor nemesis_printarp() to use
+ *      the payload field of the libnet1 struct libnet_arp_hdr
+ */
+typedef struct {
+    uint16_t ar_hrd;         /* format of hardware address */
+    uint16_t ar_pro;         /* format of protocol address */
+    uint8_t  ar_hln;         /* length of hardware address */
+    uint8_t  ar_pln;         /* length of protocol addres */
+    uint16_t ar_op;          /* operation type */
+
+    /* These fields have been removed in libnet1 */
+    uint8_t  ar_sha[6];
+    uint8_t  ar_spa[4];
+    uint8_t  ar_tha[6];
+    uint8_t  ar_tpa[4];
+} ARPhdr;
 typedef struct libnet_as_lsa_hdr ASLSAhdr;
 typedef struct libnet_auth_hdr AUTHhdr;
 typedef struct libnet_dbd_hdr DBDhdr;
