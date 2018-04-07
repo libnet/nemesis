@@ -31,7 +31,7 @@ static void igmp_cmdline(int, char **);
 static int igmp_exit(int);
 static void igmp_initdata(void);
 static void igmp_usage(char *);
-static void igmp_validatedata(void);
+static void igmp_validatedata(libnet_t *l);
 static void igmp_verbose(void);
 
 void nemesis_igmp(int argc, char **argv)
@@ -54,7 +54,7 @@ void nemesis_igmp(int argc, char **argv)
     if(!l)
         igmp_exit(1);
     
-    igmp_validatedata();
+    igmp_validatedata(l);
     igmp_verbose();
 
     if (got_payload)
@@ -115,7 +115,7 @@ static void igmp_initdata(void)
     return;
 }
 
-static void igmp_validatedata(void)
+static void igmp_validatedata(libnet_t *l)
 {
     
     /* if a device was specified and the user has not specified a source 
@@ -123,7 +123,7 @@ static void igmp_validatedata(void)
      */
     if (got_link)
     { 
-        if ((nemesis_check_link(&etherhdr, device)) < 0)
+        if ((nemesis_check_link(&etherhdr, l)) < 0)
         {
             fprintf(stderr, "ERROR: Cannot retrieve hardware address of %s.\n", device);
             igmp_exit(1);
