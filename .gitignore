@@ -4,6 +4,7 @@
 *.trs
 *~
 .deps
+ID
 GPATH
 GRTAGS
 GSYMS
