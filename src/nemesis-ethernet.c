@@ -165,6 +165,7 @@ static void ethernet_cmdline(int argc, char **argv)
 			break;
 		case 'T':
 			etherhdr.ether_type = xgetint16(optarg);
+			break;
 		case 'v':
 			verbose++;
 			if (verbose == 1)
