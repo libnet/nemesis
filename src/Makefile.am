@@ -1,7 +1,8 @@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 DISTCLEANFILES   = *~
 
-AM_CFLAGS        = -W -Wall -Wextra -Wno-unused-parameter -std=gnu99
+AM_CFLAGS        = -W -Wall -Wextra -Wno-unused-parameter -Wno-empty-body
+AM_CFLAGS       += -std=gnu99
 AM_CPPFLAGS      = -D_DEFAULT_SOURCE
 
 bin_PROGRAMS     = nemesis
