@@ -20,10 +20,6 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 	static u_int8_t *pkt;
 	u_int8_t         link_offset = 0;
 
-#if !defined(WIN32)
-	int sockbuff = IP_MAXPACKET;
-#endif
-
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;
 	if (ipod->file_mem == NULL)
