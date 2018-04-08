@@ -7,9 +7,14 @@ dnl Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
 dnl
 dnl Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press
 
-AC_INIT(src/nemesis.c)
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(nemesis, 1.4)
+AC_PREREQ(2.61)
+AC_INIT(nemesis, 1.5-beta1, https://github.com/troglobit/nemesis/issues)
+AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
+AM_SILENT_RULES([yes])
+
+AC_CONFIG_SRCDIR([src/nemesis.c])
+AC_CONFIG_HEADER([config.h])
+AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
 
 AH_TOP(
 #undef PACKAGE
@@ -146,7 +151,7 @@ else
     LIBS="${LIBS} `libnet-config --libs | sed s/\-lnet//`"
 fi
 
-AC_DEFUN(HEADER_FAIL_MESSAGE,[
+AC_DEFUN([HEADER_FAIL_MESSAGE],[
    echo
    echo
    echo "**********************************************"
@@ -160,7 +165,7 @@ AC_DEFUN(HEADER_FAIL_MESSAGE,[
    exit 1
 ])
 
-AC_DEFUN(FUNCTION_FAIL_MESSAGE,[
+AC_DEFUN([FUNCTION_FAIL_MESSAGE],[
    echo
    echo
    echo "**********************************************"
@@ -298,7 +303,4 @@ AC_REPLACE_FUNCS(getopt inet_aton strlcat strlcpy strsep)
 CFLAGS=`echo $CFLAGS | sed -e 's/-I\/usr\/include //g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/-I\/usr\/include //g'`
 
-INCLUDES='$(extra_incl)'
-AC_SUBST(INCLUDES)
-
-AC_OUTPUT(Makefile src/Makefile man/Makefile)
+AC_OUTPUT

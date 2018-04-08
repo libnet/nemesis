@@ -1,10 +1,6 @@
-## $Id: Makefile.am,v 1.1 2003/10/31 21:29:35 jnathan Exp $
-include $(top_srcdir)/Makefile.am.common
-SUBDIRS = src man
+AUTOMAKE_OPTIONS = foreign no-dependencies
+DISTCLEANFILES = *~
 
-INCLUDES = @INCLUDES@
-
-EXTRA_DIST = ChangeLog README CREDITS LICENSE INSTALL Makefile.am.common \
-makefile.win
-
+SUBDIRS    = src man
+EXTRA_DIST = ChangeLog README.md CREDITS LICENSE INSTALL makefile.win
 CLEANFILES = stamp.h.in
