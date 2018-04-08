@@ -81,7 +81,7 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, FileData *pd, F
 	if (got_link)
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	(void)libnet_pblock_coalesce(l, &pkt, &rip_packetlen);
+	libnet_pblock_coalesce(l, &pkt, &rip_packetlen);
 	n = libnet_write(l);
 
 	if (verbose == 2)

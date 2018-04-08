@@ -193,7 +193,7 @@ int   winstrerror(LPSTR, int);
 int builddatafromfile(const size_t, FileData *, const char *, const u_int32_t);
 
 /* printout functions */
-void nemesis_hexdump(char *, u_int32_t, int);
+void nemesis_hexdump(uint8_t *, u_int32_t, int);
 void nemesis_device_failure(int, const char *);
 void nemesis_maketitle(char *, const char *, const char *);
 void nemesis_printeth(ETHERhdr *);

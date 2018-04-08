@@ -56,9 +56,9 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
 	printf("%d\n", libnet_pblock_coalesce(l, &pkt, &igmp_packetlen));
 	n = libnet_write(l);
 	if (verbose == 2)
-		nemesis_hexdump((char *)pkt, igmp_packetlen, HEX_ASCII_DECODE);
+		nemesis_hexdump(pkt, igmp_packetlen, HEX_ASCII_DECODE);
 	if (verbose == 3)
-		nemesis_hexdump((char *)pkt, igmp_packetlen, HEX_RAW_DECODE);
+		nemesis_hexdump(pkt, igmp_packetlen, HEX_RAW_DECODE);
 
 	if (n != igmp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection. Only wrote %d bytes.\n", n);

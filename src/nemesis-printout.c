@@ -44,10 +44,11 @@
  *
  * @return void function
  */
-void nemesis_hexdump(char *buf, u_int32_t len, int mode)
+void nemesis_hexdump(uint8_t *buf, u_int32_t len, int mode)
 {
-	int   c, linemod;
-	char *p, *l, *dump, *predump, *postdump, dumpbuf[40];
+	int      c, linemod;
+	char    *dump, *predump, *postdump, dumpbuf[40];
+	uint8_t *p, *l;
 
 	l    = &(buf[len - 1]);
 	dump = dumpbuf;
