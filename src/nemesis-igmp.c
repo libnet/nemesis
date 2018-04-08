@@ -230,8 +230,10 @@ static void igmp_cmdline(int argc, char **argv)
 			break;
 		case 'i': /* IGMP group address */
 			if ((nemesis_name_resolve(optarg, (u_int32_t *)&igmphdr.igmp_group.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid IGMP group address: \"%s\".\n", optarg);
-				igmp_exit(1);
+				if (strncmp(optarg, "0.0.0.0", 7)) {
+					fprintf(stderr, "ERROR: Invalid IGMP group address: \"%s\".\n", optarg);
+					igmp_exit(1);
+				}
 			}
 			got_group = 1;
 			break;
