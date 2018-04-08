@@ -1,0 +1,5 @@
+*~
+*.o
+Makefile
+Makefile.in
+nemesis
