@@ -14,7 +14,7 @@
 
 u_char auth[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-int build_hello(FileData *pd, libnet_t *l)
+static void build_hello(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_hello(ospfhellohdr.hello_nmask.s_addr,    /* netmask */
 	                          ospfhellohdr.hello_intrvl,          /* interval */
@@ -47,7 +47,7 @@ int build_hello(FileData *pd, libnet_t *l)
 	                    0);                                                    /* libnet id */
 }
 
-int build_dbd(FileData *pd, libnet_t *l)
+static void build_dbd(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_dbd(dbdhdr.dbd_mtu_len,
 				dbdhdr.dbd_opts, /* DBD packet options (from above) */
@@ -72,7 +72,7 @@ int build_dbd(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsr(FileData *pd, libnet_t *l)
+static void build_lsr(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsr(lsrhdr.lsr_type, lsrhdr.lsr_lsid, lsrhdr.lsr_adrtr.s_addr, pd->file_mem, pd->file_s, l, 0);
 
@@ -94,7 +94,7 @@ int build_lsr(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsu(FileData *pd, libnet_t *l)
+static void build_lsu(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, pd->file_mem, pd->file_s, l, 0);
 
@@ -116,7 +116,7 @@ int build_lsu(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsartr(FileData *pd, libnet_t *l)
+static void build_lsartr(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsa_rtr(rtrlsahdr.rtr_flags,
 				    rtrlsahdr.rtr_num,
@@ -161,7 +161,7 @@ int build_lsartr(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsanet(FileData *pd, libnet_t *l)
+static void build_lsanet(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsa_net(netlsahdr.net_nmask.s_addr,
 				    netlsahdr.net_rtr_id,
@@ -201,7 +201,7 @@ int build_lsanet(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsasum(FileData *pd, libnet_t *l)
+static void build_lsasum(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsa_sum(sumlsahdr.sum_nmask.s_addr,
 				    sumlsahdr.sum_metric,
@@ -242,7 +242,7 @@ int build_lsasum(FileData *pd, libnet_t *l)
 			    0);                                                    /* libnet id */
 }
 
-int build_lsaas(FileData *pd, libnet_t *l)
+static void build_lsaas(FileData *pd, libnet_t *l)
 {
 	libnet_build_ospfv2_lsa_as(aslsahdr.as_nmask.s_addr,
 				   aslsahdr.as_metric,
