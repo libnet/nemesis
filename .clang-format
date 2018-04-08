@@ -1,0 +1,19 @@
+# Hey Emacs, this is -*-yaml-*-
+BasedOnStyle: LLVM
+IndentWidth: 8
+ColumnLimit: 0
+DerivePointerAlignment: false
+PointerAlignment: Right
+ReflowComments: true
+SpacesBeforeTrailingComments: 4
+AlignTrailingComments: true
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: true
+AlignOperands: true
+UseTab: ForIndentation
+BreakBeforeBraces: Linux
+Cpp11BracedListStyle: false
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
