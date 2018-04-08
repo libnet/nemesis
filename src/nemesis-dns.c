@@ -39,7 +39,7 @@ static void dns_verbose(void);
 void nemesis_dns(int argc, char **argv)
 {
     const char *module = "DNS Packet Injection";
-    struct libnet_t *l = NULL;
+    libnet_t *l = NULL;
 
     nemesis_maketitle(title, module, version);
 
