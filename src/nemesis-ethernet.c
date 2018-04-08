@@ -26,7 +26,6 @@ static void ethernet_cmdline(int, char **);
 static int ethernet_exit(int);
 static void ethernet_initdata(void);
 static void ethernet_usage(char *);
-static void ethernet_validatedata(void);
 static void ethernet_verbose(void);
 
 void nemesis_ethernet(int argc, char **argv)
