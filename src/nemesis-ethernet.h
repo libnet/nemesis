@@ -12,39 +12,39 @@
 #define __NEMESIS_ETHERNET_H__
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
-#include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <strings.h>
 #include <sys/types.h>
+#include <unistd.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #if defined(HAVE_NETINET_IN_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
+#include <libnet.h>
 
 #ifndef ETHERTYPE_8021Q
-#define ETHERTYPE_8021Q         0x8100  /* IEEE 802.1Q VLAN tagging */
+#define ETHERTYPE_8021Q         0x8100		/* IEEE 802.1Q VLAN tagging */
 #endif
 
 #ifndef ETHERTYPE_IPV6
-#define ETHERTYPE_IPV6          0x86DD  /* IPv6 protocol */
+#define ETHERTYPE_IPV6          0x86DD		/* IPv6 protocol */
 #endif
 
 #ifndef ETHERTYPE_PPOEDISC
-#define ETHERTYPE_PPPOEDISC     0x8863  /* PPP Over Ethernet Discovery Stage */
+#define ETHERTYPE_PPPOEDISC     0x8863		/* PPP Over Ethernet Discovery Stage */
 #endif
 
 #ifndef ETHERTYPE_PPOE
-#define ETHERTYPE_PPPOE         0x8864  /* PPP Over Ethernet Session Stage */
+#define ETHERTYPE_PPPOE         0x8864		/* PPP Over Ethernet Session Stage */
 #endif
 
 int buildether(ETHERhdr *, FileData *, libnet_t *);

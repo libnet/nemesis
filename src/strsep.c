@@ -30,11 +30,11 @@
  * SUCH DAMAGE.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #if !defined(HAVE_STRSEP) || defined(WIN32)
@@ -50,20 +50,17 @@
  *
  * If *stringp is NULL, strsep returns NULL.
  */
-char *
-strsep(stringp, delim)
-	register char **stringp;
-	register const char *delim;
+char *strsep(char **stringp, const char *delim)
 {
-	register char *s;
+	register char *      s;
 	register const char *spanp;
-	register int c, sc;
-	char *tok;
+	register int         c, sc;
+	char *               tok;
 
 	if ((s = *stringp) == NULL)
 		return (NULL);
 	for (tok = s;;) {
-		c = *s++;
+		c     = *s++;
 		spanp = delim;
 		do {
 			if ((sc = *spanp++) == c) {
