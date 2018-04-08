@@ -19,10 +19,6 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip,
    u_int32_t rip_packetlen = 0, rip_meta_packetlen = 0;
    static u_int8_t *pkt;
    u_int8_t link_offset = 0;
-   
-#if !defined(WIN32)
-    int sockbuff = IP_MAXPACKET;
-#endif
 
     if (pd->file_mem == NULL)
         pd->file_s = 0;

@@ -19,10 +19,6 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, FileData *pd,
     u_int32_t udp_packetlen = 0, udp_meta_packetlen = 0;
     static u_int8_t *pkt;
     u_int8_t link_offset = 0;
-    
-#if !defined(WIN32)
-    int sockbuff = IP_MAXPACKET;
-#endif
 
     if (pd->file_mem == NULL)
         pd->file_s = 0;
