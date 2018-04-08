@@ -123,7 +123,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 	if (verbose == 3)
 		nemesis_hexdump(pkt, icmp_packetlen, HEX_RAW_DECODE);
 
-	if (n != icmp_packetlen) {
+	if (n != (int)icmp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection. Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

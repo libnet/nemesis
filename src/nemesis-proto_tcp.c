@@ -91,7 +91,7 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, FileData *pd,
 	if (verbose == 3)
 		nemesis_hexdump(pkt, tcp_packetlen, HEX_RAW_DECODE);
 
-	if (n != tcp_packetlen) {
+	if (n != (int)tcp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

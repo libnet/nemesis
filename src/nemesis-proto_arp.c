@@ -54,7 +54,7 @@ int buildarp(ETHERhdr *eth, ARPhdr *arp, FileData *pd, libnet_t *l)
 	if (verbose == 3)
 		nemesis_hexdump(pkt, arp_packetlen, HEX_RAW_DECODE);
 
-	if (n != arp_packetlen) {
+	if (n != (int)arp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only "
 		                "wrote %d bytes.\n",
 		        n);

@@ -370,7 +370,7 @@ int buildospf(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *
 	if (verbose == 3)
 		nemesis_hexdump(pkt, ospf_packetlen, HEX_RAW_DECODE);
 
-	if (n != ospf_packetlen) {
+	if (n != (int)ospf_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

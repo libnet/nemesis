@@ -89,7 +89,7 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, FileData *pd, F
 	if (verbose == 3)
 		nemesis_hexdump(pkt, rip_packetlen, HEX_RAW_DECODE);
 
-	if (n != rip_packetlen) {
+	if (n != (int)rip_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote "
 		                "%d bytes.\n",
 		        n);

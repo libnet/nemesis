@@ -99,7 +99,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 	if (verbose == 3)
 		nemesis_hexdump(pkt, dns_packetlen, HEX_RAW_DECODE);
 
-	if (n != dns_packetlen) {
+	if (n != (int)dns_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d "
 		                "bytes.\n",
 		        n);

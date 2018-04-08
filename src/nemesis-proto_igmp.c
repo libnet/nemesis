@@ -60,7 +60,7 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
 	if (verbose == 3)
 		nemesis_hexdump(pkt, igmp_packetlen, HEX_RAW_DECODE);
 
-	if (n != igmp_packetlen) {
+	if (n != (int)igmp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection. Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

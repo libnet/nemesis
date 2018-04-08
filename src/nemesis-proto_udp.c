@@ -71,7 +71,7 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, FileData *pd,
 	if (verbose == 3)
 		nemesis_hexdump(pkt, udp_packetlen, HEX_RAW_DECODE);
 
-	if (n != udp_packetlen) {
+	if (n != (int)udp_packetlen) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
