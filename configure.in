@@ -185,7 +185,7 @@ AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(resolv, hstrerror)
 
 LNET=""
-AC_CHECK_LIB(net, libnet_build_ip,, LNET="no")
+AC_CHECK_LIB(net, libnet_build_ipv4,, LNET="no")
 
 if test "$LNET" = "no"; then
     echo
@@ -227,7 +227,7 @@ if test "$LNET" = "no"; then
    exit
 fi
 
-AC_MSG_CHECKING(for libnet version 1.0.2a)
+AC_MSG_CHECKING(for libnet version 1.1.6)
 if test "${LIBNET_CONFIG_BROKEN_CFLAGS}" = "yes"; then
     if test -n "$with_libnet_includes" -a "$with_libnet_includes" != "no"; then
         libnet_dir="${with_libnet_includes}"
@@ -246,18 +246,18 @@ for i in $libnet_dir; do
 done
 
 if test "$LIBNET_INC_DIR" != ""; then
-    if eval "grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | grep -v 1.0.2a >/dev/null"; then
+    if eval "grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | grep -v 1.1.6 >/dev/null"; then
         AC_MSG_RESULT(no)
         echo
-        echo "   ERROR!  Nemesis will *only* work with libnet version 1.0.2a,"
+        echo "   ERROR!  Nemesis will *only* work with libnet version 1.1.6,"
         echo "   go get it from"
         echo "   http://www.packetfactory.net/projects/libnet/"
-        HEADER_FAIL_MESSAGE("libnet 1.0.2a (libnet.h)", $LIBNET_INC_DIR)
+        HEADER_FAIL_MESSAGE("libnet 1.1.6 (libnet.h)", $LIBNET_INC_DIR)
     fi
     AC_MSG_RESULT(yes)
 else
     AC_MSG_RESULT(no)
-    HEADER_FAIL_MESSAGE("libnet 1.0.2a (libnet.h)", $libnet_dir)
+    HEADER_FAIL_MESSAGE("libnet 1.1.6 (libnet.h)", $libnet_dir)
 fi
 
 dnl if test "$enable_pcapoutput" != "no" -a "$enable_pcapoutput" = "yes"; then

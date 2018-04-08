@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-printout.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-printout.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -9,31 +9,30 @@
  */
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #include <unistd.h>
 #if defined(HAVE_LIMITS_H) || defined(WIN32)
-    #include <limits.h>
+#include <limits.h>
 #endif
 #if defined(HAVE_ERRNO_H) || defined(WIN32)
-    #include <errno.h>
+#include <errno.h>
 #endif
 #if defined(HAVE_NETINET_IN_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
-    #include <process.h>
+#include <process.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
-
+#include <libnet.h>
 
 /**
  * Dumps a packet payload in hex format
@@ -45,26 +44,25 @@
  *
  * @return void function
  */
-void
-nemesis_hexdump(char *buf, uint32_t len, int mode)
+void nemesis_hexdump(char *buf, u_int32_t len, int mode)
 {
-	int c, linemod;
+	int   c, linemod;
 	char *p, *l, *dump, *predump, *postdump, dumpbuf[40];
 
-	l = &(buf[len - 1]);
+	l    = &(buf[len - 1]);
 	dump = dumpbuf;
 	putchar('\n');
 
 	switch (mode) {
 	case HEX_RAW_DECODE:
-		linemod = 26;
-		predump = "   ";
+		linemod  = 26;
+		predump  = "   ";
 		postdump = "";
 		break;
-	case HEX_ASCII_DECODE:  /* FALLTHROUGH */
+	case HEX_ASCII_DECODE: /* FALLTHROUGH */
 	default:
-		linemod = 16;
-		predump = "   ";
+		linemod  = 16;
+		predump  = "   ";
 		postdump = "  ";
 		break;
 	}
@@ -88,13 +86,12 @@ nemesis_hexdump(char *buf, uint32_t len, int mode)
 				puts(dumpbuf);
 			else
 				putchar('\n');
-		dump = dumpbuf;
+			dump = dumpbuf;
 		} else
 			putchar(' ');
 	}
 	putchar('\n');
 }
-
 
 /**
  * Print the source and destination within the supplied ETHERhdr struct in 
@@ -104,8 +101,7 @@ nemesis_hexdump(char *buf, uint32_t len, int mode)
  *
  * @return void function
  */
-void
-nemesis_printeth(ETHERhdr *eth)
+void nemesis_printeth(ETHERhdr *eth)
 {
 	char *ethertype = "Unknown";
 
@@ -139,16 +135,15 @@ nemesis_printeth(ETHERhdr *eth)
 	}
 
 	printf("               [MAC] %02X:%02X:%02X:%02X:%02X:%02X > "
-	    "%02X:%02X:%02X:%02X:%02X:%02X\n", eth->ether_shost[0], 
-	    eth->ether_shost[1], eth->ether_shost[2], eth->ether_shost[3], 
-	    eth->ether_shost[4], eth->ether_shost[5], eth->ether_dhost[0],
-	    eth->ether_dhost[1], eth->ether_dhost[2], eth->ether_dhost[3],
-	    eth->ether_dhost[4], eth->ether_dhost[5]);
-	printf("     [Ethernet type] %s (%#.4x)\n\n", ethertype, 
-	    eth->ether_type); 
+	       "%02X:%02X:%02X:%02X:%02X:%02X\n",
+	       eth->ether_shost[0],
+	       eth->ether_shost[1], eth->ether_shost[2], eth->ether_shost[3],
+	       eth->ether_shost[4], eth->ether_shost[5], eth->ether_dhost[0],
+	       eth->ether_dhost[1], eth->ether_dhost[2], eth->ether_dhost[3],
+	       eth->ether_dhost[4], eth->ether_dhost[5]);
+	printf("     [Ethernet type] %s (%#.4x)\n\n", ethertype, eth->ether_type);
 	return;
 }
-
 
 /**
  * Verbosely print portions of the ARP header in ASCII form.
@@ -157,8 +152,7 @@ nemesis_printeth(ETHERhdr *eth)
  *
  * @return void function
  */
-void
-nemesis_printarp(ARPhdr *arp)
+void nemesis_printarp(ARPhdr *arp)
 {
 	char *src = NULL, *dst = NULL;
 	char *opcode = "Unknown";
@@ -182,11 +176,11 @@ nemesis_printarp(ARPhdr *arp)
 	dst = strdup(inet_ntoa(*(struct in_addr *)&arp->ar_tpa));
 
 	printf("  [Protocol addr:IP] %s > %s\n", src, dst);
-	printf(" [Hardware addr:MAC] %02x:%02x:%02x:%02x:%02x:%02x > " 
-	    "%02X:%02X:%02X:%02X:%02X:%02X\n", arp->ar_sha[0], arp->ar_sha[1], 
-	    arp->ar_sha[2], arp->ar_sha[3], arp->ar_sha[4], arp->ar_sha[5], 
-	    arp->ar_tha[0], arp->ar_tha[1], arp->ar_tha[2], arp->ar_tha[3], 
-	    arp->ar_tha[4], arp->ar_tha[5]);
+	printf(" [Hardware addr:MAC] %02x:%02x:%02x:%02x:%02x:%02x > "
+	       "%02X:%02X:%02X:%02X:%02X:%02X\n",
+	       arp->ar_sha[0], arp->ar_sha[1],
+	       arp->ar_sha[2], arp->ar_sha[3], arp->ar_sha[4], arp->ar_sha[5],
+	       arp->ar_tha[0], arp->ar_tha[1], arp->ar_tha[2], arp->ar_tha[3], arp->ar_tha[4], arp->ar_tha[5]);
 
 	printf("        [ARP opcode] %s\n", opcode);
 	printf("  [ARP hardware fmt] %s (%hu)\n", "Ethernet", arp->ar_hrd);
@@ -202,7 +196,6 @@ nemesis_printarp(ARPhdr *arp)
 	return;
 }
 
-
 /**
  * Verbosely print portions of the IP header in ASCII form.
  *
@@ -210,8 +203,7 @@ nemesis_printarp(ARPhdr *arp)
  *
  * @return void function
  */
-void
-nemesis_printip(IPhdr *ip)
+void nemesis_printip(IPhdr *ip)
 {
 	char *protoname = "Unknown";
 	char *src = NULL, *dst = NULL;
@@ -222,7 +214,7 @@ nemesis_printip(IPhdr *ip)
 	printf("                [IP] %s > %s\n", src, dst);
 	printf("             [IP ID] %hu\n", ip->ip_id);
 
-	switch(ip->ip_p) {
+	switch (ip->ip_p) {
 	case 0:
 		protoname = "IP";
 		break;
@@ -558,7 +550,6 @@ nemesis_printip(IPhdr *ip)
 	return;
 }
 
-
 /**
  * Verbosely print portions of the TCP header in ASCII form.
  *
@@ -566,11 +557,9 @@ nemesis_printip(IPhdr *ip)
  *
  * @return void function
  */
-void
-nemesis_printtcp(TCPhdr *tcp)
+void nemesis_printtcp(TCPhdr *tcp)
 {
-	printf("         [TCP Ports] %hu > %hu\n", tcp->th_sport, 
-	    tcp->th_dport);
+	printf("         [TCP Ports] %hu > %hu\n", tcp->th_sport, tcp->th_dport);
 	STPUTS("         [TCP Flags] ");
 	if (tcp->th_flags & TH_SYN)
 		STPUTS("SYN ");
@@ -593,14 +582,13 @@ nemesis_printtcp(TCPhdr *tcp)
 	printf("[TCP Urgent Pointer] %u\n", tcp->th_urp);
 	printf("   [TCP Window Size] %u\n", tcp->th_win);
 	if (tcp->th_flags & TH_ACK)
-	    printf("    [TCP Ack number] %lu\n", tcp->th_ack);
+		printf("    [TCP Ack number] %u\n", tcp->th_ack);
 	if (tcp->th_flags & TH_SYN)
-	    printf("    [TCP Seq number] %lu\n", tcp->th_seq);
+		printf("    [TCP Seq number] %u\n", tcp->th_seq);
 
 	putchar('\n');
 	return;
 }
-
 
 /**
  * Verbosely print portions of the UDP header in ASCII form.
@@ -609,14 +597,11 @@ nemesis_printtcp(TCPhdr *tcp)
  *
  * @return void function
  */
-void
-nemesis_printudp(UDPhdr *udp)
+void nemesis_printudp(UDPhdr *udp)
 {
-	printf("         [UDP Ports] %hu > %hu\n\n", udp->uh_sport, 
-	    udp->uh_dport);
+	printf("         [UDP Ports] %hu > %hu\n\n", udp->uh_sport, udp->uh_dport);
 	return;
 }
-
 
 /**
  * Verbosely print portions of the ICMP header in ASCII form.
@@ -626,14 +611,13 @@ nemesis_printudp(UDPhdr *udp)
  *
  * @return void function
  */
-void
-nemesis_printicmp(ICMPhdr *icmp, int mode)
+void nemesis_printicmp(ICMPhdr *icmp, int mode)
 {
 	char *icmptype = "Unknown";
 	char *icmpcode = "Unknown";
 	char *mask = NULL, *gateway = NULL;
 
-	mask = strdup(inet_ntoa(*(struct in_addr *)&icmp->dun.mask));
+	mask    = strdup(inet_ntoa(*(struct in_addr *)&icmp->dun.mask));
 	gateway = strdup(inet_ntoa(*(struct in_addr *)&icmp->hun.gateway));
 
 	switch (icmp->icmp_type) {
@@ -641,7 +625,7 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 		icmptype = "Echo Reply";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Echo Reply";
-            break;
+		break;
 	case 3:
 		icmptype = "Destination Unreachable";
 		switch (icmp->icmp_code) {
@@ -649,7 +633,7 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 			icmpcode = "Network Unreachable";
 			break;
 		case 1:
-			icmpcode =  "Host Unreachable";
+			icmpcode = "Host Unreachable";
 			break;
 		case 2:
 			icmpcode = "Protocol Unreachable";
@@ -673,12 +657,10 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 			icmpcode = "Source Host Isolated (obsolete)";
 			break;
 		case 9:
-			icmpcode = "Destination Network Administratively "
-			    "Prohibited";
-                    break;
+			icmpcode = "Destination Network Administratively Prohibited";
+			break;
 		case 10:
-			icmpcode = "Destination Host Administratively "
-			    "Prohibited";
+			icmpcode = "Destination Host Administratively Prohibited";
 			break;
 		case 11:
 			icmpcode = "Network Unreachable For TOS";
@@ -686,9 +668,8 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 		case 12:
 			icmpcode = "Host Unreachable For TOS";
 			break;
-		case 13: 
-			icmpcode = "Communication Administratively Prohibited "
-			    "By Filtering";
+		case 13:
+			icmpcode = "Communication Administratively Prohibited By Filtering";
 			break;
 		case 14:
 			icmpcode = "Host Precedence Violation";
@@ -704,7 +685,7 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 		icmptype = "Source Quench";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Source Quench";
-	    break;
+		break;
 	case 5:
 		icmptype = "Redirect";
 		switch (icmp->icmp_code) {
@@ -760,7 +741,7 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 			break;
 		case 1:
 			icmpcode = "Required Option Missing";
-				break;
+			break;
 		default:
 			break;
 		}
@@ -773,7 +754,7 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 		icmpcode = "Timestamp Reply";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Timestamp Reply";
-            break;
+		break;
 	case 15:
 		icmptype = "Information Request";
 		if (icmp->icmp_code == 0)
@@ -820,7 +801,6 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
 	return;
 }
 
-
 /**
  * Verbosely print portions of the RIP header in ASCII form.
  *
@@ -829,18 +809,17 @@ nemesis_printicmp(ICMPhdr *icmp, int mode)
  * @return void function
  *
  */
-void
-nemesis_printrip(RIPhdr *rip)
+void nemesis_printrip(RIPhdr *rip)
 {
-	char *cmd = "Unknown";
+	char *cmd    = "Unknown";
 	char *family = "Unknown";
 	char *addr = NULL, *mask = NULL, *hop = NULL;
 
-	addr = strdup(inet_ntoa(*(struct in_addr *)&rip->addr));
-	mask = strdup(inet_ntoa(*(struct in_addr *)&rip->mask));
-	hop = strdup(inet_ntoa(*(struct in_addr *)&rip->next_hop));
+	addr = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_addr));
+	mask = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_mask));
+	hop  = strdup(inet_ntoa(*(struct in_addr *)&rip->rip_next_hop));
 
-	switch(rip->cmd) {
+	switch (rip->rip_cmd) {
 	case RIPCMD_REQUEST:
 		cmd = "Request";
 		break;
@@ -865,18 +844,18 @@ nemesis_printrip(RIPhdr *rip)
 	default:
 		break;
 	}
-	printf("       [RIP Command] %s (%hu)\n", cmd, (uint16_t)rip->cmd);
-	printf("       [RIP Version] %hu\n", (uint16_t)rip->ver);
-	printf("[RIP Routing domain] %hu\n", (uint16_t)rip->rd);
-	if (rip->af == 2)
+	printf("       [RIP Command] %s (%hu)\n", cmd, (u_int16_t)rip->rip_cmd);
+	printf("       [RIP Version] %hu\n", (u_int16_t)rip->rip_ver);
+	printf("[RIP Routing domain] %hu\n", (u_int16_t)rip->rip_rd);
+	if (rip->rip_af == 2)
 		family = "IP";
 
-	printf("[RIP Address family] %s (%hu)\n", family, (uint16_t)rip->af);
-	printf("     [RIP Route tag] %hu\n", (uint16_t)rip->rt);
+	printf("[RIP Address family] %s (%hu)\n", family, (u_int16_t)rip->rip_af);
+	printf("     [RIP Route tag] %hu\n", (u_int16_t)rip->rip_rt);
 	printf("       [RIP Address] %s\n", addr);
 	printf("  [RIP Network mask] %s\n", mask);
 	printf("      [RIP Next hop] %s\n", hop);
-	printf("        [RIP Metric] %u\n", (uint32_t)rip->metric);
+	printf("        [RIP Metric] %u\n", (u_int32_t)rip->rip_metric);
 
 	putchar('\n');
 
@@ -890,7 +869,6 @@ nemesis_printrip(RIPhdr *rip)
 	return;
 }
 
-
 /**
  * Verbosely print portions of the OSPF header in ASCII form.
  *
@@ -898,17 +876,16 @@ nemesis_printrip(RIPhdr *rip)
  *
  * @return void function
  */
-void
-nemesis_printospf(OSPFhdr *ospf)
+void nemesis_printospf(OSPFhdr *ospf)
 {
-	char *type = "";
+	char *type      = "";
 	char *auth_type = "Unknown";
 	char *rtr_id = NULL, *area_id = NULL;
 
-	rtr_id = strdup(inet_ntoa(*(struct in_addr *)&ospf->ospf_rtr_id.s_addr));
+	rtr_id  = strdup(inet_ntoa(*(struct in_addr *)&ospf->ospf_rtr_id.s_addr));
 	area_id = strdup(inet_ntoa(*(struct in_addr *)&ospf->ospf_area_id.s_addr));
 
-	switch(ospf->ospf_type) {
+	switch (ospf->ospf_type) {
 	case LIBNET_OSPF_HELLO:
 		type = "Hello";
 		break;
@@ -921,12 +898,12 @@ nemesis_printospf(OSPFhdr *ospf)
 	case LIBNET_OSPF_LSU:
 		type = "Link State Update";
 		break;
-        case LIBNET_OSPF_LSA:
+	case LIBNET_OSPF_LSA:
 		type = "Link State Acknowledgement";
 		break;
 	}
 
-	switch(ntohs(ospf->ospf_auth_type)) {
+	switch (ntohs(ospf->ospf_auth_type)) {
 	case LIBNET_OSPF_AUTH_NULL:
 		auth_type = "None";
 		break;
@@ -957,7 +934,6 @@ nemesis_printospf(OSPFhdr *ospf)
 	return;
 }
 
-
 /**
  * Build the title string for each nemesis protocol builder.
  *
@@ -967,20 +943,18 @@ nemesis_printospf(OSPFhdr *ospf)
  *
  * @return void function
  */
-void
-nemesis_maketitle(char *title, const char *module, const char *version)
+void nemesis_maketitle(char *title, const char *module, const char *version)
 {
 	char tmptitle[TITLEBUFFSIZE], buildnum[13];
 
-
 	strlcpy(tmptitle, module, sizeof(tmptitle));
+	/* strlcat(char *dst, const char *src, size_t size) automatically uses size - strlen(dst) - 1 for size argument */
 	strlcat(tmptitle, version, sizeof(tmptitle));
 	snprintf(buildnum, sizeof(buildnum), " (Build %d)", BUILD);
 	strlcat(tmptitle, buildnum, sizeof(tmptitle));
 
 	memcpy(title, tmptitle, sizeof(tmptitle));
 }
-
 
 /**
  * Print the title string for each nemesis protocol builder.
@@ -989,8 +963,7 @@ nemesis_maketitle(char *title, const char *module, const char *version)
  *
  * @return void function
  */
-void
-nemesis_printtitle(const char *title)
+void nemesis_printtitle(const char *title)
 {
 	putchar('\n');
 	puts(title);
@@ -998,7 +971,6 @@ nemesis_printtitle(const char *title)
 
 	return;
 }
-
 
 /**
  * Print an error when an Ethernet device can't be opened for link-layer 
@@ -1008,21 +980,17 @@ nemesis_printtitle(const char *title)
  *
  * @return void function
  */
-void
-nemesis_device_failure(int mode, const char *device)
+void nemesis_device_failure(int mode, const char *device)
 {
 	if (mode == INJECTION_RAW)
-		fprintf(stderr, "ERROR: Unable to open raw socket for packet "
-		    "injection: %s.\n", errbuf);
+		fprintf(stderr, "ERROR: Unable to open raw socket for packet injection: %s.\n", errbuf);
 	else if (mode == INJECTION_LINK && device != NULL && errbuf != NULL)
-		fprintf(stderr, "ERROR: Unable to open layer 2 device '%s' "
-		    "for packet injection: %s.\n", device, errbuf);
+		fprintf(stderr, "ERROR: Unable to open layer 2 device '%s' for packet injection: %s.\n", device, errbuf);
 
 #if !defined(WIN32)
 	fprintf(stderr, "You may need root privileges to use nemesis.\n");
 #else
-	fprintf(stderr, "You may need Administrator privileges to use "
-	    "nemesis.\n");
+	fprintf(stderr, "You may need Administrator privileges to use nemesis.\n");
 #endif
 
 	return;

@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-functions.c,v 1.4 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-functions.c,v 1.3.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -12,30 +12,9 @@
 #include "config.h"
 #endif
 
-#if defined(HAVE_NETINET_IN_H)
-#include <netinet/in.h>
-#elif defined(WIN32)
-#include <winsock2.h>
-#include <process.h>
-#endif /* defined(HAVE_NETINET_IN_H) or defined(WIN32) */
-
-#if defined(HAVE_ERRNO_H) || defined(WIN32)
-#include <errno.h>
-#endif
-
-#if defined(HAVE_LIMITS_H) || defined(WIN32)
-#include <limits.h>
-#endif
-
-#include <math.h>
-#if defined(HAVE_NETDB_H)
-#include <netdb.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-
 #if defined(TIME_WITH_SYS_TIME) || defined(WIN32)
 #include <sys/time.h>
 #include <time.h>
@@ -44,76 +23,106 @@
 #include <sys/time.h>
 #elif defined(HAVE_TIME_H)
 #include <time.h>
-#endif	/* defined(HAVE_SYS_TIME_H) */
-#endif	/* defined(HAVE_TIME_H) */
-
+#endif
+#endif
 #if defined(WIN32)
 #include <pcap.h>
 #endif
-
-#include <libnet.h>
+#include <unistd.h>
+#if defined(HAVE_LIMITS_H) || defined(WIN32)
+#include <limits.h>
+#endif
+#if defined(HAVE_NETDB_H)
+#include <netdb.h>
+#endif
+#include <math.h>
+#if defined(HAVE_ERRNO_H) || defined(WIN32)
+#include <errno.h>
+#endif
+#if defined(HAVE_NETINET_IN_H)
+#include <netinet/in.h>
+#elif defined(WIN32)
+#include <process.h>
+#include <winsock2.h>
+#endif
 #include "nemesis.h"
+#include <libnet.h>
 
 const char *version = " -=- The NEMESIS Project Version 1.4";
 
 char zero[ETHER_ADDR_LEN];
-char one[ETHER_ADDR_LEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-char title[TITLEBUFFSIZE];
-char errbuf[ERRBUFFSIZE];		/* all-purpose error buffer */
-char *validtcpflags = "FSRPAUEC-";	/* TCP flag index */
-int verbose;				/* verbosity */
-int got_link;
-int got_ipoptions;
-int got_tcpoptions;
+char one[ETHER_ADDR_LEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
+char  title[TITLEBUFFSIZE];
+char  errbuf[ERRBUFFSIZE];         /* all-purpose error buffer */
+char *validtcpflags = "FSRPAUEC-"; /* TCP flag index */
+int   verbose;                     /* verbosity */
+int   got_link;
+int   got_ipoptions;
+int   got_tcpoptions;
 
 /**
- * Convert user supplied string to an unsigned 32/16/8 bit value
+ * Convert user supplied string to a u_int32_t or exit on invalid data.
  *          
  * @param str string to be converted
- * @param data pointer to the memory that holds the converted value
- * @param size convert to datatype of size 'size'
  *
- * @return returns 0 on success, < 0 on error
+ * @returns u_int32_t conversion of input string
  */
-int
-getint(const char *str, void *data, int size)
+u_int32_t xgetint32(const char *str)
 {
-	uint32_t *u32;
-	uint16_t *u16;
-	uint8_t *u8;
-	char *endp;
-	u_long val = strtoul(str, &endp, 0);
+	char * endp;
+	u_long val;
 
-	if (str == endp || *endp)
-		return (-1);
-
-	switch (size) {
-	case 32:
-		u32 = (uint32_t *)data;
-		if (val > UINT_MAX)
-			return (-1);
-		else
-			*u32 = (uint32_t)val;
-		break;
-	case 16:
-		u16 = (uint16_t *)data;
-		if (val > USHRT_MAX)
-			return (-1);
-		else
-			*u16 = (uint16_t)val;
-		break;
-	case 8:
-		u8 = (uint8_t *)data;
-		if (val > UCHAR_MAX)
-			return (-1);
-		else
-			*u8 = (uint8_t)val;
-		break;
+	val = strtoul(str, &endp, 0);
+	if (val > UINT_MAX || str == endp || *endp) {
+		fprintf(stderr, "ERROR: Argument %s must be a positive integer between 0 and %u.\n", str, UINT_MAX);
+		exit(1);
 	}
-	return (0);
+
+	return (u_int32_t)val;
 }
 
+/**
+ * Convert user supplied string to a u_int16_t or exit on invalid data.
+ *          
+ * @param str string to be converted
+ *
+ * @return u_int16_t conversion of input string
+ */
+u_int16_t xgetint16(const char *str)
+{
+	char * endp;
+	u_long val;
+
+	val = strtoul(str, &endp, 0);
+	if (val > USHRT_MAX || str == endp || *endp) {
+		fprintf(stderr, "ERROR: Argument %s must be a positive integer between 0 and %hu.\n", str, USHRT_MAX);
+		exit(1);
+	}
+
+	return (u_int16_t)val;
+}
+
+/**
+ * Convert user supplied string to a u_int8_t or exit on invalid data.
+ *          
+ * @param str string to be converted
+ *
+ * @return u_int8_t conversion of input string
+ */
+u_int8_t xgetint8(const char *str)
+{
+	char * endp;
+	u_long val;
+
+	val = strtoul(str, &endp, 0);
+	if (val > UCHAR_MAX || str == endp || *endp) {
+		fprintf(stderr, "ERROR: Argument %s must be a positive integer between 0 and %u.\n", str, UCHAR_MAX);
+		exit(1);
+	}
+
+	return (u_int8_t)val;
+}
 
 /**
  * Parses a string to set the fragmentation options in an IP header
@@ -125,23 +134,19 @@ getint(const char *str, void *data, int size)
  *
  * @return 0 on sucess, -1 on failure
  **/
-int
-parsefragoptions(char *str, IPhdr *iph)
+int parsefragoptions(IPhdr *iph, char *str)
 {
-	int reserved = 0, dont = 0, more = 0, offset = 0;
-	int i, argcount = 0;
-	int ret = -1;
-	uint8_t error = 0;
-	char *orig = NULL;		/* original input string */
-	char *toks[FP_MAX_ARGS];	/* break args down into option sets */
-	char **ap;
-	uint16_t frag_offset = 0;
+	int       reserved = 0, dont = 0, more = 0, offset = 0;
+	int       i, argcount = 0;
+	u_int8_t  error = 0;
+	char *    orig  = NULL;      /* original input string */
+	char *    toks[FP_MAX_ARGS]; /* break all args down into option sets */
+	char **   ap;
+	u_int16_t frag_offset = 0;
 
 	orig = strdup(str);
 
-	for (ap = toks; ap < &toks[FP_MAX_ARGS] && 
-	    (*ap = strsep(&str, " ,")) != NULL; ) {
-
+	for (ap = toks; ap < &toks[FP_MAX_ARGS] && (*ap = strsep(&str, " ,")) != NULL;) {
 		if (**ap != '\0') {
 			ap++;
 			argcount++;
@@ -153,135 +158,116 @@ parsefragoptions(char *str, IPhdr *iph)
 		if (toks[i][0] == 'D') {
 			if (!dont)
 				dont++;
-			else
+			else {
 				error++;
-        	} else if (toks[i][0] == 'M') {
+				break;
+			}
+		} else if (toks[i][0] == 'M') {
 			if (!more)
 				more++;
-			else
+			else {
 				error++;
+				break;
+			}
 		} else if (toks[i][0] == 'R') {
 			if (!reserved)
 				reserved++;
-			else
+			else {
 				error++;
+				break;
+			}
 		} else if (isdigit((int)toks[i][0])) {
 			if (!offset) {
 				offset++;
-				if ((getint16(toks[i], &frag_offset)) < 0)
-					error++;
-			} else
+				frag_offset = xgetint16(toks[i]);
+			} else {
 				error++;
-		} else
+				break;
+			}
+		} else {
 			error++;
+			break;
+		}
 	}
-    
-	if (error > 0)
-		fprintf(stderr, "ERROR: Invalid IP fragmentation options "
-		    "specification: %s.\n", orig);
-	else if (frag_offset > 8189)
-		fprintf(stderr, "ERROR: Fragmentation offset %hu must be an "
-		    "integer between 0 and 8189.\n", frag_offset);
-	else {
-		iph->ip_off = (frag_offset & IP_OFFMASK) | 
-		    ((reserved == 1 ? IP_RF : 0) | (dont == 1 ? IP_DF : 0) | 
-		    (more == 1 ? IP_MF : 0));
 
-		ret = 0;
+	if (error > 0) {
+		fprintf(stderr, "ERROR: Invalid IP fragmentation options specification: %s.\n", orig);
+
+		if (orig != NULL)
+			free(orig);
+
+		return -1;
 	}
+
+	if (frag_offset > 8189) {
+		fprintf(stderr, "ERROR: Fragmentation offset %hu must be a positive integer between 0 and 8189.\n", frag_offset);
+
+		if (orig != NULL)
+			free(orig);
+
+		return -1;
+	}
+
+	iph->ip_off = (frag_offset & IP_OFFMASK) | ((reserved == 1 ? IP_RF : 0) |
+	                                            (dont == 1 ? IP_DF : 0) | (more == 1 ? IP_MF : 0));
 
 	if (orig != NULL)
 		free(orig);
 
-	return (ret);
-}
-
-
-/**
- * Parses a string to set the TCP flags in a TCP header
- *
- * @param str string to be parsed
- * @param tcp pointer to an IPhdr structure
- *
- * @return 0 on sucess, -1 on failure
- **/
-int
-parsetcpflags(char *str, TCPhdr *tcp)
-{
-	int flag;
-	char c, *p;
-
-	p = str;
-	tcp->th_flags = 0;
-
-	while (*p != '\0') {
-		c = *p;
-		flag = strchr(validtcpflags, c) - validtcpflags;
-
-		if (flag < 0 || flag > 8) {
-			printf("ERROR: Invalid TCP flag: %c.\n", c);
-			return (-1);
-		}
-		if (flag == 8)
-			break;
-		else {
-			tcp->th_flags |= 1 << flag;
-			p++;
-		}
-	}
-	return (0);
+	return 0;
 }
 
 /**
  *
- * Convert a hostname or IP address, supplied in ASCII format, to an uint32_t 
+ * Convert a hostname or IP address, supplied in ASCII format, to an u_int32_t 
  * in network byte order.
  *
  * @param hostname host name or IP address in ASCII
- * @param address uint32_t pointer to hold converted IP
+ * @param address u_int32_t pointer to hold converted IP
  *
  * @return 0 on sucess, -1 on failure
  */
-int
-nemesis_name_resolve(char *hostname, uint32_t *address)
+int nemesis_name_resolve(char *hostname, u_int32_t *address)
 {
-	//int ret = 0;
-	struct in_addr saddr;
+	struct in_addr  saddr;
 	struct hostent *hp = NULL;
+
 #if !defined(WIN32)
 	extern int h_errno;
+#else
+	TCHAR WinErrBuf[1000];
 #endif
 
 	if (address == NULL || hostname == NULL)
-		return (-1);
+		return -1;
 
 	if ((inet_aton(hostname, &saddr)) < 1) {
 		if ((hp = gethostbyname(hostname)) == NULL) {
 #if !defined(WIN32)
-			fprintf(stderr, "ERROR: Unable to resolve: %s. %s\n", 
-			    hostname, hstrerror(h_errno));
+			fprintf(stderr, "ERROR: Unable to resolve supplied hostname: %s. %s\n", hostname, hstrerror(h_errno));
 #else
-			fprintf(stderr, "ERROR: Unable to resolve: %s.\n%s\n", 
-			    hostname, GetLastError());
+			if (winstrerror(WinErrBuf, sizeof(WinErrBuf)) < 0)
+				return -1;
+
+			fprintf(stderr, "ERROR: Unable to resolve supplied hostname: %s.\n%s\n", hostname, WinErrBuf);
 #endif
-			return (-1);
+			return -1;
 		}
 		/* Do not blindly disregard the size of the address returned */
 		if (hp->h_length != 4) {
-			fprintf(stderr, "ERROR: fatal resolution failure.\n");
-			return (-1);
+			fprintf(stderr, "ERROR: nemesis_name_resolve() received a non IPv4 address.\n");
+			return -1;
 		}
-			memcpy((uint32_t *)address, hp->h_addr, 4);
-			return (0);
-	} else {
-		if (!memcmp(&saddr.s_addr, zero, 4))
-			return(-1);
-
-		memcpy((uint32_t *)address, &saddr.s_addr, 4);
-		return (0);
+		memcpy(address, hp->h_addr, 4);
+		return 0;
 	}
-}
 
+	if (!memcmp(&saddr.s_addr, zero, 4))
+		return -1;
+
+	memcpy(address, &saddr.s_addr, 4);
+	return 0;
+}
 
 /**
  * Determine if a source Ethernet address has been specified and fill in the 
@@ -292,32 +278,21 @@ nemesis_name_resolve(char *hostname, uint32_t *address)
  *
  * @return 0 on sucess, -1 on failure
  */
-int
-nemesis_check_link(ETHERhdr *eth, char *device)
+int nemesis_check_link(ETHERhdr *eth, libnet_t *l)
 {
-	int i;
-	struct ether_addr *e = NULL;
-	struct libnet_link_int l2;
+	int                       i;
+	struct libnet_ether_addr *e = NULL;
 
-	memset(&l2, 0, sizeof(struct libnet_link_int));
-#ifdef DEBUG
-	printf("DEBUG: determining if device %s\n       has a hardware address "
-	    "assigned.\n", device);
-#endif
 	if (!memcmp(eth->ether_shost, zero, 6)) {
-		memset(&l2, 0, sizeof(l2));
-
-		if ((e = libnet_get_hwaddr(&l2, device, errbuf)) == NULL)
-			return (-1);
+		if ((e = libnet_get_hwaddr(l)) == NULL)
+			return -1;
 
 		for (i = 0; i < 6; i++)
 			eth->ether_shost[i] = e->ether_addr_octet[i];
+	}
 
-		return (0);
-	} else
-		return (0);
+	return 0;
 }
-
 
 /**
  * Lookup and return the string associated with each link type.
@@ -327,8 +302,7 @@ nemesis_check_link(ETHERhdr *eth, char *device)
  * @return char * containing the appropriate linktype or Unknown on a failed
  *         match.
  */
-char *
-nemesis_lookup_linktype(int linktype)
+char *nemesis_lookup_linktype(int linktype)
 {
 	char *dlt;
 
@@ -386,33 +360,29 @@ nemesis_lookup_linktype(int linktype)
 		break;
 	default:
 		dlt = "UNKNOWN";
-		break;
 	}
-	return (dlt);
+	return dlt;
 }
-
 
 /**
  * Seed the random number generator
  *
  * @return 0 on success, -1 on failure
  */
-int
-nemesis_seedrand(void)
+int nemesis_seedrand(void)
 {
 #if !defined(WIN32)
-	extern int errno;
+	extern int     errno;
 	struct timeval tv;
 
 	if (gettimeofday(&tv, NULL) == -1) {
-		perror("gettimeofday()");
-		return (-1);
+		fprintf(stderr, "ERROR: nemesis_seedrand() failed in gettimeofday(): %s.\n", strerror(errno));
+		return -1;
 	}
-	srandom((u_int)tv.tv_usec ^ (u_int)fabs(fmod(time(NULL), UINT_MAX)));
+	srandom((unsigned int)tv.tv_usec ^ (unsigned int)fabs(fmod(time(NULL), UINT_MAX)));
 #endif
-	return (0);
+	return 0;
 }
-
 
 #if 0
 /**
@@ -425,33 +395,60 @@ nemesis_seedrand(void)
  */
 int gmt2local(time_t t)
 {
-    register int dt, dir;
-    register struct tm *gmt, *loc;
-    struct tm sgmt;
+	register int dt, dir;
+	register struct tm *gmt, *loc;
+	struct tm sgmt;
 
-    if (t == 0)
-        t = time(NULL);
+	if (t == 0)
+		t = time(NULL);
 
-    gmt = &sgmt;
-    *gmt = *gmtime(&t);
-    loc = localtime(&t);
+	gmt = &sgmt;
+	*gmt = *gmtime(&t);
+	loc = localtime(&t);
 
-    dt = (loc->tm_hour - gmt->tm_hour) * 60 * 60 + 
-            (loc->tm_min - gmt->tm_min) * 60;
+	dt = (loc->tm_hour - gmt->tm_hour) * 60 * 60 + (loc->tm_min - gmt->tm_min) * 60;
 
-    dir = loc->tm_year - gmt->tm_year;
+	dir = loc->tm_year - gmt->tm_year;
 
-    if (dir == 0)
-        dir = loc->tm_yday - gmt->tm_yday;
+	if (dir == 0)
+		dir = loc->tm_yday - gmt->tm_yday;
 
-    dt += dir * 24 * 60 * 60;
-    return(dt);
+	dt += dir * 24 * 60 * 60;
+	return (dt);
 }
 #endif
 
 #if defined(WIN32)
 /**
+ * Lookup Windows system errors and copy them into a user supplied buffer.
  *
+ * @param str Buffer to hold the error string.
+ * @param size Size of the error buffer.
+ *
+ * @return void function.
+ */
+int winstrerror(LPSTR str, int size)
+{
+	LPVOID lpMsgBuf;
+
+	if (str != NULL && size > 2) {
+		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		                  FORMAT_MESSAGE_FROM_SYSTEM |
+		                  FORMAT_MESSAGE_IGNORE_INSERTS,
+		              NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		              (LPSTR)&lpMsgBuf, 0, NULL);
+		strlcpy(str, (LPCTSTR)lpMsgBuf, size);
+		LocalFree(lpMsgBuf);
+		lpMsgBuf = NULL;
+
+		return 0;
+	}
+
+	fprintf(stderr, "ERROR: winstrerror() received NULL buffer or buffer length < 2.\n");
+	return -1;
+}
+
+/**
  * Lookup the Windows device name from the list of network devices and return 
  * the proper device at the user-supplied list index.
  *
@@ -459,23 +456,21 @@ int gmt2local(time_t t)
  *
  * @return 0 on sucess, -1 on failure
  */
-int
-nemesis_getdev(int devnum, char **device)
+int nemesis_getdev(int devnum, char **device)
 {
 	char *lookuptmp = NULL;
 
 	if (devnum > 0) {
 		if ((lookuptmp = pcap_lookupdev(errbuf)) == NULL) {
-			fprintf(stderr, "ERROR: Unable to allocate device "
-			    "memory: %s.\n", errbuf);
-			return (-1);
-		} else {
-			device = GetAdapterFromList(lookuptmp, devnum);
-			return (0);
+			fprintf(stderr, "ERROR: Unable to allocate device memory: %s.\n", errbuf);
+			return -1;
 		}
-	} else {
-		fprintf(stderr,"ERROR: Invalid interface: '%d'.\n", devnum);
-		return (-1);
+
+		device = GetAdapterFromList(lookuptmp, devnum);
+		return 0;
 	}
+
+	fprintf(stderr, "ERROR: Invalid interface: '%d'.\n", devnum);
+	return -1;
 }
 #endif /* WIN32 */

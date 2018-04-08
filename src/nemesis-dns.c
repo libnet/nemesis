@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-dns.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-dns.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -12,35 +12,35 @@
 #include "nemesis-dns.h"
 #include "nemesis.h"
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 
 static ETHERhdr etherhdr;
-static IPhdr iphdr;
-static TCPhdr tcphdr;
-static UDPhdr udphdr;
-static DNShdr dnshdr;
+static IPhdr    iphdr;
+static TCPhdr   tcphdr;
+static UDPhdr   udphdr;
+static DNShdr   dnshdr;
 static FileData pd, ipod, tcpod;
-static int got_payload;
-static char *payloadfile = NULL;	/* payload file name */
-static char *ipoptionsfile = NULL;	/* TCP options file name */
-static char *tcpoptionsfile = NULL;	/* IP options file name */
-static char *device = NULL;		/* Ethernet device */
+static char *   payloadfile    = NULL; /* payload file name */
+static char *   ipoptionsfile  = NULL; /* TCP options file name */
+static char *   tcpoptionsfile = NULL; /* IP options file name */
+static char *   device         = NULL; /* Ethernet device */
+
 #if defined(WIN32)
-    static char *ifacetmp = NULL;
+static char *ifacetmp = NULL;
 #endif
 
-static void dns_cmdline(int argc, char **argv);
-static int dns_exit(int code);
+static void dns_cmdline(int, char **);
+static int  dns_exit(int);
 static void dns_initdata(void);
-static void dns_usage(char *arg);
+static void dns_usage(char *);
 static void dns_validatedata(void);
 static void dns_verbose(void);
 
-void
-nemesis_dns(int argc, char **argv)
+void nemesis_dns(int argc, char **argv)
 {
 	const char *module = "DNS Packet Injection";
+	libnet_t *l;
 
 	nemesis_maketitle(title, module, version);
 
@@ -48,11 +48,22 @@ nemesis_dns(int argc, char **argv)
 		dns_usage(argv[0]);
 
 	if (nemesis_seedrand() < 0)
-		fprintf(stderr, "ERROR: Unable to seed random number "
-		    "generator.\n");
+		fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 
 	dns_initdata();
 	dns_cmdline(argc, argv);
+
+	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	if (!l)
+		dns_exit(1);
+
+	if (got_link) {
+		if ((nemesis_check_link(&etherhdr, l)) < 0) {
+			fprintf(stderr, "ERROR: cannot retrieve hardware address of %s.\n", device);
+			dns_exit(1);
+		}
+	}
+
 	dns_validatedata();
 	dns_verbose();
 
@@ -60,51 +71,35 @@ nemesis_dns(int argc, char **argv)
 		if (state) {
 #if defined(WIN32)
 			if (builddatafromfile(DNSTCP_LINKBUFFSIZE, &pd,
-			    (const char *)payloadfile, 
-			    (const uint32_t)PAYLOADMODE) < 0) {
+			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
 #else
-			if (builddatafromfile(((got_link == 1) ? 
-			    DNSTCP_LINKBUFFSIZE : DNSTCP_RAWBUFFSIZE), &pd, 
-			    (const char *)payloadfile, 
-			    (const uint32_t)PAYLOADMODE) < 0) {
+			if (builddatafromfile(((got_link == 1) ? DNSTCP_LINKBUFFSIZE : DNSTCP_RAWBUFFSIZE), &pd,
+			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
 #endif
 				dns_exit(1);
-			}
-        	} else {
+		} else {
 #if defined(WIN32)
-			if (builddatafromfile(DNSUDP_LINKBUFFSIZE, &pd, 
-			    (const char *)payloadfile, 
-			    (const uint32_t)PAYLOADMODE) < 0) {
+			if (builddatafromfile(DNSUDP_LINKBUFFSIZE, &pd,
+			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
 #else
-			if (builddatafromfile(((got_link == 1) ? 
-			    DNSUDP_LINKBUFFSIZE :
-			    DNSUDP_RAWBUFFSIZE), &pd, 
-			    (const char *)payloadfile, 
-			    (const uint32_t)PAYLOADMODE) < 0) {
+			if (builddatafromfile(((got_link == 1) ? DNSUDP_LINKBUFFSIZE : DNSUDP_RAWBUFFSIZE),
+			                      &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
 #endif
 				dns_exit(1);
-			}
-        	}
+		}
 	}
 
 	if (got_ipoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, 
-		    (const char *)ipoptionsfile, 
-		    (const uint32_t)OPTIONSMODE) < 0) {
+		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, (const char *)ipoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
 			dns_exit(1);
-		}
 	}
 
 	if (state && got_tcpoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &tcpod, 
-		    (const char *)tcpoptionsfile, 
-		    (const uint32_t)OPTIONSMODE) < 0) {
+		if (builddatafromfile(OPTIONSBUFFSIZE, &tcpod, (const char *)tcpoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
 			dns_exit(1);
-		}
 	}
-       
-	if (builddns(&etherhdr, &iphdr, &tcphdr, &udphdr, &dnshdr, &pd, &ipod, 
-	    &tcpod, device) < 0) {
+
+	if (builddns(&etherhdr, &iphdr, &tcphdr, &udphdr, &dnshdr, &pd, &ipod, &tcpod, l) < 0) {
 		puts("\nDNS Injection Failure");
 		dns_exit(1);
 	} else {
@@ -113,93 +108,56 @@ nemesis_dns(int argc, char **argv)
 	}
 }
 
-static void
-dns_initdata(void)
+static void dns_initdata(void)
 {
 	/* defaults */
-	etherhdr.ether_type = ETHERTYPE_IP;	/* Ethernet type IP */
-	memset(etherhdr.ether_shost, 0, 6);	/* Ethernet src address */
-	memset(etherhdr.ether_dhost, 0xff, 6);	/* Ethernet dst address */
-	memset(&iphdr.ip_src.s_addr, 0, 4);	/* IP source address */
-	memset(&iphdr.ip_dst.s_addr, 0, 4);	/* IP destination address */
-	iphdr.ip_tos = IPTOS_LOWDELAY;		/* IP type of service */
-	iphdr.ip_id = (uint16_t)libnet_get_prand(PRu16);	/* IP ID */
-	iphdr.ip_p = IPPROTO_UDP;
-	iphdr.ip_off = 0;			/* IP fragmentation offset */
-	iphdr.ip_ttl = 255;			/* IP TTL */
-	tcphdr.th_sport = (uint16_t)libnet_get_prand(PRu16);
-						/* TCP source port */
-	tcphdr.th_dport = 53;			/* TCP destination port */
-	tcphdr.th_seq = (uint32_t)libnet_get_prand(PRu32);
-						/* randomize sequence number */
-	tcphdr.th_ack = (uint32_t)libnet_get_prand(PRu32);
-						/* randomize ack number */
-	tcphdr.th_flags = 0;			/* TCP flags */
-	tcphdr.th_win = 4096;			/* TCP window size */
-	udphdr.uh_sport = (uint16_t)libnet_get_prand(PRu16);
-						/* UDP source port */
-	udphdr.uh_dport = 53;			/* UDP destination port */
-	pd.file_mem = NULL;
-	pd.file_s = 0;
-	ipod.file_mem = NULL;
-	ipod.file_s = 0;
+	etherhdr.ether_type = ETHERTYPE_IP;    /* Ethernet type IP */
+	memset(etherhdr.ether_shost, 0, 6);    /* Ethernet source address */
+	memset(etherhdr.ether_dhost, 0xff, 6); /* Ethernet destination address */
+
+	iphdr.ip_src.s_addr = libnet_get_prand(PRu32);
+	iphdr.ip_dst.s_addr = libnet_get_prand(PRu32);
+	iphdr.ip_tos        = IPTOS_LOWDELAY;          /* IP type of service */
+	iphdr.ip_id         = libnet_get_prand(PRu16); /* IP ID */
+	iphdr.ip_p          = IPPROTO_UDP;
+	iphdr.ip_off        = 0;   /* IP fragmentation offset */
+	iphdr.ip_ttl        = 255; /* IP TTL */
+
+	tcphdr.th_sport = libnet_get_prand(PRu16); /* TCP source port */
+	tcphdr.th_dport = 53;                      /* TCP destination port */
+	tcphdr.th_seq   = libnet_get_prand(PRu32); /* randomize sequence number */
+	tcphdr.th_ack   = libnet_get_prand(PRu32); /* randomize ack number */
+	tcphdr.th_flags = 0;                       /* TCP flags */
+	tcphdr.th_win   = 4096;                    /* TCP window size */
+	tcphdr.th_urp   = libnet_get_prand(PRu16);
+
+	udphdr.uh_sport = libnet_get_prand(PRu16); /* UDP source port */
+	udphdr.uh_dport = 53;                      /* UDP destination port */
+
+	dnshdr.id          = libnet_get_prand(PRu16); /* DNS packet ID */
+	dnshdr.flags       = libnet_get_prand(PRu16); /* DNS flags */
+	dnshdr.num_q       = libnet_get_prand(PRu16); /* Number of questions */
+	dnshdr.num_answ_rr = libnet_get_prand(PRu16); /* Number of answer resource records */
+	dnshdr.num_auth_rr = libnet_get_prand(PRu16); /* Number of authority resource records */
+	dnshdr.num_addi_rr = libnet_get_prand(PRu16);
+
+	pd.file_mem    = NULL;
+	pd.file_s      = 0;
+	ipod.file_mem  = NULL;
+	ipod.file_s    = 0;
 	tcpod.file_mem = NULL;
-	tcpod.file_s = 0;
+	tcpod.file_s   = 0;
 	return;
 }
 
-static void
-dns_validatedata(void)
+static void dns_validatedata(void)
 {
-	struct sockaddr_in sin;
-
-    /* validation tests */
-	if (iphdr.ip_src.s_addr == 0)
-		iphdr.ip_src.s_addr = (uint32_t)libnet_get_prand(PRu32);
-	if (iphdr.ip_dst.s_addr == 0)
-		iphdr.ip_dst.s_addr = (uint32_t)libnet_get_prand(PRu32);
-
-	/* 
-	 * If the user has supplied a source hardware addess but not a device
-	 * try to select a device automatically.
-	 */
-	if (memcmp(etherhdr.ether_shost, zero, 6) && !got_link && !device) {
-		if (libnet_select_device(&sin, &device, (char *)&errbuf) < 0) {
-			fprintf(stderr, "ERROR: Device not specified and "
-			    "unable to automatically select a device.\n");
-			dns_exit(1);
-		} else {
-#ifdef DEBUG
-			printf("DEBUG: automatically selected device: "
-			    "       %s\n", device);
-#endif
-			got_link = 1;
-		}
-	}
-
-	/* 
-	 * If a device was specified and the user has not specified a source 
-	 * hardware address, try to determine the source address automatically.
-	 */
-	if (got_link) {
-		if ((nemesis_check_link(&etherhdr, device)) < 0) {
-			fprintf(stderr, "ERROR: cannot retrieve hardware "
-			    "address of %s.\n", device);
-			dns_exit(1);
-		}
-	}
-
-	/* 
-	 * Attempt to send valid packets if the user hasn't decided to craft an
-	 * anomolous packet.
-	 */
 	if (state && tcphdr.th_flags == 0)
 		tcphdr.th_flags |= TH_SYN;
 	return;
 }
 
-static void
-dns_usage(char *arg)
+static void dns_usage(char *arg)
 {
 	nemesis_printtitle((const char *)title);
 
@@ -207,44 +165,44 @@ dns_usage(char *arg)
 	printf("DNS options: \n"
 	       "  -i <DNS ID>\n"
 	       "  -g <DNS flags>\n"
-               "  -q <# of Questions>\n"
-               "  -W <# of Answer RRs>\n"
-               "  -A <# of Authority RRs>\n"
-               "  -r <# of Additional RRs>\n"
-               "  -P <Payload file>\n"
-               "  -k (Enable TCP transport)\n\n");
+	       "  -q <# of Questions>\n"
+	       "  -W <# of Answer RRs>\n"
+	       "  -A <# of Authority RRs>\n"
+	       "  -r <# of Additional RRs>\n"
+	       "  -P <Payload file>\n"
+	       "  -k (Enable TCP transport)\n\n");
 	printf("TCP options (with -k): \n"
-               "  -x <Source port>\n"
-               "  -y <Destination port>\n"
-               "  -f <TCP flags>\n"
-               "     -fS (SYN), -fA (ACK), -fR (RST), -fP (PSH), -fF (FIN),"
-               " -fU (URG)\n"
-               "     -fE (ECE), -fC (CWR)\n"
-               "  -w <Window size>\n"
-               "  -s <SEQ number>\n"
-               "  -a <ACK number>\n"
-               "  -u <Urgent pointer offset>\n"
-               "  -o <TCP options file>\n\n");
+	       "  -x <Source port>\n"
+	       "  -y <Destination port>\n"
+	       "  -f <TCP flags>\n"
+	       "     -fS (SYN), -fA (ACK), -fR (RST), -fP (PSH), -fF (FIN),"
+	       " -fU (URG)\n"
+	       "     -fE (ECE), -fC (CWR)\n"
+	       "  -w <Window size>\n"
+	       "  -s <SEQ number>\n"
+	       "  -a <ACK number>\n"
+	       "  -u <Urgent pointer offset>\n"
+	       "  -o <TCP options file>\n\n");
 	printf("UDP options (without -k): \n"
-               "  -x <Source port>\n"
-               "  -y <Destination port>\n\n");
+	       "  -x <Source port>\n"
+	       "  -y <Destination port>\n\n");
 	printf("IP options: \n"
-               "  -S <Source IP address>\n"
-               "  -D <Destination IP address>\n"
-               "  -I <IP ID>\n"
-               "  -T <IP TTL>\n"
-               "  -t <IP TOS>\n"
-               "  -F <IP fragmentation options>\n"
-               "     -F[D],[M],[R],[offset]\n"
-               "  -O <IP options file>\n\n");
+	       "  -S <Source IP address>\n"
+	       "  -D <Destination IP address>\n"
+	       "  -I <IP ID>\n"
+	       "  -T <IP TTL>\n"
+	       "  -t <IP TOS>\n"
+	       "  -F <IP fragmentation options>\n"
+	       "     -F[D],[M],[R],[offset]\n"
+	       "  -O <IP options file>\n\n");
 	printf("Data Link Options: \n"
 #if defined(WIN32)
-               "  -d <Ethernet device number>\n"
+	       "  -d <Ethernet device number>\n"
 #else
-               "  -d <Ethernet device name>\n"
+	       "  -d <Ethernet device name>\n"
 #endif
-               "  -H <Source MAC address>\n"
-               "  -M <Destination MAC address>\n");
+	       "  -H <Source MAC address>\n"
+	       "  -M <Destination MAC address>\n");
 #if defined(WIN32)
 	printf("  -Z (List available network interfaces by number)\n");
 #endif
@@ -252,207 +210,187 @@ dns_usage(char *arg)
 	dns_exit(1);
 }
 
-static void
-dns_cmdline(int argc, char **argv)
+static void dns_cmdline(int argc, char **argv)
 {
-	int opt, i;
-	uint32_t addr_tmp[6];
-	char *dns_options;
+	int          opt, i, flag;
+	u_int32_t    addr_tmp[6];
+	char *       dns_options;
+	char *       p, c;
 	extern char *optarg;
-	extern int optind;
+	extern int   optind;
 
 #if defined(ENABLE_PCAPOUTPUT)
-  #if defined(WIN32)
+#if defined(WIN32)
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:W:x:y:kvZ?";
-  #else
-	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:W:x:y:kv?";
-  #endif
 #else
-  #if defined(WIN32)
+	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:W:x:y:kv?";
+#endif
+#else
+#if defined(WIN32)
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:x:y:kvZ?";
-  #else
+#else
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:x:y:kv?";
-  #endif
+#endif
 #endif
 
 	while ((opt = getopt(argc, argv, dns_options)) != -1) {
 		switch (opt) {
-		case 'a':	/* ACK window */
-			if (getint32(optarg, &tcphdr.th_ack) < 0)
-				dns_usage(argv[0]);
+		case 'a': /* ACK window */
+			tcphdr.th_ack = xgetint32(optarg);
 			break;
-		case 'A':	/* number of authoritative resource records */
-			if (getint16(optarg, &dnshdr.num_auth_rr) < 0)
-				dns_usage(argv[0]);
+		case 'A': /* number of authoritative resource records */
+			dnshdr.num_auth_rr = xgetint16(optarg);
 			break;
-		case 'b':	/* number of answers */
-			if (getint16(optarg, &dnshdr.num_answ_rr) < 0)
-				dns_usage(argv[0]);
+		case 'b': /* number of answers */
+			dnshdr.num_answ_rr = xgetint16(optarg);
 			break;
-		case 'd':	/* Ethernet device */
+		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
-				fprintf(stderr, "ERROR: Unable to lookup "
-				    "device: '%d'.\n", atoi(optarg));
-				dns_usage(argv[0]);
+				fprintf(stderr, "ERROR: Unable to lookup device: '%d'.\n", atoi(optarg));
+				dns_exit(1);
 			}
 #else
 			if (strlen(optarg) < 256) {
-				    device = strdup(optarg);
-				    got_link = 1;
+				device = strdup(optarg);
+				got_link = 1;
 			} else {
-				fprintf(stderr, "ERROR: device %s > 256 "
-				    "characters.\n", optarg);
-				dns_usage(argv[0]);
+				fprintf(stderr, "ERROR: device %s > 256 characters.\n", optarg);
+				dns_exit(1);
 			}
 #endif
 			break;
-		case 'D':	/* destination IP address */
-			if ((nemesis_name_resolve(optarg, 
-			    (uint32_t *)&iphdr.ip_dst.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid destination IP "
-				    "address: \"%s\".\n", optarg);
-				dns_usage(argv[0]);
+		case 'D': /* destination IP address */
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
+				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
+				dns_exit(1);
 			}
 			break;
-		case 'f':	/* TCP flags */
-			if (parsetcpflags(optarg, &tcphdr) < 0)
-				dns_usage(argv[0]);
+		case 'f': /* TCP flags */
+			p = optarg;
+			while (*p != '\0') {
+				c    = *p;
+				flag = strchr(validtcpflags, c) - validtcpflags;
+				if (flag < 0 || flag > 7) {
+					printf("ERROR: Invalid TCP flag: %c.\n", c);
+					dns_exit(1);
+				} else {
+					tcphdr.th_flags |= 1 << flag;
+					p++;
+				}
+			}
 			break;
-		case 'F':	/* IP fragmentation options */
-			if (parsefragoptions(optarg, &iphdr) < 0)
-				dns_usage(argv[0]);
+		case 'F': /* IP fragmentation options */
+			if (parsefragoptions(&iphdr, optarg) < 0)
+				dns_exit(1);
 			break;
-		case 'g':	/* DNS flags */
-			if (getint16(optarg, &dnshdr.flags) < 0)
-				dns_usage(argv[0]);
+		case 'g': /* DNS flags */
+			dnshdr.flags = xgetint16(optarg);
 			break;
-		case 'H':	/* Ethernet source address */
+		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
-			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", 
-			    &addr_tmp[0], &addr_tmp[1], &addr_tmp[2], 
-			    &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
+			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = (uint8_t)addr_tmp[i];
+				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
 			break;
-		case 'i':	/* DNS ID */
-			if (getint16(optarg, &dnshdr.id) < 0)
-				dns_usage(argv[0]);
+		case 'i': /* DNS ID */
+			dnshdr.id = xgetint16(optarg);
 			break;
-		case 'I':	/* IP ID */
-			if (getint16(optarg, &iphdr.ip_id) < 0)
-				dns_usage(argv[0]);
+		case 'I': /* IP ID */
+			iphdr.ip_id = xgetint16(optarg);
 			break;
-		case 'k':	/* use TCP */
+		case 'k': /* use TCP */
 			iphdr.ip_tos = 0;
-			iphdr.ip_p = IPPROTO_TCP;
-			state = 1;
+			iphdr.ip_p   = IPPROTO_TCP;
+			state        = 1;
 			break;
-		case 'M':    /* Ethernet destination address */
+		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
-			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", 
-			    &addr_tmp[0], &addr_tmp[1], &addr_tmp[2], 
-			    &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
+			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = (uint8_t)addr_tmp[i];
+				etherhdr.ether_dhost[i] = (u_int8_t)addr_tmp[i];
 			break;
-		case 'o':	/* TCP options file */
+		case 'o': /* TCP options file */
 			if (strlen(optarg) < 256) {
 				tcpoptionsfile = strdup(optarg);
 				got_tcpoptions = 1;
 			} else {
-				fprintf(stderr, "ERROR: TCP options file "
-				    "%s > 256 characters.\n", optarg);
-				dns_usage(argv[0]);
+				fprintf(stderr, "ERROR: TCP options file %s > 256 characters.\n", optarg);
+				dns_exit(1);
 			}
 			break;
-		case 'O':	/* IP options file */
+		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				ipoptionsfile = strdup(optarg);
 				got_ipoptions = 1;
 			} else {
-				fprintf(stderr, "ERROR: IP options file %s "
-				    "> 256 characters.\n", optarg);
-				dns_usage(argv[0]);
+				fprintf(stderr, "ERROR: IP options file %s > 256 characters.\n", optarg);
+				dns_exit(1);
 			}
 			break;
-		case 'P':	/* payload file */
-                	if (strlen(optarg) < 256) {
+		case 'P': /* payload file */
+			if (strlen(optarg) < 256) {
 				payloadfile = strdup(optarg);
 				got_payload = 1;
-                	} else {
-				fprintf(stderr, "ERROR: payload file %s > 256 "
-				    "characters.\n", optarg);
-				dns_usage(argv[0]);
+			} else {
+				fprintf(stderr, "ERROR: payload file %s > 256 characters.\n", optarg);
+				dns_exit(1);
 			}
 			break;
-		case 'q':	/* number of questions */
-			if (getint16(optarg, &dnshdr.num_q) < 0)
-			    dns_usage(argv[0]);
+		case 'q': /* number of questions */
+			dnshdr.num_q = xgetint16(optarg);
 			break;
-		case 'r':	/* number of additional resource records */
-			if (getint16(optarg, &dnshdr.num_addi_rr) < 0)
-			    dns_usage(argv[0]);
+		case 'r': /* number of additional resource records */
+			dnshdr.num_addi_rr = xgetint16(optarg);
 			break;
-		case 's':	/* TCP sequence number */
-			if (getint32(optarg, &tcphdr.th_seq) < 0)
-			    dns_usage(argv[0]);
+		case 's': /* TCP sequence number */
+			tcphdr.th_seq = xgetint32(optarg);
 			break;
-		case 'S':	/* source IP address */
-			if ((nemesis_name_resolve(optarg, 
-			    (uint32_t *)&iphdr.ip_src.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid source IP "
-				    "address: \"%s\".\n", optarg);
-				dns_usage(argv[0]);
+		case 'S': /* source IP address */
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
+				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
+				dns_exit(1);
 			}
 			break;
-		case 't':	/* IP type of service */
-			if (getint8(optarg, &iphdr.ip_tos) < 0)
-			    dns_usage(argv[0]);
+		case 't': /* IP type of service */
+			iphdr.ip_tos = xgetint8(optarg);
 			break;
-		case 'T':	/* IP time to live */
-			if (getint8(optarg, &iphdr.ip_ttl) < 0)
-			    dns_usage(argv[0]);
+		case 'T': /* IP time to live */
+			iphdr.ip_ttl = xgetint8(optarg);
 			break;
-		case 'u':	/* TCP urgent pointer */
-			if (getint16(optarg, &tcphdr.th_urp) < 0)
-			    dns_usage(argv[0]);
+		case 'u': /* TCP urgent pointer */
+			tcphdr.th_urp = xgetint16(optarg);
 			break;
 		case 'v':
-			if (++verbose >= 1)
-			    nemesis_printtitle((const char *)title);
+			verbose++;
+			if (verbose == 1)
+				nemesis_printtitle((const char *)title);
 			break;
-		case 'w':    /* TCP window size */
-			if (getint16(optarg, &tcphdr.th_win) < 0)
-			    dns_usage(argv[0]);
+		case 'w': /* TCP window size */
+			tcphdr.th_win = xgetint16(optarg);
 			break;
-		case 'x':    /* TCP/UDP source port */
-			if (getint16(optarg, &tcphdr.th_sport) < 0)
-			    dns_usage(argv[0]);
-			else
-			    udphdr.uh_sport = tcphdr.th_sport;
+
+		case 'x': /* TCP/UDP source port */
+			tcphdr.th_sport = xgetint16(optarg);
+			udphdr.uh_sport = xgetint16(optarg);
 			break;
-		case 'y':    /* TCP/UDP destination port */
-			if (getint16(optarg, &tcphdr.th_dport) < 0)
-			    dns_usage(argv[0]);
-			else
-			    udphdr.uh_dport = tcphdr.th_dport;
+		case 'y': /* TCP/UDP destination port */
+			tcphdr.th_dport = xgetint16(optarg);
+			udphdr.uh_dport = xgetint16(optarg);
 			break;
 #if defined(WIN32)
 		case 'Z':
 			if ((ifacetmp = pcap_lookupdev(errbuf)) == NULL)
 				perror(errbuf);
-			else
-				PrintDeviceList(ifacetmp);
 
+			PrintDeviceList(ifacetmp);
 			dns_exit(1);
-			/* NOTREACHED */
-			break;
 #endif
-		case '?':	/* FALLTHROUGH */
+		case '?': /* FALLTHROUGH */
 		default:
 			dns_usage(argv[0]);
-			/* NOTREACHED */
 			break;
 		}
 	}
@@ -461,8 +399,7 @@ dns_cmdline(int argc, char **argv)
 	return;
 }
 
-static int
-dns_exit(int code)
+static int dns_exit(int code)
 {
 	if (got_payload)
 		free(pd.file_mem);
@@ -480,10 +417,11 @@ dns_exit(int code)
 		free(tcpoptionsfile);
 
 	if (ipoptionsfile != NULL)
-		free (ipoptionsfile);
+		free(ipoptionsfile);
 
-	if (payloadfile != NULL);
-		free(payloadfile);
+	if (payloadfile != NULL)
+		;
+	free(payloadfile);
 
 #if defined(WIN32)
 	if (ifacetmp != NULL)
@@ -493,8 +431,7 @@ dns_exit(int code)
 	exit(code);
 }
 
-static void
-dns_verbose(void)
+static void dns_verbose(void)
 {
 	if (verbose) {
 		if (got_link)

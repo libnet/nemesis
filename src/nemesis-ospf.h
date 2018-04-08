@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-ospf.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-ospf.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
@@ -13,61 +13,41 @@
 #define __NEMESIS_OSPF_H__
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
-#include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <strings.h>
 #include <sys/types.h>
+#include <unistd.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #if defined(HAVE_MACHINE_ENDIAN_H)
-    #include <machine/endian.h>
+#include <machine/endian.h>
 #endif
 #if defined(HAVE_NETINET_IN_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
+#include <libnet.h>
 
-u_short id,            /* IP id */
-        frag,          /* frag shit */
-        mtusize,       /* Max dgram length (DBD) */
-        num,           /* LSA_RTR num */
-        interval,      /* secs since last pkt sent */
-        rtr_flags,     /* LSA_RTR flags */
-        metric,        /* OSPF metric */
-        ospf_age;      /* OSPF advertisement age */
+static OSPFhdr      ospfhdr;
+static OSPFHELLOhdr ospfhellohdr;
+static LSAhdr       lsahdr;
+static LSRhdr       lsrhdr;
+static LSUhdr       lsuhdr;
+static ASLSAhdr     aslsahdr;
+static RTRLSAhdr    rtrlsahdr;
+static DBDhdr       dbdhdr;
+static NETLSAhdr    netlsahdr;
+static SUMLSAhdr    sumlsahdr;
 
-u_long source,         /* source address */
-       dest,           /* destination address */
-       neighbor,       /* neighbor router */
-       as_fwd,         /* AS_EXT forward address */
-       addrid,         /* advertising router id */
-       addaid,         /* advertising area id */
-       router,         /* advertising router */
-       auth[2],        /* authentication type */
-       mask;           /* subnet mask (icmp_mask) */
+int mode; /* OSPF injection mode */
 
-u_char priority,       /* OSPF priority */
-       exchange,       /* DBD exchange type */
-       rtrtype,        /* LSA_RTR type */
-       ooptions;       /* OSPF options */
-
-u_int dead_int,        /* dead router interval in secs */
-      as_tag,          /* AS_EXT tag */
-      seqnum,          /* seqnum for LSA */
-      bcastnum,        /* num of LSAs to bcast (LSU) */
-      rtrdata,         /* LSA_RTR router data */
-      rtrid;           /* router id for LSA */
-
-int mode;	/* OSPF injection mode */
-
-int buildospf(ETHERhdr *, IPhdr *, FileData *, FileData *, char *);
+int buildospf(ETHERhdr *, IPhdr *, FileData *, FileData *, libnet_t *, int);
 
 #endif /* __NEMESIS_OSPF_H__ */

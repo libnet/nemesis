@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-proto_ospf.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-proto_ospf.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -12,51 +12,331 @@
 #include "nemesis-ospf.h"
 #include "nemesis.h"
 
-int
-buildospf(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, 
-    char *device)
+u_char auth[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+int build_hello(FileData *pd, libnet_t *l)
 {
-	int n;
-	u_int32_t ospf_packetlen = 0, ospf_meta_packetlen = 0;
+	libnet_build_ospfv2_hello(ospfhellohdr.hello_nmask.s_addr,    /* netmask */
+	                          ospfhellohdr.hello_intrvl,          /* interval */
+	                          ospfhellohdr.hello_opts,            /* options */
+	                          ospfhellohdr.hello_rtr_pri,         /* priority */
+	                          ospfhellohdr.hello_dead_intvl,      /* dead int */
+	                          ospfhellohdr.hello_des_rtr.s_addr,  /* router */
+	                          ospfhellohdr.hello_bkup_rtr.s_addr, /* router */
+//				  ospfhellohdr.hello_nbr.s_addr,      /* neighbor */
+	                          pd->file_mem,                       /* payload */
+	                          pd->file_s,                         /* payload size */
+	                          l,                                  /* libnet handle */
+	                          0);                                 /* libnet id */
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+	                  LIBNET_OSPF_AUTH_H, /* payload size */
+	                  l,                  /* libnet handle */
+	                  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+	                    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+	                    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+	                    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+	                    0,                                                     /* checksum */
+	                    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+	                    NULL,                                                  /* payload */
+	                    0,                                                     /* payload size */
+	                    l,                                                     /* libnet handle */
+	                    0);                                                    /* libnet id */
+}
+
+int build_dbd(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_dbd(dbdhdr.dbd_mtu_len,
+				dbdhdr.dbd_opts, /* DBD packet options (from above) */
+				dbdhdr.dbd_type, /* type of exchange occurring */
+				dbdhdr.dbd_seq, pd->file_mem, pd->file_s, l, 0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsr(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsr(lsrhdr.lsr_type, lsrhdr.lsr_lsid, lsrhdr.lsr_adrtr.s_addr, pd->file_mem, pd->file_s, l, 0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsu(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, pd->file_mem, pd->file_s, l, 0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsartr(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsa_rtr(rtrlsahdr.rtr_flags,
+				    rtrlsahdr.rtr_num,
+				    rtrlsahdr.rtr_link_id,
+				    rtrlsahdr.rtr_link_data,
+				    rtrlsahdr.rtr_type,
+				    rtrlsahdr.rtr_tos_num,
+				    rtrlsahdr.rtr_metric,
+				    pd->file_mem,
+				    pd->file_s,
+				    l,
+				    0);
+
+	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
+				lsahdr.lsa_opts,
+				lsahdr.lsa_type,
+				lsahdr.lsa_id,
+				lsahdr.lsa_adv.s_addr,
+				lsahdr.lsa_seq,
+				lsahdr.lsa_sum,
+				lsahdr.lsa_len,
+				NULL,
+				0,
+				l,
+				0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsanet(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsa_net(netlsahdr.net_nmask.s_addr,
+				    netlsahdr.net_rtr_id,
+				    pd->file_mem,
+				    pd->file_s,
+				    l,
+				    0);
+
+	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
+				lsahdr.lsa_opts,
+				lsahdr.lsa_type,
+				lsahdr.lsa_id,
+				lsahdr.lsa_adv.s_addr,
+				lsahdr.lsa_seq,
+				lsahdr.lsa_sum,
+				lsahdr.lsa_len,
+				NULL,
+				0,
+				l,
+				0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsasum(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsa_sum(sumlsahdr.sum_nmask.s_addr,
+				    sumlsahdr.sum_metric,
+				    sumlsahdr.sum_tos_metric,
+				    pd->file_mem,
+				    pd->file_s,
+				    l,
+				    0);
+
+	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
+				lsahdr.lsa_opts,
+				lsahdr.lsa_type,
+				lsahdr.lsa_id,
+				lsahdr.lsa_adv.s_addr,
+				lsahdr.lsa_seq,
+				lsahdr.lsa_sum,
+				lsahdr.lsa_len,
+				NULL,
+				0,
+				l,
+				0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int build_lsaas(FileData *pd, libnet_t *l)
+{
+	libnet_build_ospfv2_lsa_as(aslsahdr.as_nmask.s_addr,
+				   aslsahdr.as_metric,
+				   aslsahdr.as_fwd_addr.s_addr,
+				   aslsahdr.as_rte_tag,
+				   pd->file_mem,
+				   pd->file_s,
+				   l,
+				   0);
+
+	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
+				lsahdr.lsa_opts,
+				lsahdr.lsa_type,
+				lsahdr.lsa_id,
+				lsahdr.lsa_adv.s_addr,
+				lsahdr.lsa_seq,
+				lsahdr.lsa_sum,
+				lsahdr.lsa_len,
+				NULL,
+				0,
+				l,
+				0);
+
+	/* authentication data */
+	libnet_build_data(auth,               /* auth data */
+			  LIBNET_OSPF_AUTH_H, /* payload size */
+			  l,                  /* libnet handle */
+			  0);                 /* libnet id */
+
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_s, /* OSPF packet length */
+			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
+			    0,                                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
+			    NULL,                                                  /* payload */
+			    0,                                                     /* payload size */
+			    l,                                                     /* libnet handle */
+			    0);                                                    /* libnet id */
+}
+
+int buildospf(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *l, int got_type)
+{
+	int              n;
+	u_int32_t        ospf_packetlen = 0, ospf_meta_packetlen = 0;
 	static u_int8_t *pkt;
-	static int sockfd = -1;
-	struct libnet_link_int *l2 = NULL;
-	u_int8_t link_offset = 0;
-#if !defined(WIN32)
-	int sockbuff = IP_MAXPACKET;
-#endif
+	u_int8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;
 	if (ipod->file_mem == NULL)
 		ipod->file_s = 0;
 
-	if (got_link) {  /* data link layer transport */
-		if ((l2 = libnet_open_link_interface(device, errbuf)) == NULL) {
-			nemesis_device_failure(INJECTION_LINK, 
-			    (const char *)device);
-			return (-1);
-		}
+	if (got_link) /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
-	} else {
-		if ((sockfd = libnet_open_raw_sock(IPPROTO_RAW)) < 0) {
-			nemesis_device_failure(INJECTION_RAW, 
-			    (const char *)NULL);
-			return (-1);
-		}
-#if !defined(WIN32)
-		if ((setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, 
-		    (const void *)&sockbuff, sizeof(sockbuff))) < 0) {
-			fprintf(stderr, "ERROR: setsockopt() failed.\n");
-			return (-1);
-		}
-#endif
+
+	ospf_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_OSPF_H + LIBNET_OSPF_AUTH_H + pd->file_s + ipod->file_s;
+
+	switch (got_type) {
+	case 0: /* hello */
+		ospf_packetlen += LIBNET_OSPF_HELLO_H;
+		build_hello(pd, l);
+		break;
+	case 1: /* dbd */
+		ospf_packetlen += LIBNET_OSPF_DBD_H;
+		build_dbd(pd, l);
+		break;
+	case 2: /* lsr */
+		ospf_packetlen += LIBNET_OSPF_LSR_H;
+		build_lsr(pd, l);
+		break;
+	case 3: /* lsu */
+		ospf_packetlen += LIBNET_OSPF_LSU_H;
+		build_lsu(pd, l);
+		break;
+	case 4: /* lsa net */
+		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_NET_H;
+		build_lsanet(pd, l);
+		break;
+	case 5: /* lsa as_e */
+		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_AS_EXT_H;
+		build_lsaas(pd, l);
+		break;
+	case 6: /* lsa router */
+		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_RTR_H;
+		build_lsartr(pd, l);
+		break;
+	case 7: /* lsa sum */
+		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_SUM_H;
+		build_lsasum(pd, l);
+		break;
 	}
 
-	ospf_packetlen = link_offset + LIBNET_IP_H + LIBNET_OSPF_H + 
-	    pd->file_s + ipod->file_s;
-
-	ospf_meta_packetlen = ospf_packetlen - (link_offset + LIBNET_IP_H);
+	ospf_meta_packetlen = ospf_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: OSPF packet length %u.\n", ospf_packetlen);
@@ -64,790 +344,44 @@ buildospf(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod,
 	printf("DEBUG: OSPF payload size  %u.\n", pd->file_s);
 #endif
 
-	if (libnet_init_packet(ospf_packetlen, &pkt) == -1) {
-		fprintf(stderr, "ERROR: Unable to allocate packet memory.\n");
-		return (-1);
-	}
-
+	libnet_build_ipv4(ospf_meta_packetlen,
+			  ip->ip_tos,
+			  ip->ip_id,
+			  ip->ip_off,
+			  ip->ip_ttl,
+			  ip->ip_p,
+			  0,
+			  ip->ip_src.s_addr,
+			  ip->ip_dst.s_addr,
+			  NULL,
+			  0,
+			  l,
+			  0);
 	if (got_link)
-		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, 
-		    ETHERTYPE_IP, NULL, 0, pkt);
+		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	libnet_build_ip(ospf_meta_packetlen, ip->ip_tos, ip->ip_id, ip->ip_off, 
-	    ip->ip_ttl, ip->ip_p, ip->ip_src.s_addr, ip->ip_dst.s_addr, 
-	    NULL, 0, pkt + ((got_link == 1) ? LIBNET_ETH_H : 0));
-
-	if (got_link)
-		n = libnet_write_link_layer(l2, device, pkt, ospf_packetlen);
-	else
-		n = libnet_write_ip(sockfd, pkt, ospf_packetlen);
+	libnet_pblock_coalesce(l, &pkt, &ospf_packetlen);
+	printf("mark1\n");
+	n = libnet_write(l);
+	printf("mark2\n");
 
 	if (verbose == 2)
-		nemesis_hexdump((char *)pkt, ospf_packetlen, HEX_ASCII_DECODE);
-	if (verbose >= 3)
-		nemesis_hexdump((char *)pkt, ospf_packetlen, HEX_RAW_DECODE);
+		nemesis_hexdump(pkt, ospf_packetlen, HEX_ASCII_DECODE);
+	if (verbose == 3)
+		nemesis_hexdump(pkt, ospf_packetlen, HEX_RAW_DECODE);
 
 	if (n != ospf_packetlen) {
-		fprintf(stderr, "ERROR: Incomplete packet injection.  Only "
-			"wrote %d bytes.\n", n);
+		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
 			if (got_link)
-				printf("Wrote %d byte OSPF packet through "
-				    "linktype %s.\n", n, 
-				    nemesis_lookup_linktype(l2->linktype));
+				printf("Wrote %d byte OSPF packet through linktype %s.\n",
+				       n, nemesis_lookup_linktype(l->link_type));
 			else
 				printf("Wrote %d byte OSPF packet.\n", n);
-		} 
+		}
 	}
 
-	libnet_destroy_packet(&pkt);
-	if (got_link)
-		libnet_close_link_interface(l2);
-	else
-        libnet_close_raw_sock(sockfd);
-    return n;
+	libnet_destroy(l);
+	return n;
 }
-#if 0
-int build_hello()
-{				/* OSPF Hello */
-
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-			     LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP,
-			    NULL, 0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_HELLO_H,
-		      tos, id, frag, ttl, IPPROTO_OSPF, source, dest, NULL, 0, pkt + 
-              LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_HELLO_H + LIBNET_AUTH_H,
-      /* size of packet */
-			LIBNET_OSPF_HELLO,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL,	0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H +
-			  LIBNET_ETH_H, auth);
-
-      libnet_build_ospf_hello(mask,	/* OSPF netmask */
-			      interval,	/* secs since last pkt sent */
-			      ooptions,	/* OSPF options */
-			      priority,	/* OSPF priority */
-			      dead_int,	/* Time til router is deemed down */
-			      source,	/* designated router */
-			      source,	/* backup router */
-			      neighbor,	/* address of neigbor router */
-			      payload,	/* OSPF payload pointer */
-			      payload_s,	/* OSPF payload size */
-			    pkt + LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H
-			      + LIBNET_AUTH_H);
-      /* pkt hdr mem */
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_OSPF_H +
-		  LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-	      LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_HELLO_H + LIBNET_AUTH_H +
-				  payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_HELLO_H +
-	  LIBNET_AUTH_H + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-		 } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_HELLO_H,	/* size of packet */
-		      tos, id, frag, ttl, IPPROTO_OSPF, source, dest,	NULL,
-		      0, pkt);	
-
-      libnet_build_ospf(LIBNET_HELLO_H + LIBNET_AUTH_H,	/* size of packet */
-			LIBNET_OSPF_HELLO,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_hello(mask,	/* OSPF netmask */
-			      interval,	/* secs since last pkt sent */
-			      ooptions,	/* OSPF options */
-			      priority,	/* OSPF priority */
-			      dead_int,	/* Time til router is deemed down */
-			      source,	/* designated router */
-			      source,	/* backup router */
-			      neighbor,	/* address of neigbor router */
-			      payload,	/* OSPF payload pointer */
-			      payload_s,	/* OSPF payload size */
-			 pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H);	/* pkt hdr mem */
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_OSPF_H + LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_OSPF_H + LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      if (c < LIBNET_OSPF_H + LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s) {
-      }
-   }				/* end of ip layer */
-}
-
-int build_dbd()
-{				/* Database Description */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_DBD_H
-		  + LIBNET_IP_H + LIBNET_ETH_H + payload_s + option_s, &pkt)
-	  == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP,
-			    NULL, 0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_DBD_H, 
-		      tos, id, frag, ttl, IPPROTO_OSPF, source, dest, NULL,
-		      0, pkt + LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_DBD_H + LIBNET_AUTH_H,	/* size of packet */
-			LIBNET_OSPF_DBD,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H + LIBNET_ETH_H,
-			  auth);
-
-      libnet_build_ospf_dbd(mtusize,	/* max dgram length */
-			    ooptions,	/* OSPF options */
-			    exchange,	/* exchange type */
-			    seqnum,	/* DBD sequence number */
-			    payload,	/* DBD payload pointer */
-			    payload_s,	/* DBD payload size */
-			    pkt + LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H
-			    + LIBNET_AUTH_H);
-      /* packet header memory */
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_OSPF_H +
-		    LIBNET_DBD_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_DBD_H + LIBNET_AUTH_H +
-				  payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_DBD_H +
-	  LIBNET_AUTH_H + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-		 } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_DBD_H,	/* size of packet */
-		      tos, id, frag, ttl, IPPROTO_OSPF, source,	dest,
-		      NULL,	0, pkt);
-
-      libnet_build_ospf(LIBNET_DBD_H + LIBNET_AUTH_H,	/* size of packet */
-			LIBNET_OSPF_DBD,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_dbd(mtusize,	/* max dgram length */
-			    ooptions,	/* OSPF options */
-			    exchange,	/* exchange type */
-			    seqnum,	/* DBD sequence number */
-			    payload,	/* DBD payload pointer */
-			    payload_s,	/* DBD payload size */
-			 pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H);	/* packet header memory */
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_OSPF_H + LIBNET_DBD_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_OSPF_H + LIBNET_DBD_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      if (c < LIBNET_OSPF_H + LIBNET_DBD_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s) {
-      } else {
-      }
-   }				/* end of ip layer */
-}
-
-int build_lsr()
-{				/* Link State Request */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-			     LIBNET_LSR_H + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL, 0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSR_H,
-      /* size of p acket */
-		      tos, id, frag, ttl, IPPROTO_OSPF,	source,
-		      dest, NULL, 0, pkt + LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_HELLO_H + LIBNET_AUTH_H,
-      /* size of packet */
-			LIBNET_OSPF_HELLO,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H +
-			  LIBNET_ETH_H, auth);
-
-      libnet_build_ospf_lsr(LIBNET_LS_TYPE_RTR, rtrid, router, payload,
-			    payload_s, pkt + LIBNET_ETH_H + LIBNET_IP_H + 
-                            LIBNET_OSPF_H + LIBNET_AUTH_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_OSPF_H +
-		    LIBNET_LSR_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSR_H + LIBNET_AUTH_H +
-				  payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_HELLO_H +
-	  LIBNET_AUTH_H + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-		 } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {			/* ip layer */
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSR_H,	
-		      tos, id, frag, ttl, IPPROTO_OSPF,	source,	dest, NULL,	
-		      0, pkt);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSR_H,	/* size of packet */
-			LIBNET_OSPF_LSR,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_lsr(LIBNET_LS_TYPE_RTR, rtrid, router, payload,
-			    payload_s, pkt + LIBNET_IP_H + LIBNET_OSPF_H + 
-                            LIBNET_AUTH_H);
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_IP_H + LIBNET_OSPF_H +
-			 LIBNET_AUTH_H + LIBNET_LSR_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_IP_H + LIBNET_OSPF_H +
-			  LIBNET_AUTH_H + LIBNET_LSR_H + payload_s +
-			  option_s);
-
-      if (c < LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSR_H +
-	  payload_s + option_s) {
-   }				/* end of ip layer */
-}
-
-int build_lsu()
-{				/* Link State Update */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-			     LIBNET_HELLO_H + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL,
-			    0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSU_H, tos, id, 
-              frag, ttl, IPPROTO_OSPF, source, dest, NULL, 0, pkt + 
-              LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_LSU_H + LIBNET_AUTH_H,	/* size of packet */
-			LIBNET_OSPF_LSU,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H
-			  + LIBNET_ETH_H, auth);
-
-      libnet_build_ospf_lsu(bcastnum,	/* num of LSAs to bcast */
-			    payload,	/* DBD payload pointer */
-			    payload_s,	/* DBD payload size */
-			 pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H);
-      /* packet header memory */
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_OSPF_H +
-		    LIBNET_LSU_H + LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSU_H + LIBNET_AUTH_H +
-				  payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSU_H +
-	  LIBNET_AUTH_H + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-      } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSU_H,
-      /* size of packet */
-		      tos, id, frag, ttl, IPPROTO_OSPF, source, dest,
-		      NULL,	0,	pkt);
-
-      libnet_build_ospf(LIBNET_LSU_H + LIBNET_AUTH_H,	/* size of packet */
-			LIBNET_OSPF_LSU,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_lsu(bcastnum,	/* num of LSAs to bcast */
-			    payload,	/* DBD payload pointer */
-			    payload_s,	/* DBD payload size */
-			 pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H);
-      /* packet header memory */
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_OSPF_H + LIBNET_LSU_H +
-			 LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_OSPF_H + LIBNET_LSU_H +
-			  LIBNET_IP_H + LIBNET_AUTH_H + payload_s);
-
-      if (c < LIBNET_OSPF_H + LIBNET_LSU_H + LIBNET_IP_H + LIBNET_AUTH_H
-	  + payload_s) {
-      }
-   }				/* end of ip layer */
-}
-
-int build_lsartr()
-{				/* Router Links Advertisement */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-	       LIBNET_LSA_H + LIBNET_LS_RTR_LEN + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL,
-			    0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_RTR_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,	
-		      source, dest,	NULL, 0, pkt + LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_ETH_H + LIBNET_IP_H,
-			  auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_RTR, rtrid,
-			    router, seqnum, LIBNET_LS_RTR_LEN, NULL,
-			    0, pkt + LIBNET_ETH_H + LIBNET_AUTH_H + 
-                            LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_rtr(rtr_flags, num, rtrid, rtrdata, rtrtype, tos, 
-                                metric, payload, payload_s, pkt + 
-                                LIBNET_ETH_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-				LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_IP_H
-	+ LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H +
-	   LIBNET_AUTH_H, IPPROTO_OSPF_LSA, LIBNET_LS_RTR_LEN + LIBNET_LSA_H
-			 + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-				  LIBNET_LS_RTR_LEN + payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H +
-	  LIBNET_AUTH_H + LIBNET_LS_RTR_LEN + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-		 } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_RTR_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,	
-		      source, dest,	NULL, 0, pkt);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_RTR, rtrid,
-			    router, seqnum, LIBNET_LS_RTR_LEN, NULL,
-			    0, pkt + LIBNET_AUTH_H + LIBNET_OSPF_H + 
-                            LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_rtr(rtr_flags, num, rtrid, rtrdata, rtrtype,
-				tos, metric, payload, payload_s,
-				pkt + LIBNET_LSA_H + LIBNET_AUTH_H +
-				LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_IP_H + LIBNET_OSPF_H +
-			 LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H,
-	    IPPROTO_OSPF_LSA, LIBNET_LS_RTR_LEN + LIBNET_LSA_H + payload_s);
-
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_IP_H + LIBNET_OSPF_H +
-			  LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN +
-			  payload_s + option_s);
-
-      if (c < LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-	  LIBNET_LS_RTR_LEN + payload_s + option_s) {
-   }
-}
-
-int build_lsanet()
-{				/* Network Links Advertisement */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-	       LIBNET_LSA_H + LIBNET_LS_NET_LEN + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL, 0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_NET_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,	
-		      source, dest,	NULL, 0, pkt + LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_NET_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);	
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_ETH_H + LIBNET_IP_H,
-			  auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_NET, rtrid,
-			    router, seqnum, LIBNET_LS_NET_LEN, NULL,
-			    0, pkt + LIBNET_ETH_H + LIBNET_AUTH_H + 
-                            LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_net(mask, rtrid, payload, payload_s,
-			 pkt + LIBNET_ETH_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-				LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF,
-		  LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H
-			 + LIBNET_LS_NET_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H
-		      + LIBNET_AUTH_H, IPPROTO_OSPF_LSA, LIBNET_LS_NET_LEN +
-			 LIBNET_LSA_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-				  LIBNET_LS_NET_LEN + payload_s + option_s);
-
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H +
-	  LIBNET_AUTH_H + LIBNET_LS_NET_LEN + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes\n", n);
-		 } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_NET_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,
-		      source, dest,	NULL, 0, pkt);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_NET_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_NET, rtrid,
-			    router, seqnum, LIBNET_LS_NET_LEN,
-			    NULL, 0, pkt + LIBNET_AUTH_H + LIBNET_OSPF_H + 
-                            LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_net(mask, rtrid, payload, payload_s,
-				pkt + LIBNET_LSA_H + LIBNET_AUTH_H +
-				LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_IP_H + LIBNET_OSPF_H +
-			 LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_RTR_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H,
-	    IPPROTO_OSPF_LSA, LIBNET_LS_RTR_LEN + LIBNET_LSA_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_IP_H + LIBNET_OSPF_H +
-			  LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_NET_LEN +
-			  payload_s + option_s);
-
-      if (c < LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-	  LIBNET_LS_NET_LEN + payload_s + option_s) {
-   }
-}
-
-int build_lsasum_ip()
-{				/* Summary Links Advertisement */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-	       LIBNET_LSA_H + LIBNET_LS_SUM_LEN + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL,
-			    0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_SUM_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,
-		      source, dest, NULL, 0, pkt + LIBNET_ETH_H);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_SUM_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H + LIBNET_ETH_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_ETH_H + LIBNET_OSPF_H + LIBNET_IP_H,
-			  auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_IP, rtrid,
-			    router, seqnum, LIBNET_LS_SUM_LEN,
-			    NULL, 0, pkt + LIBNET_ETH_H + LIBNET_AUTH_H + 
-                            LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_sum(mask, metric, tos, payload,
-				payload_s, pkt + LIBNET_ETH_H + LIBNET_LSA_H + 
-                                LIBNET_AUTH_H + LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_OSPF, LIBNET_IP_H +
-	  LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_SUM_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H + LIBNET_IP_H +
-			 LIBNET_OSPF_H + LIBNET_AUTH_H, IPPROTO_OSPF_LSA,
-			 LIBNET_LS_SUM_LEN + LIBNET_LSA_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-				  LIBNET_LS_SUM_LEN + payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H +
-	  LIBNET_AUTH_H + LIBNET_LS_SUM_LEN + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes \n", n);
-      } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-    /* end of data link layer */ 
-   else {
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_SUM_LEN, tos, id, frag,	ttl, IPPROTO_OSPF,	
-		      source, dest,	NULL, 0, pkt);
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_SUM_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_OSPF_H + LIBNET_IP_H, auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_IP, rtrid,
-			    router, seqnum, LIBNET_LS_SUM_LEN, NULL,
-			    0, pkt + LIBNET_AUTH_H + LIBNET_OSPF_H + 
-                            LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_sum(mask, metric, tos, payload, payload_s,
-				pkt + LIBNET_LSA_H + LIBNET_AUTH_H +
-				LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_IP_H +
-	  LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_SUM_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_IP_H +
-			 LIBNET_OSPF_H + LIBNET_AUTH_H, IPPROTO_OSPF_LSA,
-			 LIBNET_LS_SUM_LEN + LIBNET_LSA_H + payload_s);
-
-      c = libnet_write_ip(sockfd, pkt, LIBNET_IP_H + LIBNET_OSPF_H +
-			  LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_SUM_LEN +
-			  payload_s + option_s);
-
-      if (c < LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-	  LIBNET_LS_SUM_LEN + payload_s + option_s) {
-      }
-   }
-}
-
-int build_lsaas()
-{				/* Summary Links Advertisement */
-      if (libnet_init_packet(LIBNET_OSPF_H + LIBNET_AUTH_H +
-	    LIBNET_LSA_H + LIBNET_LS_AS_EXT_LEN + LIBNET_IP_H + LIBNET_ETH_H
-			     + payload_s + option_s, &pkt) == -1) {
-	 printf("libnet_init_packet memory error\n");
-	 exit(1);
-      }
-      libnet_build_ethernet(enet_dst, enet_src, ETHERTYPE_IP, NULL,
-			    0, pkt);
-
-      libnet_build_ip(LIBNET_OSPF_H + LIBNET_AUTH_H + LIBNET_LSA_H +
-		      LIBNET_LS_AS_EXT_LEN,	tos, id, frag, ttl, IPPROTO_OSPF,
-		      source, dest,	NULL, 0, pkt + LIBNET_ETH_H);
-
-
-      libnet_build_ospf(LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_AS_EXT_LEN,
-      /* size of packet */
-			LIBNET_OSPF_LSA,	/* OSPF type */
-			addrid,	/* router ID */
-			addaid,	/* area ID */
-			LIBNET_OSPF_AUTH_NULL,	/* auth type */
-			NULL, 0, pkt + LIBNET_ETH_H + LIBNET_IP_H);
-
-      auth[0] = 0;
-      auth[1] = 0;
-
-      LIBNET_OSPF_AUTHCPY(pkt + LIBNET_ETH_H + LIBNET_OSPF_H + LIBNET_IP_H,
-			  auth);
-
-      libnet_build_ospf_lsa(ospf_age, ooptions, LIBNET_LS_TYPE_ASEXT, rtrid,
-			    router, seqnum, LIBNET_LS_AS_EXT_LEN,
-			    NULL, 0, pkt + LIBNET_ETH_H + LIBNET_AUTH_H + LIBNET_OSPF_H +
-			    LIBNET_IP_H);
-
-      libnet_build_ospf_lsa_as(mask, metric, as_fwd, as_tag, payload,
-			       payload_s, pkt + LIBNET_ETH_H + LIBNET_LSA_H + 
-                   LIBNET_AUTH_H + LIBNET_OSPF_H + LIBNET_IP_H);
-
-      libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H);
-
-      libnet_do_checksum(pkt, IPPROTO_OSPF, LIBNET_IP_H + LIBNET_OSPF_H +
-		       LIBNET_AUTH_H + LIBNET_LSA_H + LIBNET_LS_AS_EXT_LEN);
-
-      libnet_do_checksum(pkt + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_AUTH_H,
-	 IPPROTO_OSPF_LSA, LIBNET_LS_AS_EXT_LEN + LIBNET_LSA_H + payload_s);
-
-      n = libnet_write_link_layer(l, device, pkt, LIBNET_ETH_H +
-		LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H + LIBNET_AUTH_H +
-			       LIBNET_LS_AS_EXT_LEN + payload_s + option_s);
-
-      if (n != LIBNET_ETH_H + LIBNET_IP_H + LIBNET_OSPF_H + LIBNET_LSA_H +
-	  LIBNET_AUTH_H + LIBNET_LS_AS_EXT_LEN + payload_s + option_s) {
-	 fprintf(stderr, "Incomplete data transmission.  Only wrote %d bytes \n", n);
-      } else {
-	 if (verbose)
-	    printf("Wrote %d byte OSPF packet through linktype %d\n", n,
-		   l->linktype);
-      }
-   }
-#endif

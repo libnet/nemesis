@@ -1,4 +1,4 @@
-/*	$Id: strsep.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $	*/
+/*	$Id: strsep.c,v 1.1 2003/10/31 21:29:38 jnathan Exp $	*/
 /*	$OpenBSD: strsep.c,v 1.3 1997/08/20 04:28:14 millert Exp $	*/
 
 /*-
@@ -30,11 +30,11 @@
  * SUCH DAMAGE.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #if !defined(HAVE_STRSEP) || defined(WIN32)
@@ -50,18 +50,17 @@
  *
  * If *stringp is NULL, strsep returns NULL.
  */
-char *
-strsep(register char **stringp, register const char *delim)
+char *strsep(char **stringp, const char *delim)
 {
-	register char *s;
+	register char *      s;
 	register const char *spanp;
-	register int c, sc;
-	char *tok;
+	register int         c, sc;
+	char *               tok;
 
 	if ((s = *stringp) == NULL)
 		return (NULL);
 	for (tok = s;;) {
-		c = *s++;
+		c     = *s++;
 		spanp = delim;
 		do {
 			if ((sc = *spanp++) == c) {

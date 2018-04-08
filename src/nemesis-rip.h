@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-rip.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-rip.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -13,29 +13,28 @@
 #define __NEMESIS_RIP_H__
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
-#include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <strings.h>
 #include <sys/types.h>
+#include <unistd.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #if defined(HAVE_MACHINE_ENDIAN_H)
-    #include <machine/endian.h>
+#include <machine/endian.h>
 #endif
 #if defined(HAVE_NETINET_IN_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
+#include <libnet.h>
 
-int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, FileData *pd, 
-    FileData *ipod, char *device);
+int buildrip(ETHERhdr *, IPhdr *, UDPhdr *, RIPhdr *, FileData *, FileData *, libnet_t *);
 
 #endif /* __NEMESIS_RIP_H__ */

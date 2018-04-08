@@ -17,11 +17,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/types.h>
 #include <string.h>
+#include <sys/types.h>
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #if !defined(HAVE_STRLCPY) || defined(WIN32)
@@ -31,12 +31,11 @@
  * will be copied.  Always NUL terminates (unless siz == 0).
  * Returns strlen(src); if retval >= siz, truncation occurred.
  */
-size_t
-strlcpy(char *dst, const char *src, size_t siz)
+size_t strlcpy(char *dst, const char *src, size_t siz)
 {
-	register char *d = dst;
+	register char *      d = dst;
 	register const char *s = src;
-	register size_t n = siz;
+	register size_t      n = siz;
 
 	/* Copy as many bytes as will fit */
 	if (n != 0 && --n != 0) {
@@ -49,11 +48,11 @@ strlcpy(char *dst, const char *src, size_t siz)
 	/* Not enough room in dst, add NUL and traverse rest of src */
 	if (n == 0) {
 		if (siz != 0)
-			*d = '\0';		/* NUL-terminate dst */
+			*d = '\0'; /* NUL-terminate dst */
 		while (*s++)
 			;
 	}
 
-	return(s - src - 1);	/* count does not include NUL */
+	return (s - src - 1); /* count does not include NUL */
 }
 #endif /* !HAVE_STRLCPY || WIN32 */

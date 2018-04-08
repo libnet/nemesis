@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-arp.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-arp.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -13,25 +13,30 @@
 #define __NEMESIS_ARP_H__
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
-#include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <strings.h>
 #include <sys/types.h>
+#include <unistd.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #if defined(HAVE_NETINET_IP_VAR_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
+#include <libnet.h>
 
-int buildarp(ETHERhdr *eth, ARPhdr *arp, FileData *pd, char *device, int reply);
+u_int8_t ar_sha[6];
+u_int8_t ar_spa[4];
+u_int8_t ar_tha[6];
+u_int8_t ar_tpa[4];
+
+int buildarp(ETHERhdr *, ARPhdr *, FileData *, libnet_t *);
 
 #endif /* __NEMESIS_ARP_H__ */

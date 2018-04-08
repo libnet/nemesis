@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-icmp.h,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-icmp.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -13,39 +13,38 @@
 #define __NEMESIS_ICMP_H__
 
 #if defined(HAVE_CONFIG_H)
-    #include "config.h"
+#include "config.h"
 #endif
 
 #include <stdio.h>
-#include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <strings.h>
 #include <sys/types.h>
+#include <unistd.h>
 #if defined(WIN32)
-    #include <pcap.h>
+#include <pcap.h>
 #endif
 #if defined(TIME_WITH_SYS_TIME) || defined(WIN32)
-    #include <sys/time.h>
-    #include <time.h>
+#include <sys/time.h>
+#include <time.h>
 #else
-    #if defined(HAVE_SYS_TIME_H)
-        #include <sys/time.h>
-    #elif defined(HAVE_TIME_H)
-        #include <time.h>
-    #endif
+#if defined(HAVE_SYS_TIME_H)
+#include <sys/time.h>
+#elif defined(HAVE_TIME_H)
+#include <time.h>
+#endif
 #endif
 #if defined(HAVE_NETINET_IN_H)
-    #include <netinet/in.h>
+#include <netinet/in.h>
 #elif defined(WIN32)
-    #include <winsock2.h>
+#include <winsock2.h>
 #endif
-#include <libnet.h>
 #include "nemesis.h"
+#include <libnet.h>
 
-int mode;	/* ICMP injection mode */
+int mode; /* ICMP injection mode */
 int got_origoptions;
 
-int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
-    FileData *pd, FileData *ipod, FileData *origod, char *device);
+int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, FileData *, FileData *, FileData *, libnet_t *);
 
 #endif /* __NEMESIS_ICMP_H__ */

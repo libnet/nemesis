@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis-proto_icmp.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis-proto_icmp.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
@@ -12,19 +12,13 @@
 #include "nemesis-icmp.h"
 #include "nemesis.h"
 
-int
-buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, 
-    FileData *pd, FileData *ipod, FileData *origod, char *device)
+int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileData *pd, FileData *ipod, FileData *origod,
+              libnet_t *l)
 {
-	int n;
-	uint32_t icmp_packetlen = 0, icmp_meta_packetlen = 0;
+	int             n;
+	uint32_t        icmp_packetlen = 0, icmp_meta_packetlen = 0;
 	static uint8_t *pkt;
-	static int sockfd = -1;
-	struct libnet_link_int *l2 = NULL;
-	uint8_t link_offset = 0;
-#if !defined(WIN32)
-	int sockbuff = IP_MAXPACKET;
-#endif
+	uint8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;
@@ -33,54 +27,30 @@ buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 	if (origod->file_mem == NULL)
 		origod->file_s = 0;
 
-	/* data link layer transport */
-	if (got_link) {
-		if ((l2 = libnet_open_link_interface(device, errbuf)) == NULL) {
-			nemesis_device_failure(INJECTION_LINK, 
-			    (const char *)device);
-			    return (-1);
-		}
+	if (got_link) { /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
-	} else {
-		if ((sockfd = libnet_open_raw_sock(IPPROTO_RAW)) < 0) {
-			nemesis_device_failure(INJECTION_RAW, 
-			    (const char *)NULL);
-			return (-1);
-	}
-#if !defined(WIN32)
-		if ((setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, 
-		    (const void *)&sockbuff, sizeof(sockbuff))) < 0) {
-			fprintf(stderr, "ERROR: setsockopt() failed.\n");
-			return (-1);
-		}
-#endif
 	}
 
-	/* 
-	 * Determine exactly how much memory to allocate based upon the ICMP 
-	 * mode.
-	 */
-	icmp_packetlen = link_offset + LIBNET_IP_H + pd->file_s + ipod->file_s;
+	icmp_packetlen = link_offset + LIBNET_IPV4_H + pd->file_s + ipod->file_s;
 
 	switch (mode) {
 	case ICMP_ECHO:
-		icmp_packetlen += LIBNET_ICMP_ECHO_H; 
+		icmp_packetlen += LIBNET_ICMPV4_ECHO_H;
 		break;
 	case ICMP_UNREACH:
 	case ICMP_REDIRECT:
 	case ICMP_TIMXCEED:
-		icmp_packetlen += LIBNET_ICMP_ECHO_H + LIBNET_IP_H + 
-		    origod->file_s;
+		icmp_packetlen += LIBNET_ICMPV4_ECHO_H + LIBNET_IPV4_H + origod->file_s;
 		break;
 	case ICMP_TSTAMP:
-		icmp_packetlen += LIBNET_ICMP_TS_H;
+		icmp_packetlen += LIBNET_ICMPV4_TS_H;
 		break;
 	case ICMP_MASKREQ:
-		icmp_packetlen += LIBNET_ICMP_MASK_H;
+		icmp_packetlen += LIBNET_ICMPV4_MASK_H;
 		break;
 	}
 
-	icmp_meta_packetlen = icmp_packetlen - (link_offset + LIBNET_IP_H);
+	icmp_meta_packetlen = icmp_packetlen - (link_offset + LIBNET_IPV4_H);
 
 #ifdef DEBUG
 	printf("DEBUG: ICMP packet length %u.\n", icmp_packetlen);
@@ -89,136 +59,81 @@ buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 	printf("DEBUG: ICMP payload size  %u.\n", pd->file_s);
 #endif
 
-	if (libnet_init_packet(icmp_packetlen, &pkt) == -1) {
-		fprintf(stderr, "ERROR: Unable to allocate packet memory.\n");
-		return (-1);
-	}
-
-	if (got_link)
-		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, 
-		    ETHERTYPE_IP, NULL, 0, pkt);
-
-	libnet_build_ip(icmp_meta_packetlen, ip->ip_tos, ip->ip_id, 
-	    ip->ip_off, ip->ip_ttl, ip->ip_p, ip->ip_src.s_addr, 
-	    ip->ip_dst.s_addr, NULL, 0, pkt + link_offset);
-
 	switch (mode) {
 	case ICMP_ECHO:
-		libnet_build_icmp_echo(icmp->icmp_type, icmp->icmp_code, 
-		    icmp->hun.echo.id, icmp->hun.echo.seq, pd->file_mem, 
-		    pd->file_s, pkt + link_offset + LIBNET_IP_H);
+		libnet_build_icmpv4_echo(icmp->icmp_type, icmp->icmp_code, 0,
+		                         icmp->hun.echo.id, icmp->hun.echo.seq, pd->file_mem, pd->file_s, l, 0);
 		break;
 	case ICMP_MASKREQ:
-		libnet_build_icmp_mask(icmp->icmp_type, icmp->icmp_code, 
-		    icmp->hun.echo.id, icmp->hun.echo.seq, icmp->dun.mask,
-		    pd->file_mem, pd->file_s, pkt + link_offset + LIBNET_IP_H);
+		libnet_build_icmpv4_mask(icmp->icmp_type, icmp->icmp_code, 0,
+		                         icmp->hun.echo.id, icmp->hun.echo.seq, icmp->dun.mask, pd->file_mem, pd->file_s, l, 0);
 		break;
 	case ICMP_TSTAMP:
-		libnet_build_icmp_timestamp(icmp->icmp_type, icmp->icmp_code, 
-		    icmp->hun.echo.id, icmp->hun.echo.seq, 
-		    icmp->dun.ts.its_otime, icmp->dun.ts.its_rtime,
-		    icmp->dun.ts.its_ttime, pd->file_mem, pd->file_s, 
-		    pkt + link_offset + LIBNET_IP_H);
+		libnet_build_icmpv4_timestamp(icmp->icmp_type, icmp->icmp_code, 0,
+		                              icmp->hun.echo.id, icmp->hun.echo.seq,
+		                              icmp->dun.ts.its_otime, icmp->dun.ts.its_rtime,
+		                              icmp->dun.ts.its_ttime, pd->file_mem, pd->file_s, l, 0);
 		break;
-	/* 
-	 * Behind the scenes, the packet builder functions for unreach,
-	 * and time exceeded are the same.  Therefore, the unreach function 
-	 * is used to build both packet types.
-	 */
+		/* 
+		 * Behind the scenes, the packet builder functions for unreach,
+		 * and time exceeded are the same.  Therefore, the unreach function 
+		 * is used to build both packet types.
+		 */
 	case ICMP_UNREACH:
 	case ICMP_TIMXCEED:
-		libnet_build_icmp_unreach(icmp->icmp_type, icmp->icmp_code, 0,
-		    ipunreach->ip_tos, ipunreach->ip_id, ipunreach->ip_off,
-		    ipunreach->ip_ttl, ipunreach->ip_p, 
-		    ipunreach->ip_src.s_addr, ipunreach->ip_dst.s_addr,
-		    pd->file_mem, pd->file_s, pkt + link_offset + LIBNET_IP_H);
+		libnet_build_icmpv4_unreach(icmp->icmp_type, icmp->icmp_code, 0, pd->file_mem, pd->file_s, l, 0);
 		break;
 	case ICMP_REDIRECT:
-		libnet_build_icmp_redirect(icmp->icmp_type, icmp->icmp_code, 
-		    ntohl(icmp->hun.gateway), 0, ipunreach->ip_tos, 
-		    ipunreach->ip_id, ipunreach->ip_off, ipunreach->ip_ttl,
-		    ipunreach->ip_p, ipunreach->ip_src.s_addr, 
-		    ipunreach->ip_dst.s_addr, pd->file_mem, pd->file_s, 
-		    pkt + link_offset + LIBNET_IP_H);
+		libnet_build_icmpv4_redirect(icmp->icmp_type, icmp->icmp_code, 0,
+		                             ntohl(icmp->hun.gateway), pd->file_mem, pd->file_s, l, 0);
 		break;
 	}
 
-	if ((mode == ICMP_UNREACH || 
-	    mode == ICMP_TIMXCEED || 
-	    mode == ICMP_REDIRECT) && got_origoptions) {
-		if ((libnet_insert_ipo((struct ipoption *)origod->file_mem,
-		    origod->file_s, pkt + link_offset + LIBNET_IP_H + 
-		    LIBNET_ICMP_UNREACH_H + ipod->file_s)) < 0) {
-			fprintf(stderr, "ERROR: Unable to add original IP "
-			    "options, discarding them.\n");
+	if ((mode == ICMP_UNREACH || mode == ICMP_TIMXCEED || mode == ICMP_REDIRECT) && got_origoptions) {
+		if (libnet_build_ipv4_options(origod->file_mem, origod->file_s, l, 0) == -1) {
+			fprintf(stderr, "ERROR: Unable to add original IP options, discarding them.\n");
 		}
 	}
 
 	if (got_ipoptions) {
-		if ((libnet_insert_ipo((struct ipoption *)ipod->file_mem,
-		    ipod->file_s, pkt + link_offset)) < 0) {
-			fprintf(stderr, "ERROR: Unable to add IP options, "
-			    "discarding them.\n");
-		}
+		if ((libnet_build_ipv4_options((u_int8_t *)ipod->file_mem, ipod->file_s, l, 0)) == -1)
+			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 
-	if (got_link)
-		libnet_do_checksum(pkt + LIBNET_ETH_H, IPPROTO_IP, LIBNET_IP_H +
-		    ipod->file_s);
-
-	switch (mode) {
-	case ICMP_ECHO:
-		libnet_do_checksum(pkt + link_offset, IPPROTO_ICMP, 
-		    LIBNET_ICMP_ECHO_H + pd->file_s + ipod->file_s);
-		break;
-	case ICMP_MASKREQ:
-		libnet_do_checksum(pkt + link_offset, IPPROTO_ICMP, 
-		    LIBNET_ICMP_MASK_H + pd->file_s + ipod->file_s);
-		break;
-	case ICMP_TSTAMP:
-		libnet_do_checksum(pkt + link_offset, IPPROTO_ICMP, 
-		    LIBNET_ICMP_TS_H + pd->file_s + ipod->file_s);
-		break;
-	case ICMP_UNREACH:
-	case ICMP_TIMXCEED:
-		libnet_do_checksum(pkt + link_offset, IPPROTO_ICMP, 
-		    LIBNET_ICMP_UNREACH_H + pd->file_s + ipod->file_s + 
-		    origod->file_s);
-		break;
-	case ICMP_REDIRECT:
-		libnet_do_checksum(pkt + link_offset, IPPROTO_ICMP, 
-		    LIBNET_ICMP_REDIRECT_H + pd->file_s + ipod->file_s + 
-		    origod->file_s);
-		break;
-	}
+	(void)libnet_build_ipv4(icmp_meta_packetlen,
+	                        ip->ip_tos,
+	                        ip->ip_id,
+	                        ip->ip_off,
+	                        ip->ip_ttl,
+	                        ip->ip_p, 0,
+	                        ip->ip_src.s_addr,
+	                        ip->ip_dst.s_addr,
+	                        NULL,
+	                        0,
+	                        l,
+	                        0);
 
 	if (got_link)
-		n = libnet_write_link_layer(l2, device, pkt, icmp_packetlen);
-	else
-		n = libnet_write_ip(sockfd, pkt, icmp_packetlen);
+		(void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
+	printf("%d\n", libnet_pblock_coalesce(l, &pkt, &icmp_packetlen));
+	n = libnet_write(l);
 	if (verbose == 2)
 		nemesis_hexdump((char *)pkt, icmp_packetlen, HEX_ASCII_DECODE);
-	if (verbose >= 3)
+	if (verbose == 3)
 		nemesis_hexdump((char *)pkt, icmp_packetlen, HEX_RAW_DECODE);
 
 	if (n != icmp_packetlen) {
-		fprintf(stderr, "ERROR: Incomplete packet injection.  Only "
-		    "wrote %d bytes.\n", n);
+		fprintf(stderr, "ERROR: Incomplete packet injection. Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
 			if (got_link)
-				printf("Wrote %d byte ICMP packet through "
-				    "linktype %s.\n", 
-				    n, nemesis_lookup_linktype(l2->linktype));
+				printf("Wrote %d byte ICMP packet through linktype %s.\n",
+				       n, nemesis_lookup_linktype(l->link_type));
 			else
 				printf("Wrote %d byte ICMP packet.\n", n);
-		} 
+		}
 	}
-	libnet_destroy_packet(&pkt);
-	if (got_link)
-		libnet_close_link_interface(l2);
-	else
-		libnet_close_raw_sock(sockfd);
-	return (n);
+	libnet_destroy(l);
+	return n;
 }

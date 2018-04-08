@@ -1,5 +1,5 @@
 /*
- * $Id: nemesis.c,v 1.2 2005/09/27 19:46:19 jnathan Exp $
+ * $Id: nemesis.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
  *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
@@ -7,16 +7,16 @@
  * nemesis.c (main)
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
 #include "nemesis.h"
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
-int
-main(int argc, char **argv)
+extern int optind;
+
+int main(int argc, char **argv)
 {
 	char **avtmp, *avval;
-	extern int optind;
 
 	avtmp = argv;
 	avval = strrchr(*avtmp, '/');
@@ -36,7 +36,7 @@ main(int argc, char **argv)
 		argv += optind;
 		argc -= optind;
 		nemesis_dns(argc, argv);
-	} else if (!strncmp(avval, "nemesis-ethernet", 16)) { 
+	} else if (!strncmp(avval, "nemesis-ethernet", 16)) {
 		nemesis_ethernet(argc, argv);
 	} else if (argc > 1 && !strncmp(argv[1], "ethernet", 8)) {
 		argv += optind;
@@ -91,8 +91,7 @@ main(int argc, char **argv)
 	exit(0);
 }
 
-void
-nemesis_usage(char *arg)
+void nemesis_usage(char *arg)
 {
 	char *module = "NEMESIS";
 
@@ -101,19 +100,18 @@ nemesis_usage(char *arg)
 
 	printf("NEMESIS Usage:\n  %s [mode] [options]\n\n", arg);
 	printf("NEMESIS modes:\n"
-	       "  arp\n"                       
+	       "  arp\n"
 	       "  dns\n"
 	       "  ethernet\n"
 	       "  icmp\n"
 	       "  igmp\n"
 	       "  ip\n"
-	       "  ospf (currently non-functional)\n"
+	       "  ospf (still in beta)\n"
 	       "  rip\n"
 	       "  tcp\n"
 	       "  udp\n\n");
 	printf("NEMESIS options: \n"
-	       "  To display options, specify a mode with the option "
-	       "\"help\".\n");
+	       "  To display options, specify a mode with the option \"help\".\n");
 	putchar('\n');
 	exit(1);
 }
