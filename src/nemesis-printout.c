@@ -746,6 +746,7 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 		default:
 			break;
 		}
+		break;
 	case 13:
 		icmptype = "Timestamp Request";
 		if (icmp->icmp_code == 0)
