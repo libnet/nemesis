@@ -9,7 +9,7 @@
 .SH NAME
 nemesis-ospf \- OSPF Protocol (The Nemesis Project)
 .SH SYNOPSIS
-\fBnemesis-ospf\fP [-vZ] [\fIoptlist\fP] 
+\fBnemesis\-ospf\fP [\-vZ] [\fIoptlist\fP] 
 .SH DESCRIPTION
 .B The Nemesis Project
 is designed to be a command line-based, portable human IP stack for UNIX-like
@@ -17,14 +17,14 @@ and Windows systems.  The suite is broken down by protocol, and should allow
 for useful scripting of injected packets from simple shell scripts.
 .SS OSPF Packet Types
 .TP
-\fB-p\fP \fIOSPF Protocol (-pH, -pL, -pR)\fR
-Hello (-pH), Database Description (-pD), 
-Link State Request (-pL),
-Link State Update (-pU),
-Router Links Advertisement (-pR),
-Network Links Advertisement (-pN),
-IP Summary Links Advertisement (-pM),
-AS External Link Advertisement (-pA),
+\fB\-p\fP \fIOSPF Protocol (\-pH, \-pL, \-pR)\fR
+Hello (\-pH), Database Description (\-pD), 
+Link State Request (\-pL),
+Link State Update (\-pU),
+Router Links Advertisement (\-pR),
+Network Links Advertisement (\-pN),
+IP Summary Links Advertisement (\-pM),
+AS External Link Advertisement (\-pA),
 .SS OSPF HELLO options
 .TP
 \fB-N\fP \fINeighbor Router Address\fR
@@ -115,8 +115,8 @@ Specify the
 .in -.51
 
 within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the -F command line switch by separating 
-the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+or combined into a single argument to the \-F command line switch by separating 
+the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
 fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
 Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
 are 1-bit fields.  
@@ -132,7 +132,7 @@ This will cause nemesis-ospf to use the specified
 as the options when building the IP header for the injected packet.  IP 
 options can be up to 40 bytes in length.  The IP options file must be created
 manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '-O -' instead of an IP-options-file.
+stdin by specifying '\-O \-' instead of an IP-options-file.
 .IP "-S source-IP-address"
 Specify the
 .I source-IP-address

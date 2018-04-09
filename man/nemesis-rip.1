@@ -9,7 +9,7 @@
 .SH NAME
 nemesis-rip \- RIP Protocol (The Nemesis Project)
 .SH SYNOPSIS
-nemesis-rip [-vZ?] [-a
+nemesis\-rip [\-vZ?] [\-a
 .I RIP-address-family
 .B ] [-c
 .I RIP-command
@@ -118,10 +118,10 @@ RIP-metric value of 16 (infinity) is used to invalidate  a route.
 This will case nemesis-rip to use the specified
 .I payload-file
 as the payload when injecting RIP packets.  For packets injected using the
-raw interface (where -d is not used), the maximum payload size is
+raw interface (where \-d is not used), the maximum payload size is
 65393 bytes.  For packets injected using the link layer interface
-(where -d IS used), the maximum payload size is 1358 bytes.  Payloads can also
-be read from stdin by specifying '-P -' instead of a payload file.
+(where \-d IS used), the maximum payload size is 1358 bytes.  Payloads can also
+be read from stdin by specifying '\-P \-' instead of a payload file.
 
 Windows systems are limited to a maximum payload size of 1358 bytes for RIP
 packets.
@@ -165,7 +165,7 @@ Specify the
 within the IP header.  If a destination IP address is not specified, one will
 automatically be selected depending on the RIP version.  By default, RIP 
 version 2 is used in which case the default destination IP address is 
-'224.0.0.9'.  If RIP version 1 is used (using the -v command line switch) an
+\'224.0.0.9'.  If RIP version 1 is used (using the \-v command line switch) an
 IP address is automatically generated and the last octet (least significant
 bits) are set to 0xff; this is an attempt to emulate a network broadcast to
 a C class network.  If a RIP version other than 1 or 2 is specified, the
@@ -184,8 +184,8 @@ Specify the
 .in -.51
 
 within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the -F command line switch by separating 
-the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+or combined into a single argument to the \-F command line switch by separating 
+the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
 fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
 Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
 are 1-bit fields.  
@@ -201,7 +201,7 @@ This will cause nemesis-rip to use the specified
 as the options when building the IP header for the injected packet.  IP 
 options can be up to 40 bytes in length.  The IP options file must be created
 manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '-O -' instead of an IP-options-file.
+stdin by specifying '\-O \-' instead of an IP\-options\-file.
 .IP "-S source-IP-address"
 Specify the
 .I source-IP-address

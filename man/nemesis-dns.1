@@ -93,12 +93,12 @@ Enables the use of TCP when injecting DNS packets.
 This will cause nemesis-dns to use the specified
 .I payload-file
 as the payload when injecting DNS packets.  For packets injected using the
-raw interface (where -d is not used), the maximum payload size is 
+raw interface (where \-d is not used), the maximum payload size is 
 65443 bytes for DNS packets injected using TCP and 65455 for DNS packets 
 injected using UDP.  For packets injected using the link layer interface
-(where -d IS used), the maximum payload size is 1368 bytes for TCP DNS packets
+(where \-d IS used), the maximum payload size is 1368 bytes for TCP DNS packets
 and 1420 bytes for UDP DNS packets.  Payloads can also be read from stdin by 
-specifying '-P -' instead of a payload-file.
+specifying '\-P \-' instead of a payload-file.
 
 Windows systems are limited to a maximum payload size of 1368 bytes for TCP
 DNS packets and 1420 bytes for UDP DNS packets.
@@ -142,14 +142,14 @@ Specify the
 .fi
 .in -.51
 
-within the TCP header.  Flags can be combined in the form '-fPA'.
+within the TCP header.  Flags can be combined in the form '\-fPA'.
 .IP "-o TCP-options-file"
 This will cause nemesis-dns to use the specified
 .I TCP-options-file
 as the options when building the TCP header for the injected packet.  TCP
 options can be up to 40 bytes in length.  The TCP options file must be created
 manually based upon the desired options.  TCP options can also be read from
-stdin by specifying '-o -' instead of a TCP-options-file.
+stdin by specifying '\-o \-' instead of a TCP-options\-file.
 .IP "-s  sequence-number"
 Specify the
 .I sequence-number
@@ -194,8 +194,8 @@ Specify the
 .in -.51
 
 within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the -F command line switch by separating 
-the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
+or combined into a single argument to the \-F command line switch by separating 
+the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
 fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
 Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
 are 1-bit fields.  
@@ -211,7 +211,7 @@ This will cause nemesis-dns to use the specified
 as the options when building the IP header for the injected packet.  IP 
 options can be up to 40 bytes in length.  The IP options file must be created
 manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '-O -' instead of an IP-options-file.
+stdin by specifying '\-O \-' instead of an IP\-options\-file.
 .IP "-S source-IP-address"
 Specify the
 .I source-IP-address
