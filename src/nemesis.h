@@ -76,7 +76,6 @@
 #define UDP_RAWBUFFSIZE     65467 /* plan for IP options */
 #define UDP_LINKBUFFSIZE    1432  /* link-layer version of above */
 
-#define BUILD               26    /* build number, update for each build */
 #define FP_MAX_ARGS         4     /* number of IP fragment parsing tokens */
 #define ERRBUFFSIZE         256
 #define TITLEBUFFSIZE       81

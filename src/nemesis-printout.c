@@ -947,13 +947,10 @@ void nemesis_printospf(OSPFhdr *ospf)
  */
 void nemesis_maketitle(char *title, const char *module, const char *version)
 {
-	char tmptitle[TITLEBUFFSIZE], buildnum[13];
+	char tmptitle[TITLEBUFFSIZE];
 
 	strlcpy(tmptitle, module, sizeof(tmptitle));
-	/* strlcat(char *dst, const char *src, size_t size) automatically uses size - strlen(dst) - 1 for size argument */
 	strlcat(tmptitle, version, sizeof(tmptitle));
-	snprintf(buildnum, sizeof(buildnum), " (Build %d)", BUILD);
-	strlcat(tmptitle, buildnum, sizeof(tmptitle));
 
 	memcpy(title, tmptitle, sizeof(tmptitle));
 }
