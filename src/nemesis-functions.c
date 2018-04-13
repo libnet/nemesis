@@ -48,7 +48,7 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-const char *version = " -=- The NEMESIS Project Version 1.4";
+const char *version = " -=- The NEMESIS Project v" PACKAGE_VERSION;
 
 char zero[ETHER_ADDR_LEN];
 char one[ETHER_ADDR_LEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
