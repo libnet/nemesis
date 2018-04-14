@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = foreign no-dependencies
+AUTOMAKE_OPTIONS = foreign
 DISTCLEANFILES   = *~
 
 AM_CFLAGS        = -W -Wall -Wextra -Wno-unused-parameter -Wno-empty-body
