@@ -10,15 +10,13 @@ packets from simple shell scripts.
 Key Features
 ------------
 
-* ARP/RARP, DNS, ETHERNET, ICMP, IGMP, IP, OSPF*, RIP, TCP and UDP
+* ARP/RARP, DNS, ETHERNET, ICMP, IGMP, IP, OSPF, RIP, TCP and UDP
   protocol support
 * Layer 2 or Layer 3 injection on UNIX-like systems
 * Layer 2 injection (only) on Windows systems
 * Packet payload from file
 * IP and TCP options from file
 * Tested on OpenBSD, Linux, Solaris, Mac OS X and Windows 2000
-
-*OSPF is currently non-functional.
 
 Each supported protocol uses its own protocol "injector" which is
 accompanied by a man page explaining its functionality.
