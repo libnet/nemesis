@@ -39,6 +39,15 @@ Examples
 
         sudo nemesis igmp -v -p 22 -S 192.168.1.20 -i 239.186.39.5 -D 239.186.39.5
 
+* IGMP v2 query, max resp. time 10 sec, with Router Alert IP option
+
+        echo -ne '\x94\x04\x00\x00' >RA
+        sudo nemesis igmp -v -p 0x11 -c 100 -D 224.0.0.1 -O RA
+
+  or
+
+        echo -ne '\x94\x04\x00\x00' | sudo nemesis igmp -v -p 0x11 -c 100 -D 224.0.0.1 -O -
+
 * Random TCP packet
 
         sudo nemesis tcp
