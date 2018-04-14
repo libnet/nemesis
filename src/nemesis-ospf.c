@@ -284,7 +284,7 @@ static void ospf_cmdline(int argc, char **argv)
 			ospfhdr.ospf_auth_type = xgetint16(optarg);
 			break;
 		case 'A': /* OSPF area ID */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&ospfhdr.ospf_area_id.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &ospfhdr.ospf_area_id.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid OSPF area ID IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -313,7 +313,7 @@ static void ospf_cmdline(int argc, char **argv)
 #endif
 			break;
 		case 'D': /* destination IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_dst.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -323,7 +323,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&aslsahdr.as_fwd_addr.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &aslsahdr.as_fwd_addr.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid external LSA forwarding IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -392,14 +392,14 @@ static void ospf_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
 		case 'n': /* OSPF multi-purpose netmask placement */
 			if (got_type != 0) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&ospfhellohdr.hello_nmask.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &ospfhellohdr.hello_nmask.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid netmask IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			} else {
@@ -413,7 +413,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&ospfhellohdr.hello_nbr.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &ospfhellohdr.hello_nbr.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid OSPF HELLO neighbor IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -498,13 +498,13 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			break;
 		case 'r': /* OSPF advertising router ID */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&lsahdr.lsa_adv.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &lsahdr.lsa_adv.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid OSPF advertising router ID (IP address): \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
 			break;
 		case 'R': /* OSPF source router ID */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&ospfhdr.ospf_rtr_id.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &ospfhdr.ospf_rtr_id.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid OSPF source router ID (IP address): \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -517,7 +517,7 @@ static void ospf_cmdline(int argc, char **argv)
 			dbdhdr.dbd_seq = xgetint32(optarg);
 			break;
 		case 'S': /* source IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_src.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -538,7 +538,7 @@ static void ospf_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 		case 'x': /* OSPF DBD exchange type */
 			if (got_type != 1) {
@@ -567,7 +567,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&netlsahdr.net_nmask.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &netlsahdr.net_nmask.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid netmask: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -577,7 +577,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&sumlsahdr.sum_nmask.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &sumlsahdr.sum_nmask.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid netmask: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
