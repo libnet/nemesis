@@ -281,7 +281,7 @@ static void ospf_cmdline(int argc, char **argv)
 	while ((opt = getopt(argc, argv, ospf_options)) != -1) {
 		switch (opt) {
 		case 'a': /* OSPF authorization type */
-			ospfhdr.ospf_auth_type = (u_int16_t)htons(xgetint16(optarg));
+			ospfhdr.ospf_auth_type = xgetint16(optarg);
 			break;
 		case 'A': /* OSPF area ID */
 			if ((nemesis_name_resolve(optarg, (u_int32_t *)&ospfhdr.ospf_area_id.s_addr)) < 0) {
@@ -294,7 +294,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			lsuhdr.lsu_num = (u_int32_t)htonl(xgetint32(optarg));
+			lsuhdr.lsu_num = xgetint32(optarg);
 			break;
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
@@ -337,10 +337,10 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			aslsahdr.as_rte_tag = (u_int32_t)htonl(xgetint32(optarg));
+			aslsahdr.as_rte_tag = xgetint32(optarg);
 			break;
 		case 'G': /* OSPF link state acknowledgment age in seconds */
-			lsahdr.lsa_age = (u_int16_t)htons(xgetint16(optarg));
+			lsahdr.lsa_age = xgetint16(optarg);
 			break;
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -354,7 +354,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			ospfhellohdr.hello_dead_intvl = (u_int16_t)htonl(xgetint32(optarg));
+			ospfhellohdr.hello_dead_intvl = xgetint32(optarg);
 			break;
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
@@ -364,28 +364,28 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_link_data = (u_int32_t)htonl(xgetint32(optarg));
+			rtrlsahdr.rtr_link_data = xgetint32(optarg);
 			break;
 		case 'l': /* OSPF HELLO las packet interval in seconds */
 			if (got_type != 0) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			ospfhellohdr.hello_intrvl = (u_int16_t)htons(xgetint16(optarg));
+			ospfhellohdr.hello_intrvl = xgetint16(optarg);
 			break;
 		case 'L': /* OSPF link state request ID */
 			if (got_type != 2) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			lsrhdr.lsr_lsid = (u_int32_t)htonl(xgetint32(optarg));
+			lsrhdr.lsr_lsid = xgetint32(optarg);
 			break;
 		case 'm': /* OSPF link state acknowledgment link metric */
 			if (got_type != 6) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_metric = (u_int16_t)htons(xgetint16(optarg));
+			rtrlsahdr.rtr_metric = xgetint16(optarg);
 			break;
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -514,7 +514,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			dbdhdr.dbd_seq = (u_int32_t)htonl(xgetint32(optarg));
+			dbdhdr.dbd_seq = xgetint32(optarg);
 			break;
 		case 'S': /* source IP address */
 			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_src.s_addr)) < 0) {
@@ -533,7 +533,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_num = (u_int16_t)htons(xgetint16(optarg));
+			rtrlsahdr.rtr_num = xgetint16(optarg);
 			break;
 		case 'v':
 			verbose++;
@@ -559,7 +559,7 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			dbdhdr.dbd_mtu_len = (u_int16_t)htons(xgetint16(optarg));
+			dbdhdr.dbd_mtu_len = xgetint16(optarg);
 			break;
 
 		case 'e': /* LSA_NET netmask */
@@ -587,42 +587,42 @@ static void ospf_cmdline(int argc, char **argv)
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			netlsahdr.net_rtr_id = (u_int)htons(xgetint32(optarg));
+			netlsahdr.net_rtr_id = xgetint32(optarg);
 			break;
 		case 'c': /* LSA_NET metric */
 			if (got_type != 7) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			sumlsahdr.sum_metric = (u_int)htons(xgetint32(optarg));
+			sumlsahdr.sum_metric = xgetint32(optarg);
 			break;
 		case 'Q': /* LSA_SUM TOS metric */
 			if (got_type != 7) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			sumlsahdr.sum_tos_metric = (u_int)htons(xgetint32(optarg));
+			sumlsahdr.sum_tos_metric = xgetint32(optarg);
 			break;
 		case 'j': /* LSA_RTR link ID */
 			if (got_type != 6) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_link_id = (u_int)htons(xgetint32(optarg));
+			rtrlsahdr.rtr_link_id = xgetint32(optarg);
 			break;
 		case 'q': /* LSA_RTR metric */
 			if (got_type != 6) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_metric = (u_int16_t)htons(xgetint16(optarg));
+			rtrlsahdr.rtr_metric = xgetint16(optarg);
 			break;
 		case 'w': /* LSA_RTR TOS number */
 			if (got_type != 6) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			rtrlsahdr.rtr_tos_num = (u_int8_t)htons(xgetint8(optarg));
+			rtrlsahdr.rtr_tos_num = xgetint8(optarg);
 			break;
 		case '?': /* FALLTHROUGH */
 		default:
