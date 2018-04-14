@@ -139,29 +139,31 @@ static void igmp_usage(char *arg)
 
 	printf("IGMP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("IGMP options: \n"
-	       "  -p <IGMP type>\n"
-	       "  -c <IGMP code (unused field)>\n"
-	       "  -i <IGMP group IP address>\n"
-	       "  -P <Payload file>\n\n");
+	       "  -p <IGMP type>    0x11: Query, 0x12: v1 Join, 0x16: v2 Join, 0x17: v2 Join\n"
+	       "  -c <IGMP code>    v1: unused, v2: query response time\n"
+	       "  -i <IGMP group>   Multicast group for join/leave, or group spec. query\n"
+	       "  -P <FILE>         Raw IGMP payload file\n"
+	       "\n");
 	printf("IP options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
+	       "  -S <ADDR>         Source IP address\n"
+	       "  -D <ADDR>         Destination IP address\n"
 	       "  -I <IP ID>\n"
 	       "  -T <IP TTL>\n"
 	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	       "  -F <OPT>          IP fragmentation options:\n"
+	       "                    -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>         Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>        Ethernet device number>\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>       Ethernet device name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>          Source MAC address\n"
+	       "  -M <MAC>          Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z                List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	igmp_exit(1);
