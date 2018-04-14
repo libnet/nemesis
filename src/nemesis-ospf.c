@@ -28,6 +28,17 @@ static char *   device        = NULL; /* Ethernet device */
 char *ifacetmp;
 #endif
 
+OSPFhdr      ospfhdr;
+OSPFHELLOhdr ospfhellohdr;
+LSAhdr       lsahdr;
+LSRhdr       lsrhdr;
+LSUhdr       lsuhdr;
+ASLSAhdr     aslsahdr;
+RTRLSAhdr    rtrlsahdr;
+DBDhdr       dbdhdr;
+NETLSAhdr    netlsahdr;
+SUMLSAhdr    sumlsahdr;
+
 static void ospf_cmdline(int, char **);
 static int  ospf_exit(int);
 static void ospf_initdata(void);

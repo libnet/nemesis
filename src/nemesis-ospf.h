@@ -35,16 +35,16 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-static OSPFhdr      ospfhdr;
-static OSPFHELLOhdr ospfhellohdr;
-static LSAhdr       lsahdr;
-static LSRhdr       lsrhdr;
-static LSUhdr       lsuhdr;
-static ASLSAhdr     aslsahdr;
-static RTRLSAhdr    rtrlsahdr;
-static DBDhdr       dbdhdr;
-static NETLSAhdr    netlsahdr;
-static SUMLSAhdr    sumlsahdr;
+extern OSPFhdr      ospfhdr;
+extern OSPFHELLOhdr ospfhellohdr;
+extern LSAhdr       lsahdr;
+extern LSRhdr       lsrhdr;
+extern LSUhdr       lsuhdr;
+extern ASLSAhdr     aslsahdr;
+extern RTRLSAhdr    rtrlsahdr;
+extern DBDhdr       dbdhdr;
+extern NETLSAhdr    netlsahdr;
+extern SUMLSAhdr    sumlsahdr;
 
 int mode; /* OSPF injection mode */
 
