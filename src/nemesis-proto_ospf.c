@@ -361,9 +361,7 @@ int buildospf(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
 	libnet_pblock_coalesce(l, &pkt, &ospf_packetlen);
-	printf("mark1\n");
 	n = libnet_write(l);
-	printf("mark2\n");
 
 	if (verbose == 2)
 		nemesis_hexdump(pkt, ospf_packetlen, HEX_ASCII_DECODE);
