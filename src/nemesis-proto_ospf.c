@@ -16,6 +16,8 @@ u_char auth[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static void build_hello(FileData *pd, libnet_t *l)
 {
+	libnet_pblock_t *p;
+
 	libnet_build_ospfv2_hello(ospfhellohdr.hello_nmask.s_addr,    /* netmask */
 	                          ospfhellohdr.hello_intrvl,          /* interval */
 	                          ospfhellohdr.hello_opts,            /* options */
@@ -28,6 +30,14 @@ static void build_hello(FileData *pd, libnet_t *l)
 	                          pd->file_s,                         /* payload size */
 	                          l,                                  /* libnet handle */
 	                          0);                                 /* libnet id */
+
+	/* Workaround for missing neighbor address bug in libnet1 */
+	p = l->protocol_blocks;
+	if (p) {
+		struct libnet_ospf_hello_hdr *hello = (struct libnet_ospf_hello_hdr *)p->buf;
+
+		hello->hello_nbr = ospfhellohdr.hello_nbr;
+	}
 
 	/* authentication data */
 	libnet_build_data(auth,               /* auth data */
