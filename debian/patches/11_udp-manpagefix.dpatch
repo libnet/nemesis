@@ -1,0 +1,52 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 11_udp-manpagefix.dpatch by William Vera <billy@billy.com.mx>
+##
+## DP: Character cleanup for UTF-8 compatibility.
+
+@DPATCH@
+diff -urNad nemesis-1.4~/man/nemesis-udp.1 nemesis-1.4/man/nemesis-udp.1
+--- nemesis-1.4~/man/nemesis-udp.1	2003-10-31 15:29:36.000000000 -0600
++++ nemesis-1.4/man/nemesis-udp.1	2008-07-02 07:13:02.000000000 -0500
+@@ -9,7 +9,7 @@
+ .SH NAME
+ nemesis-udp \- UDP Protocol (The Nemesis Project)
+ .SH SYNOPSIS
+-nemesis-udp [-vZ?] [-d
++nemesis\-udp [\-vZ?] [\-d
+ .I Ethernet-device
+ .B ] [-D
+ .I destination-IP-address
+@@ -51,10 +51,10 @@
+ This will case nemesis-udp to use the specified
+ .I payload-file
+ as the payload when injecting UDP packets.  For packets injected using the
+-raw interface (where -d is not used), the maximum payload size is
++raw interface (where \-d is not used), the maximum payload size is
+ 65467 bytes.  For packets injected using the link layer interface
+-(where -d IS used), the maximum payload size is 1432 bytes.  Payloads can also
+-be read from stdin by specifying '-P -' instead of a payload file.
++(where \-d IS used), the maximum payload size is 1432 bytes.  Payloads can also
++be read from stdin by specifying '\-P \-' instead of a payload file.
+ 
+ Windows systems are limited to a maximum payload size of 1432 bytes for UDP
+ packets.
+@@ -89,8 +89,8 @@
+ .in -.51
+ 
+ within the IP header.  IP fragmentation options can be specified individually 
+-or combined into a single argument to the -F command line switch by separating 
+-the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
++or combined into a single argument to the \-F command line switch by separating 
++the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
+ fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+ Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+ are 1-bit fields. 
+@@ -106,7 +106,7 @@
+ as the options when building the IP header for the injected packet.  IP 
+ options can be up to 40 bytes in length.  The IP options file must be created
+ manually based upon the desired options.  IP options can also be read from 
+-stdin by specifying '-O -' instead of an IP-options-file.
++stdin by specifying '\-O \-' instead of an IP\-options\-file.
+ .IP "-S source-IP-address"
+ Specify the
+ .I source-IP-address

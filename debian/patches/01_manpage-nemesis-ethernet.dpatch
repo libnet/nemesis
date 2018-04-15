@@ -1,0 +1,15 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_manpage-nemesis-ethernet.dpatch by  William Vera <billy@billy.com.mx>
+##
+## DP: A minor correction at the syntax.
+
+@DPATCH@
+diff -urNad nemesis-1.4~/man/nemesis-ethernet.1 nemesis-1.4/man/nemesis-ethernet.1
+--- nemesis-1.4~/man/nemesis-ethernet.1	2003-10-31 15:29:36.000000000 -0600
++++ nemesis-1.4/man/nemesis-ethernet.1	2008-06-30 22:25:41.000000000 -0500
+@@ -88,4 +88,4 @@
+ .SH "SEE ALSO"
+ .BR "nemesis-arp(1), nemesis-dns(1), nemesis-icmp(1), nemesis-igmp(1), "
+ .BR "nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
+-.BE "nemesis-udp(1)"
++.BR "nemesis-udp(1)"

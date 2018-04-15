@@ -1,0 +1,43 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 08_ip-manpagefix.dpatch by William Vera <billy@billy.com.mx>
+##
+## DP: Character cleanup for UTF-8 compatibility.
+
+@DPATCH@
+diff -urNad nemesis-1.4~/man/nemesis-ip.1 nemesis-1.4/man/nemesis-ip.1
+--- nemesis-1.4~/man/nemesis-ip.1	2003-10-31 15:29:36.000000000 -0600
++++ nemesis-1.4/man/nemesis-ip.1	2008-07-02 05:53:40.000000000 -0500
+@@ -59,8 +59,8 @@
+ .in -.51
+ 
+ within the IP header.  IP fragmentation options can be specified individually 
+-or combined into a single argument to the -F command line switch by separating 
+-the options with commas (eg. '-FD,M') or spaces (eg. '-FM 223').  The IP 
++or combined into a single argument to the \-F command line switch by separating 
++the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
+ fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
+ Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
+ are 1-bit fields.
+@@ -76,7 +76,7 @@
+ as the options when building the IP header for the injected packet.  IP 
+ options can be up to 40 bytes in length.  The IP options file must be created
+ manually based upon the desired options.  IP options can also be read from 
+-stdin by specifying '-O -' instead of an IP-options-file.
++stdin by specifying '\-O \-' instead of an IP-options\-file.
+ .IP "-p IP-protocol-number"
+ Specify the
+ .I IP-protocol-number
+@@ -198,10 +198,10 @@
+ This will cause nemesis-ip to use the specified
+ .I payload-file
+ as the payload when injecting IP packets.  For packets injected using the
+-raw interface (where -d is not used) the maximum payload size is 65475 bytes.
+-For packets injected using the link layer interface (where -d IS used), the
++raw interface (where \-d is not used) the maximum payload size is 65475 bytes.
++For packets injected using the link layer interface (where \-d IS used), the
+ maximum payload size is 1440 bytes.  Payloads can also be read from stdin by 
+-specifying '-P -' instead of a payload-file.
++specifying '\-P \-' instead of a payload\-file.
+ 
+ Windows systems are limited to a maximum payload size of 1440 bytes for IP
+ packets.
