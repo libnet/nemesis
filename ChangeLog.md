@@ -14,6 +14,7 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
 
 ### Changes
 
+- License change, from 2-clause BSD to 3-clause
 - Windows support (link-layer injection only)
 - Useful man pages
 - Single binary
@@ -56,7 +57,7 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
 - Man page fixes from <email:nnposter@users.sourceforge.net>
 - minor man page cleanup
 - nemesis-proto_ip.c:
-		
+
         -    ip_meta_packetlen = ip_packetlen - (link_offet + LIBNET_IP_H);
         +    ip_meta_packetlen = ip_packetlen - (link_offset + LIBNET_IP_H);
 
@@ -222,7 +223,7 @@ v0.666a - initial public release
 - ARP, ICMP, OSPF¹ (unfinished), TCP, UDP implemented
 
 
-[v1.4]:  http://prdownloads.sourceforge.net/nemesis/nemesis-1.4.tar.gz?download
+[v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
 [v1.32]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.32.tar.gz
 [v1.31]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.31.tar.gz
 [v1.3]:  http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.3.tar.gz
