@@ -3,13 +3,12 @@ Change Log
 
 All notable changes to the project are documented in this file.
 
-- Versions prior to v1.4, by Jeff Nathan <mailto:jeff at snort dot org>
-- Versions prior to 1.31, by Mark Grimes <mailto:mark at stateful dot net>
+- Versions <= v1.4, by Jeff Nathan <mailto:jeff at snort dot org>
+- Versions <= 1.31, by Mark Grimes <mailto:mark at stateful dot net>
 
-[v1.5][UNRELEASED]
-------------------
 
-Nemesis the Resurrection.
+[v1.5][UNRELEASED] - Nemesis the Resurrection
+---------------------------------------------
 
 ### Changes
 - Merged Nemesis libnet1 port, from stale CVS branch
