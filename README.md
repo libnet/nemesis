@@ -69,7 +69,7 @@ Origin & References
 Nemesis was created by Mark Grimes in 1999, in 2001 Jeff Nathan took
 over maintainership.  In 2018, after more than a decade of inactivity,
 Joachim Nilsson stepped in, converted from CVS to GIT and merged the
-old libnet-1.1 branch from 2005.
+stale libnet-1.1 upgrade branch from 2005.
 
 Thanks to everyone that has reported bugs and especially those that have
 provided patches.
