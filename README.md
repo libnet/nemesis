@@ -1,6 +1,7 @@
+<img align="right" src="logo.png">
 N E M E S I S  -  TCP/IP Packet Injection
 =========================================
-<img align="right" src="logo.png">
+[![Travis Status][]][Travis]
 
 The Nemesis Project is designed to be a command line based, portable
 human IP stack for UNIX-like and Windows systems.  The suite is broken
@@ -74,3 +75,6 @@ stale libnet-1.1 upgrade branch from 2005.
 
 Thanks to everyone that has reported bugs and especially those that have
 provided patches.
+
+[Travis]:           https://travis-ci.org/troglobit/nemesis
+[Travis Status]:    https://travis-ci.org/troglobit/nemesis.png?branch=master
