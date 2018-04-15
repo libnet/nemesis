@@ -14,8 +14,8 @@ nemesis (1.4-1) unstable; urgency=low
   * Some minor corrections at the man pages.
   * Upstream website updated.
   * Fixed empty-directory usr/sbin/.
-  * Added autotools-dev at debian/control as a new Build-Depend. 
-  * Added a debian/watch file. 
+  * Added autotools-dev at debian/control as a new Build-Depend.
+  * Added a debian/watch file.
 
  -- William Vera <billy@billy.com.mx>  Wed, 18 Jun 2008 18:45:36 -0500
 
@@ -104,13 +104,13 @@ nemesis (1.32-2.1) unstable; urgency=low
 nemesis (1.32-2) unstable; urgency=low
 
   * Fixed some warnings that break gcc 3.0 (closes: #104632).
-  * Upgraded config.{sub,guess} to those in autotools-dev 20010712.1 
+  * Upgraded config.{sub,guess} to those in autotools-dev 20010712.1
 
  -- Domenico Andreoli <cavok@debian.org>  Mon, 16 Jul 2001 19:03:39 +0200
 
 nemesis (1.32-1) unstable; urgency=low
 
-  * New upstream release (closes: #102615).  
+  * New upstream release (closes: #102615).
 
  -- Domenico Andreoli <cavok@debian.org>  Tue,  3 Jul 2001 16:23:18 +0200
 

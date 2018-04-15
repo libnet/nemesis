@@ -20,7 +20,7 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
 - Single binary
 - Improved cross-platform support via GNU autotools
 - Easier to use
-  - Nemesis will attempt to fill in as many details as possible 
+  - Nemesis will attempt to fill in as many details as possible
 	in a packet, thus requiring fewer or even no command line switches
   - Each protocol builder attempts to build a proper packet by default
 - Organized code base
@@ -29,10 +29,10 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
   - Code is re-used wherever possible resulting in a much more concise
 	code base
 - Full payload functionality
-  - Payloads can now contain NULLs within them and full-size packets 
+  - Payloads can now contain NULLs within them and full-size packets
 	are available on all supported platforms except Windows
 - IP and TCP options support
-  - All nemesis injectors (excluding ARP and Ethernet) now support IP 
+  - All nemesis injectors (excluding ARP and Ethernet) now support IP
 	options via `-O <file>`
   - All nemesis injectors using TCP as a transport protocol now
 	support TCP options via `-o <file>`
@@ -74,7 +74,7 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
 
 ### Changes
 
-- changes to nemesis-arp 
+- changes to nemesis-arp
   - Added -h and -m switches to allow for changing the sender and target
     hardware addresses within the ARP frame independant of the Ethernet
     header.
@@ -116,14 +116,14 @@ libnet-nemesis -- I SWEAR! --- (bar bugfixes)
 - RARP added (thanks to Jeff Nathan <email:jeff at wwti dot com> for
   pointing out Libnet had RARP support, while I have been busy
   unlibnetizing source code... Since some people wanted this feature...)
-- RAW4ALL OpenBSD patch support added (inject nemesis packets as a 
+- RAW4ALL OpenBSD patch support added (inject nemesis packets as a
   normal user!)
 
 [v1.2][] - 2000-12-31
 ---------------------
 
 ### Fixes
-- ICMP checksum fix patched (did not affect ICMP injection, but not 
+- ICMP checksum fix patched (did not affect ICMP injection, but not
   proper)
 - Makefile fixes (roll in the changes made in OpenBSD land)
 
