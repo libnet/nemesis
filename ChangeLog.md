@@ -3,8 +3,44 @@ Change Log
 
 All notable changes to the project are documented in this file.
 
-- Versions prior to v1.4, by Jeff Nathan <email:jeff at snort dot org>
-- Versions prior to 1.31, by Mark Grimes <email:mark at stateful dot net>
+- Versions prior to v1.4, by Jeff Nathan <mailto:jeff at snort dot org>
+- Versions prior to 1.31, by Mark Grimes <mailto:mark at stateful dot net>
+
+[v1.5][UNRELEASED]
+------------------
+
+Nemesis the Resurrection.
+
+### Changes
+- Merged Nemesis libnet1 port, from stale CVS branch
+  - Fix libnet1 porting regression in `nemesis-proto_icmp.c`
+  - Finish port of `nemesis-printout.c` to libnet1
+  - Finish port of `nemesis_proto_ospf.c`, new HELLO API.  
+    Add workaround for missing "Active Neighbor" in libnet1
+  - Remove lots of unused local variables, remnants from port
+  - Update configure script to check for libnet1.  
+    **Note:** still hard-coded version, needs to be improved!
+  - Re-KNF entire source tree in libnet1 port merge.  New file in root
+	of tree: `.clang-format` for auto-indenting
+- Minor license refactor to be auto-detected as 3-clause BSD
+- Removed build number from version string
+- Replace hard-coded version number with `PACKAGE_VERSION`
+- Change README and ChangeLog to Markdown format, reorder the ChangeLog
+  in reverse chronological order, latest first
+- Add some examples (!) to the README, everybody likes examples :)
+- Remove all generated autoconf/automake files from GIT.  Use the
+  `./autogen.sh` script when building from GIT.
+- Rename `configure.in --> configure.ac` and clean up the build
+  system a bit, for readability and simplicity
+- Merged Debian `.deb` package build support, incl. modernize
+
+### Fixes
+- Allow group address 0.0.0.0 when sending an IGMP general query.
+  Thanks to Randy Robertson <mailto:rmrobert@vmware.com>
+- Fix long-standing OSPF non-functioning bug.  Caused by static
+  declaration of OSPF variables in header file
+- Fix needless byte-swapping in OSPF plugin, libnet1 does this for us
+  already.  Could possibly have been another bug in earlier versions
 
 
 [v1.4][] - 2004-10-07
@@ -54,7 +90,7 @@ New and improved nemesis: nemesis-ethernet and nemesis-ip.
 
 ### Fixes
 
-- Man page fixes from <email:nnposter@users.sourceforge.net>
+- Man page fixes from <mailto:nnposter@users.sourceforge.net>
 - minor man page cleanup
 - nemesis-proto_ip.c:
 
@@ -113,7 +149,7 @@ Memesis is such a bloody mess, this will be the last version of the old
 libnet-nemesis -- I SWEAR! --- (bar bugfixes)
 
 ### Changes
-- RARP added (thanks to Jeff Nathan <email:jeff at wwti dot com> for
+- RARP added (thanks to Jeff Nathan <mailto:jeff at wwti dot com> for
   pointing out Libnet had RARP support, while I have been busy
   unlibnetizing source code... Since some people wanted this feature...)
 - RAW4ALL OpenBSD patch support added (inject nemesis packets as a
@@ -185,7 +221,7 @@ v0.9 - OSPF Completed
 
 ### Fixes
 - autoconf adjustments to ease into obsd ports tree patches supplied by:
-  <email:brad at comstyle dot com>
+  <mailto:brad at comstyle dot com>
 
 
 v0.8 - Build system overhaul
@@ -220,9 +256,10 @@ v0.666a - initial public release
 --------------------------------
 
 ### Changes
-- ARP, ICMP, OSPF¹ (unfinished), TCP, UDP implemented
+- ARP, ICMP, OSPF (unfinished), TCP, UDP implemented
 
 
+[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.4...HEAD
 [v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
 [v1.32]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.32.tar.gz
 [v1.31]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.31.tar.gz
