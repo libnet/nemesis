@@ -1,7 +1,6 @@
-<img align="right" src="logo.png">
 N E M E S I S  -  TCP/IP Packet Injection
 =========================================
-[![Travis Status][]][Travis]
+[![Travis Status][]][Travis] <img align="right" src="logo.png">
 
 The Nemesis Project is designed to be a command line based, portable
 human IP stack for UNIX-like and Windows systems.  The suite is broken
