@@ -1,4 +1,2 @@
 version=3
-#http://prdownloads.sourceforge.net/nemesis/nemesis-(.*)\.tar\.gz?download
-http://sf.net/nemesis/nemesis-(.*)\.tar\.gz
-
+https://github.com/troglobit/nemesis/releases/download/v(.*)/nemesis-(.*)\.tar\.gz

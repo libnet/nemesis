@@ -1,4 +1,10 @@
-nemesis (1:1.4-1) unstable; urgency=low
+nemesis (1.5) unstable; urgency=medium
+
+  * New maintainer, new upstream.
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 15 Apr 2018 11:49:45 +0200
+
+nemesis (1.4-1) unstable; urgency=low
 
   * New maintainer (Closes: #483700).
   * New upstream release (Closes: #405459).
