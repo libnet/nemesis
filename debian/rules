@@ -16,4 +16,5 @@ override_dh_installchangelogs:
 override_dh_auto_install:
 	dh_auto_install
 	rm -f debian/inadyn/usr/share/doc/nemesis/LICENSE
+	rm -f debian/inadyn/usr/share/doc/nemesis/CREDITS
 	rm -f debian/inadyn/usr/share/doc/nemesis/ChangeLog.md
