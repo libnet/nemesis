@@ -1,0 +1,26 @@
+# Travis CI integration
+# Defaults to GNU GCC and autotools: ./configure && make && make test
+language: c
+
+# We don't need to install packages, use dockerized build, quicker
+sudo: false
+
+# Test build with both GCC and Clang (LLVM)
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+      - tree
+      - libnet1-dev
+
+# We don't store generated files (configure and Makefile) in GIT,
+# so we must customize the default build script to run ./autogen.sh
+script:
+  - ./autogen.sh
+  - ./configure --prefix=/tmp
+  - make V=1 -j5
+  - make install-strip
+  - tree /tmp
