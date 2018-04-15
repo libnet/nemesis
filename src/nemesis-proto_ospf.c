@@ -18,6 +18,8 @@ static void build_hello(FileData *pd, libnet_t *l)
 {
 	libnet_pblock_t *p;
 
+// XXX: Change to libnet_build_ospfv2_hello_neighbor() when rolled out in Debian
+// XXX: See upstream libnet issue https://github.com/sam-github/libnet/issues/69
 	libnet_build_ospfv2_hello(ospfhellohdr.hello_nmask.s_addr,    /* netmask */
 	                          ospfhellohdr.hello_intrvl,          /* interval */
 	                          ospfhellohdr.hello_opts,            /* options */
@@ -31,7 +33,7 @@ static void build_hello(FileData *pd, libnet_t *l)
 	                          l,                                  /* libnet handle */
 	                          0);                                 /* libnet id */
 
-	/* Workaround for missing neighbor address bug in libnet1 */
+	/* Workaround for missing neighbor address bug in libnet1, issue #69 (above) */
 	p = l->protocol_blocks;
 	if (p) {
 		struct libnet_ospf_hello_hdr *hello = (struct libnet_ospf_hello_hdr *)p->buf;
