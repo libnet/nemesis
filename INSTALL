@@ -16,6 +16,7 @@ closely resembles installing any other piece of software using GNU autotools.
 Before attempting to install Nemesis, ensure that libnet-1.0.2a is installed.
 
 The following steps are all that is needed to compile and install Nemesis:
+0. ./autogen.sh     # <-- Only if building directly from GIT sources
 1. ./configure
 2. make
 3. make install
