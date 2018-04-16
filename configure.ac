@@ -195,7 +195,7 @@ AC_CHECK_LIB(net, libnet_build_ipv4,, LNET="no")
 if test "$LNET" = "no"; then
     echo
     echo "   ERROR!  Libnet library not found, go get it from"
-    echo "   http://www.packetfactory.net/projects/libnet/"
+    echo "   https://sourceforge.net/projects/libnet-dev/"
     echo "   or use the --with-libnet-* options, if you have it installed"
     echo "   in unusual place"
     exit
@@ -226,7 +226,7 @@ AC_CHECK_HEADERS(libnet.h,, LNET="no")
 if test "$LNET" = "no"; then
    echo
    echo "   ERROR!  Libnet header not found, go get it from"
-   echo "   http://www.packetfactory.net/projects/libnet/"
+   echo "   https://sourceforge.net/projects/libnet-dev/"
    echo "   or use the --with-libnet-* options, if you have it installed"
    echo "   in unusual place"
    exit
@@ -256,7 +256,7 @@ if test "$LIBNET_INC_DIR" != ""; then
         echo
         echo "   ERROR!  Nemesis will *only* work with libnet version 1.1.6,"
         echo "   go get it from"
-        echo "   http://www.packetfactory.net/projects/libnet/"
+        echo "   https://sourceforge.net/projects/libnet-dev/"
         HEADER_FAIL_MESSAGE("libnet 1.1.6 (libnet.h)", $LIBNET_INC_DIR)
     fi
     AC_MSG_RESULT(yes)
