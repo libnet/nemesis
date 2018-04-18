@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef __NEMESIS_H__
-#define __NEMESIS_H__
+#ifndef NEMESIS_H_
+#define NEMESIS_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -218,4 +218,4 @@ void nemesis_rip(int, char **);
 void nemesis_tcp(int, char **);
 void nemesis_udp(int, char **);
 
-#endif /* __NEMESIS_H__ */
+#endif /* NEMESIS_H_ */

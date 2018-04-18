@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_IGMP_H__
-#define __NEMESIS_IGMP_H__
+#ifndef NEMESIS_IGMP_H_
+#define NEMESIS_IGMP_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -34,4 +34,4 @@
 
 int buildigmp(ETHERhdr *, IPhdr *, IGMPhdr *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_IGMP_H__ */
+#endif /* NEMESIS_IGMP_H_ */

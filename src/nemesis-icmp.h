@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef __NEMESIS_ICMP_H__
-#define __NEMESIS_ICMP_H__
+#ifndef NEMESIS_ICMP_H_
+#define NEMESIS_ICMP_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -47,4 +47,4 @@ int got_origoptions;
 
 int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, FileData *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_ICMP_H__ */
+#endif /* NEMESIS_ICMP_H_ */

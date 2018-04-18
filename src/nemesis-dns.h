@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_DNS_H__
-#define __NEMESIS_DNS_H__
+#ifndef NEMESIS_DNS_H_
+#define NEMESIS_DNS_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -36,4 +36,4 @@ int state; /* default to UDP */
 
 int builddns(ETHERhdr *, IPhdr *, TCPhdr *, UDPhdr *, DNShdr *, FileData *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_DNS_H__ */
+#endif /* NEMESIS_DNS_H_ */

@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_RIP_H__
-#define __NEMESIS_RIP_H__
+#ifndef NEMESIS_RIP_H_
+#define NEMESIS_RIP_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -37,4 +37,4 @@
 
 int buildrip(ETHERhdr *, IPhdr *, UDPhdr *, RIPhdr *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_RIP_H__ */
+#endif /* NEMESIS_RIP_H_ */

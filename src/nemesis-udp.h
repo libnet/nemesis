@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_UDP_H__
-#define __NEMESIS_UDP_H__
+#ifndef NEMESIS_UDP_H_
+#define NEMESIS_UDP_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -34,4 +34,4 @@
 
 int buildudp(ETHERhdr *, IPhdr *, UDPhdr *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_UDP_H__ */
+#endif /* NEMESIS_UDP_H_ */

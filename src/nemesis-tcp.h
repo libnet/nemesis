@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_TCP_H__
-#define __NEMESIS_TCP_H__
+#ifndef NEMESIS_TCP_H_
+#define NEMESIS_TCP_H_
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -34,4 +34,4 @@
 
 int buildtcp(ETHERhdr *, IPhdr *, TCPhdr *, FileData *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_TCP_H__ */
+#endif /* NEMESIS_TCP_H_ */

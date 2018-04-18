@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef __NEMESIS_ETHERNET_H__
-#define __NEMESIS_ETHERNET_H__
+#ifndef NEMESIS_ETHERNET_H_
+#define NEMESIS_ETHERNET_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -49,4 +49,4 @@
 
 int buildether(ETHERhdr *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_ETHERNET_H__ */
+#endif /* NEMESIS_ETHERNET_H_ */

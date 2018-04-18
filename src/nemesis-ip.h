@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_IP_H__
-#define __NEMESIS_IP_H__
+#ifndef NEMESIS_IP_H_
+#define NEMESIS_IP_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,4 +30,4 @@
 
 int buildip(ETHERhdr *, IPhdr *, FileData *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_IP_H__ */
+#endif /* NEMESIS_IP_H_ */

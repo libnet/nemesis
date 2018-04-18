@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef __NEMESIS_OSPF_H__
-#define __NEMESIS_OSPF_H__
+#ifndef NEMESIS_OSPF_H_
+#define NEMESIS_OSPF_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -50,4 +50,4 @@ int mode; /* OSPF injection mode */
 
 int buildospf(ETHERhdr *, IPhdr *, FileData *, FileData *, libnet_t *, int);
 
-#endif /* __NEMESIS_OSPF_H__ */
+#endif /* NEMESIS_OSPF_H_ */

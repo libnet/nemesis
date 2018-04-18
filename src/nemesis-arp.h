@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __NEMESIS_ARP_H__
-#define __NEMESIS_ARP_H__
+#ifndef NEMESIS_ARP_H_
+#define NEMESIS_ARP_H_
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -39,4 +39,4 @@ u_int8_t ar_tpa[4];
 
 int buildarp(ETHERhdr *, ARPhdr *, FileData *, libnet_t *);
 
-#endif /* __NEMESIS_ARP_H__ */
+#endif /* NEMESIS_ARP_H_ */
