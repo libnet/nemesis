@@ -10,11 +10,28 @@ compiler:
   - gcc
   - clang
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "H225aMJCZjKfzEZW+IUtQs6Ks3I+14nzHow35PakSG1IvPsuCbUvortrjtACED6cTRDesAIiSI+WK8OjpDsSMxwjBmVdGI43lGf/zf9fj8cTPOQbVOrn2CUUBTWkzB0STtU/qnhsBEw/TkpTb4+Y5lGBrN6oxfuAEowMpbikuyhLThZsL8Pk+fLQUjCwI3z3+ik3xpdThd9YQpn+yEmabrt4wYxt10rWzILqKTe+HtSnswEJcL2RB/F76z3bWwgePl+x6C6ZPOczV/XyT0NdKXRtMjhplMV5i9imQ7eou0lEUDtrlnynuwLHd3R2YKgzAMjCcCFL3KLlBM1wuJbpQ8CDOYo77gHZ7k2vV9sawOCd+myzWOqRpZEoobkRDmuVenquRWmGp6gSlb9JzQa5C9y2Cb9+8hZYtzpF/Wcwd9qgHxHVvT/dU48yA/Hk+lZHtnnD3dz33H35A84MWw8orhg92/2bJXZa5FIt9wIsi2A468cU9IfR3SrID67VMBgQgemWpgmESPLqMDVbv0JJxCS+RmRc8t73r8qzrJlZBDw/UStmNz0sseQgN2dwERXMLxvSvpLeht6KTpHQhLo5yjQ3VrHWBzV3DzE04VnhIdktx6OeUHDRoP6vTrYRmwGbDdiSNfitB/lwwk82VWNvKb4jkZzsoBYx7x8p25TfBW4="
+
+before_install:
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
 addons:
   apt:
     packages:
       - tree
       - libnet1-dev
+  coverity_scan:
+    project:
+      name: "troglobit/nemesis"
+      description: "TCP/IP Packet Injection"
+    notification_email: troglobit@gmail.com
+    build_command_prepend: "./autogen.sh && ./configure --prefix=/tmp"
+    build_command:   "make -j5"
+    branch_pattern: dev
 
 # We don't store generated files (configure and Makefile) in GIT,
 # so we must customize the default build script to run ./autogen.sh
