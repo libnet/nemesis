@@ -143,7 +143,6 @@ void nemesis_printeth(ETHERhdr *eth)
 	       eth->ether_dhost[1], eth->ether_dhost[2], eth->ether_dhost[3],
 	       eth->ether_dhost[4], eth->ether_dhost[5]);
 	printf("     [Ethernet type] %s (%#.4x)\n\n", ethertype, eth->ether_type);
-	return;
 }
 
 /**
@@ -193,8 +192,6 @@ void nemesis_printarp(ARPhdr *arp)
 		free(src);
 	if (dst != NULL)
 		free(dst);
-
-	return;
 }
 
 /**
@@ -547,8 +544,6 @@ void nemesis_printip(IPhdr *ip)
 		free(src);
 	if (dst != NULL)
 		free(dst);
-
-	return;
 }
 
 /**
@@ -588,7 +583,6 @@ void nemesis_printtcp(TCPhdr *tcp)
 		printf("    [TCP Seq number] %u\n", tcp->th_seq);
 
 	putchar('\n');
-	return;
 }
 
 /**
@@ -601,7 +595,6 @@ void nemesis_printtcp(TCPhdr *tcp)
 void nemesis_printudp(UDPhdr *udp)
 {
 	printf("         [UDP Ports] %hu > %hu\n\n", udp->uh_sport, udp->uh_dport);
-	return;
 }
 
 /**
@@ -799,8 +792,6 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 		free(mask);
 	if (gateway != NULL)
 		free(gateway);
-
-	return;
 }
 
 /**
@@ -867,8 +858,6 @@ void nemesis_printrip(RIPhdr *rip)
 		free(mask);
 	if (hop != NULL)
 		free(hop);
-
-	return;
 }
 
 /**
@@ -932,8 +921,6 @@ void nemesis_printospf(OSPFhdr *ospf)
 		free(area_id);
 	if (auth_type != NULL)
 		free(auth_type);
-
-	return;
 }
 
 /**
@@ -967,8 +954,6 @@ void nemesis_printtitle(const char *title)
 	putchar('\n');
 	puts(title);
 	putchar('\n');
-
-	return;
 }
 
 /**
@@ -991,6 +976,4 @@ void nemesis_device_failure(int mode, const char *device)
 #else
 	fprintf(stderr, "You may need Administrator privileges to use nemesis.\n");
 #endif
-
-	return;
 }
