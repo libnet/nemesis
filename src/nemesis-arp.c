@@ -206,9 +206,11 @@ static void arp_cmdline(int argc, char **argv)
 				arp_exit(1);
 			}
 #else
-			if (strlen(optarg) < 256)
+			if (strlen(optarg) < 256) {
+				if (device)
+					free(device);
 				device = strdup(optarg);
-			else {
+			} else {
 				fprintf(stderr, "ERROR: device %s > 256 characters.\n", optarg);
 				arp_exit(1);
 			}
@@ -252,6 +254,8 @@ static void arp_cmdline(int argc, char **argv)
 			break;
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
+				if (file)
+					free(file);
 				file        = strdup(optarg);
 				got_payload = 1;
 			} else {
