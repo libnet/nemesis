@@ -252,6 +252,8 @@ static void dns_cmdline(int argc, char **argv)
 			}
 #else
 			if (strlen(optarg) < 256) {
+				if (device)
+					free(device);
 				device = strdup(optarg);
 				got_link = 1;
 			} else {
@@ -314,6 +316,8 @@ static void dns_cmdline(int argc, char **argv)
 			break;
 		case 'o': /* TCP options file */
 			if (strlen(optarg) < 256) {
+				if (tcpoptionsfile)
+					free(tcpoptionsfile);
 				tcpoptionsfile = strdup(optarg);
 				got_tcpoptions = 1;
 			} else {
@@ -323,6 +327,8 @@ static void dns_cmdline(int argc, char **argv)
 			break;
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
+				if (ipoptionsfile)
+					free (ipoptionsfile);
 				ipoptionsfile = strdup(optarg);
 				got_ipoptions = 1;
 			} else {
@@ -332,6 +338,8 @@ static void dns_cmdline(int argc, char **argv)
 			break;
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
+				if (payloadfile)
+					free(payloadfile);
 				payloadfile = strdup(optarg);
 				got_payload = 1;
 			} else {
