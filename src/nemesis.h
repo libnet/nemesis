@@ -142,6 +142,7 @@ extern char        title[TITLEBUFFSIZE];
 extern char        errbuf[ERRBUFFSIZE];
 extern char *      pcap_outfile;
 extern char *      validtcpflags;
+extern char *      prognm;
 extern const char *version;
 extern int         verbose;
 int                got_link;

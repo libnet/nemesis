@@ -48,6 +48,7 @@
 #include "nemesis.h"
 #include <libnet.h>
 
+char *prognm = PACKAGE_NAME;
 const char *version = " -=- The NEMESIS Project v" PACKAGE_VERSION;
 
 char zero[ETHER_ADDR_LEN];
