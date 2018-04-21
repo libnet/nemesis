@@ -127,10 +127,9 @@ static void igmp_validatedata(libnet_t *l)
 	if (!got_code)
 		igmphdr.igmp_code = 0;
 	if (!got_group) {
-		nemesis_name_resolve("224.0.0.1", &igmphdr.igmp_group.s_addr);
-		nemesis_name_resolve("224.0.0.1", &iphdr.ip_dst.s_addr);
+		inet_aton("224.0.0.1", &igmphdr.igmp_group);
+		inet_aton("224.0.0.1", &iphdr.ip_dst);
 	}
-	return;
 }
 
 static void igmp_usage(char *arg)

@@ -219,7 +219,6 @@ int parsefragoptions(IPhdr *iph, char *str)
 }
 
 /**
- *
  * Convert a hostname or IP address, supplied in ASCII format, to an u_int32_t 
  * in network byte order.
  *

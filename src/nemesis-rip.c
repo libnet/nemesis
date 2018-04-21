@@ -133,7 +133,7 @@ static void rip_validatedata(void)
 		if (riphdr.rip_rd == 0 && got_domain == 0)
 			riphdr.rip_rd = libnet_get_prand(PRu16);
 		if (riphdr.rip_mask == 0)
-			nemesis_name_resolve("255.255.255.0", (u_int32_t *)&riphdr.rip_mask);
+			inet_pton(AF_INET, "255.255.255.0", &riphdr.rip_mask);
 	}
 
 	if (iphdr.ip_src.s_addr == 0)
@@ -146,7 +146,7 @@ static void rip_validatedata(void)
 			break;
 		case 2:
 			/* The multicast address for RIP2 is RIP2-ROUTERS.MCAST.NET */
-			nemesis_name_resolve("224.0.0.9", (u_int32_t *)&iphdr.ip_dst.s_addr);
+			inet_aton("224.0.0.9", &iphdr.ip_dst);
 			break;
 		default:
 			iphdr.ip_dst.s_addr = libnet_get_prand(PRu32);
