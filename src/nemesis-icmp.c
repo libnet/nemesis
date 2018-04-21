@@ -146,7 +146,7 @@ static void icmp_validatedata(void)
 		icmp_exit(1);
 	}
 
-	if (got_origoptions && (mode != ICMP_UNREACH || mode != ICMP_REDIRECT || mode != ICMP_TIMXCEED)) {
+	if (got_origoptions && !(mode == ICMP_UNREACH || mode == ICMP_REDIRECT || mode == ICMP_TIMXCEED)) {
 		fprintf(stderr, "ERROR: -l is only valid with ICMP redirect, unreach or time exceeded injection.\n");
 		icmp_exit(1);
 	}
