@@ -204,7 +204,6 @@ void nemesis_printicmp(ICMPhdr *, int);
 void nemesis_printrip(RIPhdr *);
 void nemesis_printospf(OSPFhdr *);
 void nemesis_printtitle(const char *);
-void nemesis_usage(char *);
 
 /* injection functions */
 void nemesis_arp(int, char **);

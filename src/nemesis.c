@@ -14,6 +14,35 @@
 
 extern int optind;
 
+void usage(char *arg)
+{
+	char *module = "NEMESIS";
+
+	nemesis_maketitle(title, module, version);
+	nemesis_printtitle((const char *)title);
+
+	printf("NEMESIS Usage:\n"
+	       "  %s [mode] [options]\n"
+	       "\n"
+	       "NEMESIS modes:\n"
+	       "  arp\n"
+	       "  dns\n"
+	       "  ethernet\n"
+	       "  icmp\n"
+	       "  igmp\n"
+	       "  ip\n"
+	       "  ospf\n"
+	       "  rip\n"
+	       "  tcp\n"
+	       "  udp\n"
+	       "\n"
+	       "NEMESIS options:\n"
+	       "  To display options, specify a mode with the option \"help\".\n"
+	       "\n", arg);
+
+	exit(1);
+}
+
 int main(int argc, char **argv)
 {
 	char **avtmp, *avval;
@@ -85,33 +114,8 @@ int main(int argc, char **argv)
 		argc -= optind;
 		nemesis_udp(argc, argv);
 	} else
-		nemesis_usage(argv[0]);
+		usage(argv[0]);
 
 	/* NOTREACHED */
 	exit(0);
-}
-
-void nemesis_usage(char *arg)
-{
-	char *module = "NEMESIS";
-
-	nemesis_maketitle(title, module, version);
-	nemesis_printtitle((const char *)title);
-
-	printf("NEMESIS Usage:\n  %s [mode] [options]\n\n", arg);
-	printf("NEMESIS modes:\n"
-	       "  arp\n"
-	       "  dns\n"
-	       "  ethernet\n"
-	       "  icmp\n"
-	       "  igmp\n"
-	       "  ip\n"
-	       "  ospf (still in beta)\n"
-	       "  rip\n"
-	       "  tcp\n"
-	       "  udp\n\n");
-	printf("NEMESIS options: \n"
-	       "  To display options, specify a mode with the option \"help\".\n");
-	putchar('\n');
-	exit(1);
 }
