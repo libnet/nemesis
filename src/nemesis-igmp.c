@@ -214,7 +214,7 @@ static void igmp_cmdline(int argc, char **argv)
 #endif
 			break;
 		case 'D': /* destination IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_dst.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				igmp_exit(1);
 			}
@@ -231,7 +231,7 @@ static void igmp_cmdline(int argc, char **argv)
 				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
 			break;
 		case 'i': /* IGMP group address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&igmphdr.igmp_group.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &igmphdr.igmp_group.s_addr)) < 0) {
 				if (strncmp(optarg, "0.0.0.0", 7)) {
 					fprintf(stderr, "ERROR: Invalid IGMP group address: \"%s\".\n", optarg);
 					igmp_exit(1);
@@ -272,7 +272,7 @@ static void igmp_cmdline(int argc, char **argv)
 			}
 			break;
 		case 'S': /* source IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_src.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				igmp_exit(1);
 			}

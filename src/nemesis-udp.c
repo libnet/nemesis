@@ -63,16 +63,16 @@ void nemesis_udp(int argc, char **argv)
 
 	if (got_payload) {
 #if defined(WIN32)
-		if (builddatafromfile(UDP_LINKBUFFSIZE, &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(UDP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
 		if (builddatafromfile(((got_link == 1) ? UDP_LINKBUFFSIZE : UDP_RAWBUFFSIZE),
-		                      &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		                      &pd, payloadfile, PAYLOADMODE) < 0)
 #endif
 			udp_exit(1);
 	}
 
 	if (got_ipoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, (const char *)ipoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
+		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, ipoptionsfile, OPTIONSMODE) < 0)
 			udp_exit(1);
 	}
 
@@ -111,7 +111,7 @@ static void udp_initdata(void)
 
 static void udp_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("UDP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("UDP options: \n"
@@ -183,7 +183,7 @@ static void udp_cmdline(int argc, char **argv)
 #endif
 			break;
 		case 'D': /* destination IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_dst.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				udp_exit(1);
 			}
@@ -197,7 +197,7 @@ static void udp_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
@@ -207,7 +207,7 @@ static void udp_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
@@ -228,7 +228,7 @@ static void udp_cmdline(int argc, char **argv)
 			}
 			break;
 		case 'S': /* source IP address */
-			if ((nemesis_name_resolve(optarg, (u_int32_t *)&iphdr.ip_src.s_addr)) < 0) {
+			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				udp_exit(1);
 			}
@@ -242,7 +242,7 @@ static void udp_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 		case 'x': /* UDP source port */
 			udphdr.uh_sport = xgetint16(optarg);
