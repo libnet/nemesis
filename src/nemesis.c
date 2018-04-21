@@ -49,9 +49,10 @@ int main(int argc, char **argv)
 
 	avtmp = argv;
 	avval = strrchr(*avtmp, '/');
-
-	if (avval++ == NULL)
+	if (!avval)
 		avval = *avtmp;
+	else
+		avval++;
 
 	if (!strncmp(avval, "nemesis-arp", 11)) {
 		nemesis_arp(argc, argv);
