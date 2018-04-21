@@ -968,7 +968,7 @@ void nemesis_device_failure(int mode, const char *device)
 {
 	if (mode == INJECTION_RAW)
 		fprintf(stderr, "ERROR: Unable to open raw socket for packet injection: %s.\n", errbuf);
-	else if (mode == INJECTION_LINK && device != NULL && errbuf != NULL)
+	else if (mode == INJECTION_LINK && device)
 		fprintf(stderr, "ERROR: Unable to open layer 2 device '%s' for packet injection: %s.\n", device, errbuf);
 
 #if !defined(WIN32)
