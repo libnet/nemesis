@@ -913,14 +913,10 @@ void nemesis_printospf(OSPFhdr *ospf)
 
 	putchar('\n');
 
-	if (type != NULL)
-		free(type);
-	if (rtr_id != NULL)
+	if (rtr_id)
 		free(rtr_id);
-	if (area_id != NULL)
+	if (area_id)
 		free(area_id);
-	if (auth_type != NULL)
-		free(auth_type);
 }
 
 /**
