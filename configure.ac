@@ -8,7 +8,7 @@ dnl
 dnl Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press
 
 AC_PREREQ(2.61)
-AC_INIT(nemesis, 1.5-beta1, https://github.com/troglobit/nemesis/issues)
+AC_INIT(nemesis, 1.5-beta1, https://github.com/troglobit/nemesis/issues,, http://troglobit.com/projects/nemesis/)
 AM_INIT_AUTOMAKE([1.11 foreign no-dist-gzip dist-xz])
 AM_SILENT_RULES([yes])
 
@@ -37,9 +37,7 @@ if test "$prefix" = "NONE"; then
 fi
 
 AM_PROG_CC_STDC
-
 AC_PROG_CC
-
 AC_PROG_GCC_TRADITIONAL
 if test -n "$GCC"; then
     CFLAGS="${CFLAGS} -Wall"
@@ -155,25 +153,23 @@ fi
 
 AC_DEFUN([HEADER_FAIL_MESSAGE],[
    echo
-   echo
-   echo "**********************************************"
+   echo "************************************************************************"
    echo "  ERROR: unable to find" $1
    echo "  checked in the following places"
    for i in `echo $2`; do
        echo "        $i"
    done  
-   echo "**********************************************"
+   echo "************************************************************************"
    echo
    exit 1
 ])
 
 AC_DEFUN([FUNCTION_FAIL_MESSAGE],[
    echo
-   echo
-   echo "**********************************************"
+   echo "************************************************************************"
    echo "  ERROR: Nemesis cannot compile without"
    echo "         the function $1"
-   echo "**********************************************"
+   echo "************************************************************************"
    echo
    exit 1
 ])
@@ -196,7 +192,7 @@ AC_CHECK_LIB(net, libnet_build_ipv4,, LNET="no")
 
 if test "$LNET" = "no"; then
     echo
-    echo "   ERROR!  Libnet library not found, go get it from"
+    echo "   ERROR: Libnet library not found, get it from"
     echo "   https://sourceforge.net/projects/libnet-dev/"
     echo "   or use the --with-libnet-* options, if you have it installed"
     echo "   in unusual place"
@@ -208,7 +204,7 @@ dnl     LPCAP=""
 dnl     AC_CHECK_LIB(pcap, pcap_datalink,, LPCAP="no")
 dnl     if test "$LPCAP" = "no"; then
 dnl         echo
-dnl         echo "   ERROR!  Libpcap library not found, go get it from"
+dnl         echo "   ERROR!  Libpcap library not found, get it from"
 dnl         echo "   http://www.tcpdump.org"
 dnl         echo "   or use the --with-libpcap-* options, if you have it installed"
 dnl         echo "   in unusual place"
@@ -227,7 +223,7 @@ AC_CHECK_HEADERS(libnet.h,, LNET="no")
 
 if test "$LNET" = "no"; then
    echo
-   echo "   ERROR!  Libnet header not found, go get it from"
+   echo "   ERROR: Libnet header not found, get it from"
    echo "   https://sourceforge.net/projects/libnet-dev/"
    echo "   or use the --with-libnet-* options, if you have it installed"
    echo "   in unusual place"
@@ -271,7 +267,7 @@ dnl     LPCAP=""
 dnl     AC_CHECK_HEADERS(pcap.h,, LPCAP="no")
 dnl     if test "$LPCAP" = "no"; then
 dnl         echo
-dnl         echo "   ERROR!  Libpcap header not found, go get it from"
+dnl         echo "   ERROR!  Libpcap header not found, get it from"
 dnl         echo "   http://www.tcpdump.org"
 dnl         echo "   or use the --with-libpcap-* options, if you have it installed"
 dnl         echo "   in unusual place"
