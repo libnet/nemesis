@@ -266,20 +266,11 @@ static void icmp_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	icmp_options = "a:A:b:B:c:d:D:e:f:F:G:H:i:I:j:J:l:m:M:o:O:p:P:q:r:s:S:t:T:vWZ?";
-#else
-	icmp_options = "a:A:b:B:c:d:D:e:f:F:G:H:i:I:j:J:l:m:M:o:O:p:P:q:r:s:S:t:T:vW?";
-#endif
-#else
 #if defined(WIN32)
 	icmp_options = "a:A:b:B:c:d:D:e:f:F:G:H:i:I:j:J:l:m:M:o:O:p:P:q:r:s:S:t:T:vZ?";
 #else
 	icmp_options = "a:A:b:B:c:d:D:e:f:F:G:H:i:I:j:J:l:m:M:o:O:p:P:q:r:s:S:t:T:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, icmp_options)) != -1) {
 		switch (opt) {
 		case 'a': /* ICMP timestamp reply transmit time (epoch) */

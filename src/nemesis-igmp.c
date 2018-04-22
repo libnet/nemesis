@@ -175,20 +175,11 @@ static void igmp_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vWZ?";
-#else
-	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vW?";
-#endif
-#else
 #if defined(WIN32)
 	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vZ?";
 #else
 	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, igmp_options)) != -1) {
 		switch (opt) {
 		case 'c': /* IGMP code */

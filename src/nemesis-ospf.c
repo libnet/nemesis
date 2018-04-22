@@ -263,20 +263,11 @@ static void ospf_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vWZ?";
-#else
-	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vW?";
-#endif
-#else
 #if defined(WIN32)
 	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vZ?";
 #else
 	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, ospf_options)) != -1) {
 		switch (opt) {
 		case 'a': /* OSPF authorization type */

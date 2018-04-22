@@ -181,20 +181,11 @@ static void arp_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	arp_options = "d:D:h:H:L:m:M:P:S:rRsvWZ?";
-#else
-	arp_options = "d:D:h:H:L:m:M:P:S:rRsvW?";
-#endif
-#else
 #if defined(WIN32)
 	arp_options = "d:D:h:H:L:m:M:P:S:rRsvZ?";
 #else
 	arp_options = "d:D:h:H:L:m:M:P:S:rRsv?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, arp_options)) != -1) {
 		switch (opt) {
 		case 'd': /* Ethernet device */
@@ -283,11 +274,6 @@ static void arp_cmdline(int argc, char **argv)
 			if (verbose == 1)
 				nemesis_printtitle(title);
 			break;
-#if defined(ENABLE_PCAPOUTPUT)
-		case 'W':
-			pcap_output = 1;
-			break;
-#endif /* ENABLE_PCAPOUTPUT */
 #if defined(WIN32)
 		case 'Z':
 			if ((ifacetmp = pcap_lookupdev(errbuf)) == NULL)

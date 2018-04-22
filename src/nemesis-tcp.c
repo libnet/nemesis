@@ -175,20 +175,11 @@ static void tcp_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:vWZ?";
-#else
-	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:vW?";
-#endif
-#else
 #if defined(WIN32)
 	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:vZ?";
 #else
 	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, tcp_options)) != -1) {
 		switch (opt) {
 		case 'a': /* ACK window */

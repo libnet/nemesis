@@ -108,20 +108,11 @@ static void ethernet_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	ethernet_options = "d:H:M:P:T:vWZ?";
-#else
-	ethernet_options = "d:H:M:P:T:vW?";
-#endif
-#else
 #if defined(WIN32)
 	ethernet_options = "d:H:M:P:T:vZ?";
 #else
 	ethernet_options = "d:H:M:P:T:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, ethernet_options)) != -1) {
 		switch (opt) {
 		case 'd': /* Ethernet device */

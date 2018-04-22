@@ -215,20 +215,11 @@ static void dns_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:W:x:y:kvZ?";
-#else
-	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:W:x:y:kv?";
-#endif
-#else
 #if defined(WIN32)
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:x:y:kvZ?";
 #else
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:x:y:kv?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, dns_options)) != -1) {
 		switch (opt) {
 		case 'a': /* ACK window */

@@ -145,20 +145,11 @@ static void ip_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:vWZ?";
-#else
-	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:vW?";
-#endif
-#else
 #if defined(WIN32)
 	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:vZ?";
 #else
 	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, ip_options)) != -1) {
 		switch (opt) {
 		case 'd': /* Ethernet device */

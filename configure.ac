@@ -93,10 +93,6 @@ case "$host" in
     ;;
 esac
 
-dnl AC_ARG_ENABLE(pcapoutput,
-dnl     [  --enable-pcapoutput     enable writing packets to binary pcap files],
-dnl     CPPFLAGS="${CPPFLAGS} -DENABLE_PCAPOUTPUT",)
-
 AC_ARG_WITH(libnet_includes,
     [  --with-libnet-includes=DIR    libnet include directory],
     [with_libnet_includes="$withval"],
@@ -114,24 +110,6 @@ fi
 if test "$with_libnet_libraries" != "no"; then
    LIBS="${LIBS} -L${with_libnet_libraries}"
 fi
-
-dnl AC_ARG_WITH(libpcap_includes,
-dnl     [  --with-libpcap-includes=DIR   libcap include directory],
-dnl     [with_libpcap_includes="$withval"],
-dnl     [with_libpcap_includes=no])
-
-dnl AC_ARG_WITH(libpcap_libraries,
-dnl     [  --with-libpcap-libraries=DIR  libcap library directory],
-dnl     [with_libpcap_libraries="$withval"],
-dnl     [with_libpcap_libraries=no])
-
-dnl if test "$with_libpcap_includes" != "no"; then
-dnl     CPPFLAGS="${CPPFLAGS} -I${with_libpcap_includes}"
-dnl fi
-  
-dnl if test "$with_libpcap_libraries" != "no"; then
-dnl     LIBS="${LIBS}  -L${with_libpcap_libraries}"
-dnl fi
 
 CPPFLAGS="${CPPFLAGS} `libnet-config --defines`"
 CFLAGS="${CFLAGS} -funroll-loops -pipe"
@@ -199,19 +177,6 @@ if test "$LNET" = "no"; then
     exit
 fi
 
-dnl if test "$enable_pcapoutput" != "no" -a "$enable_pcapoutput" = "yes"; then
-dnl     LPCAP=""
-dnl     AC_CHECK_LIB(pcap, pcap_datalink,, LPCAP="no")
-dnl     if test "$LPCAP" = "no"; then
-dnl         echo
-dnl         echo "   ERROR!  Libpcap library not found, get it from"
-dnl         echo "   http://www.tcpdump.org"
-dnl         echo "   or use the --with-libpcap-* options, if you have it installed"
-dnl         echo "   in unusual place"
-dnl         exit
-dnl     fi
-dnl fi
-
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_TIME
@@ -261,19 +226,6 @@ else
     AC_MSG_RESULT(no)
     HEADER_FAIL_MESSAGE("libnet ${LIBNET_REQ} (libnet.h)", $libnet_dir)
 fi
-
-dnl if test "$enable_pcapoutput" != "no" -a "$enable_pcapoutput" = "yes"; then
-dnl     LPCAP=""
-dnl     AC_CHECK_HEADERS(pcap.h,, LPCAP="no")
-dnl     if test "$LPCAP" = "no"; then
-dnl         echo
-dnl         echo "   ERROR!  Libpcap header not found, get it from"
-dnl         echo "   http://www.tcpdump.org"
-dnl         echo "   or use the --with-libpcap-* options, if you have it installed"
-dnl         echo "   in unusual place"
-dnl         exit
-dnl     fi
-dnl fi
 
 AC_TYPE_SIZE_T
 AC_STRUCT_TM

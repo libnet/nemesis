@@ -208,20 +208,11 @@ static void rip_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	rip_options = "a:c:d:D:F:h:H:i:I:k:m:M:O:P:r:R:S:t:T:V:x:y:vWZ?";
-#else
-	rip_options = "a:c:d:D:F:h:H:i:I:k:m:M:O:P:r:R:S:t:T:V:x:y:vW?";
-#endif
-#else
 #if defined(WIN32)
 	rip_options = "a:c:d:D:F:h:H:i:I:k:m:M:O:P:r:R:S:t:T:V:x:y:vZ?";
 #else
 	rip_options = "a:c:d:D:F:h:H:i:I:k:m:M:O:P:r:R:S:t:T:V:x:y:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, rip_options)) != -1) {
 		switch (opt) {
 		case 'a': /* RIP address family */

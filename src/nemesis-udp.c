@@ -149,20 +149,11 @@ static void udp_cmdline(int argc, char **argv)
 	extern char *optarg;
 	extern int   optind;
 
-#if defined(ENABLE_PCAPOUTPUT)
-#if defined(WIN32)
-	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:vWZ?";
-#else
-	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:vW?";
-#endif
-#else
 #if defined(WIN32)
 	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:vZ?";
 #else
 	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:v?";
 #endif
-#endif
-
 	while ((opt = getopt(argc, argv, udp_options)) != -1) {
 		switch (opt) {
 		case 'd': /* Ethernet device */
