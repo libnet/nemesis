@@ -15,6 +15,7 @@ AM_SILENT_RULES([yes])
 AC_CONFIG_SRCDIR([src/nemesis.c])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
+AC_CONFIG_MACRO_DIR([m4])
 
 AH_TOP(
 #undef PACKAGE
@@ -44,6 +45,10 @@ if test -n "$GCC"; then
     CFLAGS="${CFLAGS} -Wall"
 fi
 
+dnl Required versions
+LIBNET_REQ=1.1.6
+
+dnl Configure options
 AC_ARG_ENABLE(debug,
     [  --enable-debug          enable debugging options (bugreports and developers)],
         [ if test -n "$GCC"; then
@@ -229,12 +234,12 @@ if test "$LNET" = "no"; then
    exit
 fi
 
-AC_MSG_CHECKING(for libnet version 1.1.6)
+AC_MSG_CHECKING(for libnet version >= ${LIBNET_REQ})
 if test "${LIBNET_CONFIG_BROKEN_CFLAGS}" = "yes"; then
     if test -n "$with_libnet_includes" -a "$with_libnet_includes" != "no"; then
         libnet_dir="${with_libnet_includes}"
     else
-        libnet_dir="/usr/include /usr/local/include /sw/include"
+        libnet_dir="/usr/include /usr/local/include /sw/include /opt/include"
     fi
 else
     libnet_dir=`libnet-config --cflags | cut -dI -f2`
@@ -248,18 +253,17 @@ for i in $libnet_dir; do
 done
 
 if test "$LIBNET_INC_DIR" != ""; then
-    if eval "grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | grep -v 1.1.6 >/dev/null"; then
+    VER=`grep LIBNET_VERSION $LIBNET_INC_DIR/libnet.h | sed 's/.*"\(.*\)"/\1/'`
+    AX_COMPARE_VERSION([$VER], [lt], [${LIBNET_REQ}], [
         AC_MSG_RESULT(no)
         echo
-        echo "   ERROR!  Nemesis will *only* work with libnet version 1.1.6,"
-        echo "   go get it from"
+        echo "   ERROR: Nemesis requires libnet >= ${LIBNET_REQ}, get it from:"
         echo "   https://sourceforge.net/projects/libnet-dev/"
-        HEADER_FAIL_MESSAGE("libnet 1.1.6 (libnet.h)", $LIBNET_INC_DIR)
-    fi
-    AC_MSG_RESULT(yes)
+        HEADER_FAIL_MESSAGE("libnet ${LIBNET_REQ} (libnet.h)", $LIBNET_INC_DIR)],[
+        AC_MSG_RESULT(yes)])
 else
     AC_MSG_RESULT(no)
-    HEADER_FAIL_MESSAGE("libnet 1.1.6 (libnet.h)", $libnet_dir)
+    HEADER_FAIL_MESSAGE("libnet ${LIBNET_REQ} (libnet.h)", $libnet_dir)
 fi
 
 dnl if test "$enable_pcapoutput" != "no" -a "$enable_pcapoutput" = "yes"; then

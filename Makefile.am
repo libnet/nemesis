@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS  = -I m4
 AUTOMAKE_OPTIONS = foreign no-dependencies
 
 SUBDIRS          = src man
