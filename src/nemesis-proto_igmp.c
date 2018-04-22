@@ -14,10 +14,10 @@
 
 int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *ipod, libnet_t *l)
 {
-	int              n;
-	u_int32_t        igmp_packetlen = 0, igmp_meta_packetlen = 0;
-	static u_int8_t *pkt;
-	u_int8_t         link_offset = 0;
+	int             n;
+	uint32_t        igmp_packetlen = 0, igmp_meta_packetlen = 0;
+	static uint8_t *pkt;
+	uint8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;

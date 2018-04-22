@@ -44,7 +44,7 @@
  *
  * @return void function
  */
-void nemesis_hexdump(uint8_t *buf, u_int32_t len, int mode)
+void nemesis_hexdump(uint8_t *buf, uint32_t len, int mode)
 {
 	int      c, linemod;
 	char    *dump, *predump, *postdump, dumpbuf[40];
@@ -837,18 +837,18 @@ void nemesis_printrip(RIPhdr *rip)
 	default:
 		break;
 	}
-	printf("       [RIP Command] %s (%hu)\n", cmd, (u_int16_t)rip->rip_cmd);
-	printf("       [RIP Version] %hu\n", (u_int16_t)rip->rip_ver);
-	printf("[RIP Routing domain] %hu\n", (u_int16_t)rip->rip_rd);
+	printf("       [RIP Command] %s (%hu)\n", cmd, (uint16_t)rip->rip_cmd);
+	printf("       [RIP Version] %hu\n", (uint16_t)rip->rip_ver);
+	printf("[RIP Routing domain] %hu\n", (uint16_t)rip->rip_rd);
 	if (rip->rip_af == 2)
 		family = "IP";
 
-	printf("[RIP Address family] %s (%hu)\n", family, (u_int16_t)rip->rip_af);
-	printf("     [RIP Route tag] %hu\n", (u_int16_t)rip->rip_rt);
+	printf("[RIP Address family] %s (%hu)\n", family, (uint16_t)rip->rip_af);
+	printf("     [RIP Route tag] %hu\n", (uint16_t)rip->rip_rt);
 	printf("       [RIP Address] %s\n", addr);
 	printf("  [RIP Network mask] %s\n", mask);
 	printf("      [RIP Next hop] %s\n", hop);
-	printf("        [RIP Metric] %u\n", (u_int32_t)rip->rip_metric);
+	printf("        [RIP Metric] %u\n", (uint32_t)rip->rip_metric);
 
 	putchar('\n');
 

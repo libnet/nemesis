@@ -124,7 +124,7 @@ static void rip_initdata(void)
 
 static void rip_validatedata(void)
 {
-	u_int32_t tmp;
+	uint32_t tmp;
 
 	/* validation tests */
 	if (riphdr.rip_ver == 2) {
@@ -204,7 +204,7 @@ static void rip_usage(char *arg)
 static void rip_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       rip_options;
 	extern char *optarg;
 	extern int   optind;

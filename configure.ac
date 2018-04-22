@@ -25,9 +25,6 @@ AH_TOP(
 #undef OPENBSD
 #undef NETBSD
 #undef SOLARIS
-#undef u_int8_t
-#undef u_int16_t
-#undef u_int32_t
 )
 
 dnl Determine host type before performing further tests.
@@ -277,11 +274,6 @@ dnl         echo "   in unusual place"
 dnl         exit
 dnl     fi
 dnl fi
-
-dnl Checks for u_intx typedefs
-AC_CHECK_TYPE(u_int8_t, uint8_t)
-AC_CHECK_TYPE(u_int16_t, uint16_t)
-AC_CHECK_TYPE(u_int32_t, uint32_t)
 
 AC_TYPE_SIZE_T
 AC_STRUCT_TM

@@ -151,16 +151,16 @@ int                got_ipoptions;
 int                got_tcpoptions;
 
 typedef struct _FileData {
-	int32_t   file_s;   /* file size */
-	u_int8_t *file_mem; /* pointer to file memory */
+	int32_t  file_s;   /* file size */
+	uint8_t *file_mem; /* pointer to file memory */
 } FileData;
 
 /* support functions */
-u_int32_t xgetint32(const char *);
-u_int16_t xgetint16(const char *);
-u_int8_t  xgetint8(const char *);
+uint32_t xgetint32(const char *);
+uint16_t xgetint16(const char *);
+uint8_t  xgetint8(const char *);
 //int gmt2local(time_t);
-int   nemesis_name_resolve(char *, u_int32_t *);
+int   nemesis_name_resolve(char *, uint32_t *);
 int   nemesis_check_link(ETHERhdr *, libnet_t *);
 int   nemesis_getdev(int, char **);
 char *nemesis_lookup_linktype(int);
@@ -190,10 +190,10 @@ int   winstrerror(LPSTR, int);
 #endif
 
 /* file I/O functions */
-int builddatafromfile(const size_t, FileData *, const char *, const u_int32_t);
+int builddatafromfile(const size_t, FileData *, const char *, const uint32_t);
 
 /* printout functions */
-void nemesis_hexdump(uint8_t *, u_int32_t, int);
+void nemesis_hexdump(uint8_t *, uint32_t, int);
 void nemesis_device_failure(int, const char *);
 void nemesis_maketitle(char *, const char *, const char *);
 void nemesis_printeth(ETHERhdr *);

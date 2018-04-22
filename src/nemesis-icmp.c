@@ -260,7 +260,7 @@ static void icmp_usage(char *arg)
 static void icmp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       icmp_options;
 	char         cmd_mode = 0;
 	extern char *optarg;

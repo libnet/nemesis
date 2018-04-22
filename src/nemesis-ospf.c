@@ -257,7 +257,7 @@ static void ospf_usage(char *arg)
 static void ospf_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       ospf_options;
 	char         cmd_mode = 0;
 	extern char *optarg;

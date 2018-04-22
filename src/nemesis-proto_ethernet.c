@@ -13,10 +13,10 @@
 
 int buildether(ETHERhdr *eth, FileData *pd, libnet_t *l)
 {
-	int              n;
-	u_int32_t        eth_packetlen;
-	static u_int8_t *pkt;
-	char *           ethertype;
+	int             n;
+	uint32_t        eth_packetlen;
+	static uint8_t *pkt;
+	char *          ethertype;
 
 	/* sanity checks */
 	if (pd->file_mem == NULL)

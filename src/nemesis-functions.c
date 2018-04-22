@@ -63,13 +63,13 @@ int   got_ipoptions;
 int   got_tcpoptions;
 
 /**
- * Convert user supplied string to a u_int32_t or exit on invalid data.
+ * Convert user supplied string to a uint32_t or exit on invalid data.
  *          
  * @param str string to be converted
  *
- * @returns u_int32_t conversion of input string
+ * @returns uint32_t conversion of input string
  */
-u_int32_t xgetint32(const char *str)
+uint32_t xgetint32(const char *str)
 {
 	char * endp;
 	u_long val;
@@ -80,17 +80,17 @@ u_int32_t xgetint32(const char *str)
 		exit(1);
 	}
 
-	return (u_int32_t)val;
+	return (uint32_t)val;
 }
 
 /**
- * Convert user supplied string to a u_int16_t or exit on invalid data.
+ * Convert user supplied string to a uint16_t or exit on invalid data.
  *          
  * @param str string to be converted
  *
- * @return u_int16_t conversion of input string
+ * @return uint16_t conversion of input string
  */
-u_int16_t xgetint16(const char *str)
+uint16_t xgetint16(const char *str)
 {
 	char * endp;
 	u_long val;
@@ -101,17 +101,17 @@ u_int16_t xgetint16(const char *str)
 		exit(1);
 	}
 
-	return (u_int16_t)val;
+	return (uint16_t)val;
 }
 
 /**
- * Convert user supplied string to a u_int8_t or exit on invalid data.
+ * Convert user supplied string to a uint8_t or exit on invalid data.
  *          
  * @param str string to be converted
  *
- * @return u_int8_t conversion of input string
+ * @return uint8_t conversion of input string
  */
-u_int8_t xgetint8(const char *str)
+uint8_t xgetint8(const char *str)
 {
 	char * endp;
 	u_long val;
@@ -122,7 +122,7 @@ u_int8_t xgetint8(const char *str)
 		exit(1);
 	}
 
-	return (u_int8_t)val;
+	return (uint8_t)val;
 }
 
 /**
@@ -137,13 +137,13 @@ u_int8_t xgetint8(const char *str)
  **/
 int parsefragoptions(IPhdr *iph, char *str)
 {
-	int       reserved = 0, dont = 0, more = 0, offset = 0;
-	int       i, argcount = 0;
-	u_int8_t  error = 0;
-	char *    orig  = NULL;      /* original input string */
-	char *    toks[FP_MAX_ARGS]; /* break all args down into option sets */
-	char **   ap;
-	u_int16_t frag_offset = 0;
+	int      reserved = 0, dont = 0, more = 0, offset = 0;
+	int      i, argcount = 0;
+	uint8_t  error = 0;
+	char *   orig  = NULL;      /* original input string */
+	char *   toks[FP_MAX_ARGS]; /* break all args down into option sets */
+	char **  ap;
+	uint16_t frag_offset = 0;
 
 	orig = strdup(str);
 
@@ -219,15 +219,15 @@ int parsefragoptions(IPhdr *iph, char *str)
 }
 
 /**
- * Convert a hostname or IP address, supplied in ASCII format, to an u_int32_t 
+ * Convert a hostname or IP address, supplied in ASCII format, to an uint32_t
  * in network byte order.
  *
  * @param hostname host name or IP address in ASCII
- * @param address u_int32_t pointer to hold converted IP
+ * @param address uint32_t pointer to hold converted IP
  *
  * @return 0 on sucess, -1 on failure
  */
-int nemesis_name_resolve(char *hostname, u_int32_t *address)
+int nemesis_name_resolve(char *hostname, uint32_t *address)
 {
 	struct in_addr  saddr;
 	struct hostent *hp = NULL;

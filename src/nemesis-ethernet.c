@@ -103,7 +103,7 @@ static void ethernet_usage(char *arg)
 static void ethernet_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       ethernet_options;
 	extern char *optarg;
 	extern int   optind;

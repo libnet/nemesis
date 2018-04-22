@@ -140,7 +140,7 @@ static void ip_usage(char *arg)
 static void ip_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       ip_options;
 	extern char *optarg;
 	extern int   optind;

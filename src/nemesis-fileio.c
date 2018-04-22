@@ -28,7 +28,7 @@
 char *pcap_outfile;		/* pcap output file name */
 #endif
 
-static int nemesis_readfile(u_int8_t *, const char *, const size_t, const u_int32_t);
+static int nemesis_readfile(uint8_t *, const char *, const size_t, const uint32_t);
 
 /**
  * Reads a user supplied file or stdin into memory for use in building packet 
@@ -41,7 +41,7 @@ static int nemesis_readfile(u_int8_t *, const char *, const size_t, const u_int3
  *
  * @return number of bytes read on success, -1 on failure
  **/
-static int nemesis_readfile(u_int8_t *memory, const char *file, const size_t maxsize, const u_int32_t mode)
+static int nemesis_readfile(uint8_t *memory, const char *file, const size_t maxsize, const uint32_t mode)
 {
 	int   fd = -1, bytesread = 0;
 	FILE *fp = NULL;

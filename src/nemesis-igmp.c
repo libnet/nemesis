@@ -170,7 +170,7 @@ static void igmp_usage(char *arg)
 static void igmp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       igmp_options;
 	extern char *optarg;
 	extern int   optind;

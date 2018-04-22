@@ -15,10 +15,10 @@
 int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, FileData *pd,
              FileData *ipod, libnet_t *l)
 {
-	int              n;
-	u_int32_t        udp_packetlen = 0, udp_meta_packetlen = 0;
-	static u_int8_t *pkt;
-	u_int8_t         link_offset = 0;
+	int             n;
+	uint32_t        udp_packetlen = 0, udp_meta_packetlen = 0;
+	static uint8_t *pkt;
+	uint8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;

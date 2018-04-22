@@ -169,7 +169,7 @@ static void tcp_usage(char *arg)
 static void tcp_cmdline(int argc, char **argv)
 {
 	int          opt, i, flag;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char *       tcp_options;
 	char *       p, c;
 	extern char *optarg;

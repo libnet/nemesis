@@ -14,9 +14,9 @@
 
 int buildarp(ETHERhdr *eth, ARPhdr *arp, FileData *pd, libnet_t *l)
 {
-	int       n = 0;
-	u_int32_t arp_packetlen;
-	u_int8_t *pkt;
+	int      n = 0;
+	uint32_t arp_packetlen;
+	uint8_t *pkt;
 
 	/* validation tests */
 	if (pd->file_mem == NULL)

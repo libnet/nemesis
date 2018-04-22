@@ -15,10 +15,10 @@
 int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, FileData *pd,
              FileData *ipod, FileData *tcpod, libnet_t *l)
 {
-	int              n;
-	u_int32_t        tcp_packetlen = 0, tcp_meta_packetlen = 0;
-	static u_int8_t *pkt;
-	u_int8_t         link_offset = 0;
+	int             n;
+	uint32_t        tcp_packetlen = 0, tcp_meta_packetlen = 0;
+	static uint8_t *pkt;
+	uint8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;

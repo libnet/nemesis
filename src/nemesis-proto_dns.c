@@ -15,10 +15,10 @@
 int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
              FileData *pd, FileData *ipod, FileData *tcpod, libnet_t *l)
 {
-	int              n;
-	u_int32_t        dns_packetlen = 0, dns_meta_packetlen = 0;
-	static u_int8_t *pkt;
-	u_int8_t         link_offset = 0;
+	int             n;
+	uint32_t        dns_packetlen = 0, dns_meta_packetlen = 0;
+	static uint8_t *pkt;
+	uint8_t         link_offset = 0;
 
 	if (pd->file_mem == NULL)
 		pd->file_s = 0;
