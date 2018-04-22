@@ -290,7 +290,10 @@ AC_CHECK_FUNCS(strdup,,FUNCTION_FAIL_MESSAGE("strdup"))
 AC_CHECK_FUNCS(strerror,,FUNCTION_FAIL_MESSAGE("strerror"))
 AC_CHECK_FUNCS(strrchr,,FUNCTION_FAIL_MESSAGE("strrchr"))
 AC_CHECK_FUNCS(strtoul,,FUNCTION_FAIL_MESSAGE("strtoul"))
-AC_REPLACE_FUNCS(getopt inet_aton strlcat strlcpy strsep)
+
+dnl Check for usually missing API's, which we can replace
+AC_REPLACE_FUNCS(getopt inet_aton memcmp strlcat strlcpy strsep)
+AC_CONFIG_LIBOBJ_DIR([lib])
 
 CFLAGS=`echo $CFLAGS | sed -e 's/-I\/usr\/include //g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/-I\/usr\/include //g'`
