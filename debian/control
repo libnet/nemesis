@@ -2,9 +2,9 @@ Source: nemesis
 Section: net
 Priority: extra
 Maintainer: Joachim Nilsson <troglobit@gmail.com>
-Build-Depends: debhelper (>= 4.0.0), libpcap0.8-dev, libnet1-dev (>= 1.1.6), autotools-dev, automake, autoconf
+Build-Depends: debhelper (>= 4.0.0), libnet1-dev (>= 1.1.6), autotools-dev, automake, autoconf
 Standards-Version: 3.8.0
-Homepage: http://nemesis.sourceforge.net
+Homepage: http://troglobit.com/projects/nemesis/
 
 Package: nemesis
 Architecture: any
