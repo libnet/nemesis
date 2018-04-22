@@ -67,14 +67,13 @@ Examples
 Origin & References
 --------------------
 
-Nemesis was created by Mark Grimes in 1999, in 2001 Jeff Nathan took
-over maintainership.  In 2018, after more than a decade of inactivity,
-the project was resurrected by Joachim Nilsson.  It was converted from
-CVS to GIT and the old libnet-1.1 upgrade branch from 2005 was merged.
+* **1999**: Nemesis was created by Mark Grimes
+* **2001**: Jeff Nathan took over maintainership
+* **2018**: Project resurrected by Joachim Nilsson
 
-The new project is maintained at [GitHub][] and is intended to serve as
-a focal point for patches and development.  If you have patches and/or
-ideas, please submit them using the issue tracker and as pull requests.
+The project is currently maintained at [GitHub][] with the intention to
+serve as a focal point for new development.  If you have patches and/or
+ideas, please submit them using the issue tracker or as pull requests.
 
 [GitHub]:          https://github.com/troglobit/mini-snmpd
 [Travis]:          https://travis-ci.org/troglobit/nemesis
