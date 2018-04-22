@@ -106,7 +106,6 @@ static void udp_initdata(void)
 	pd.file_s       = 0;
 	ipod.file_mem   = NULL;
 	ipod.file_s     = 0;
-	return;
 }
 
 static void udp_usage(char *arg)
@@ -272,7 +271,6 @@ static void udp_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int udp_exit(int code)
@@ -309,5 +307,4 @@ static void udp_verbose(void)
 		nemesis_printip(&iphdr);
 		nemesis_printudp(&udphdr);
 	}
-	return;
 }

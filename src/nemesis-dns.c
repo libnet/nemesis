@@ -147,14 +147,12 @@ static void dns_initdata(void)
 	ipod.file_s    = 0;
 	tcpod.file_mem = NULL;
 	tcpod.file_s   = 0;
-	return;
 }
 
 static void dns_validatedata(void)
 {
 	if (state && tcphdr.th_flags == 0)
 		tcphdr.th_flags |= TH_SYN;
-	return;
 }
 
 static void dns_usage(char *arg)
@@ -404,7 +402,6 @@ static void dns_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int dns_exit(int code)
@@ -457,5 +454,4 @@ static void dns_verbose(void)
 		printf("    [DNS # Auth RRs] %hu\n", dnshdr.num_auth_rr);
 		printf("  [DNS # Addtnl RRs] %hu\n\n", dnshdr.num_addi_rr);
 	}
-	return;
 }

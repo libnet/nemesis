@@ -173,7 +173,6 @@ static void ospf_initdata(void)
 	sumlsahdr.sum_nmask.s_addr = libnet_get_prand(PRu32); /* Netmask of destination IP address */
 	sumlsahdr.sum_metric       = libnet_get_prand(PRu32); /* Same as in rtr_lsa (&0xfff to use last 24bit */
 	sumlsahdr.sum_tos_metric   = libnet_get_prand(PRu32);
-	return;
 }
 
 static void ospf_validatedata(void)
@@ -638,7 +637,6 @@ static void ospf_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int ospf_exit(int code)
@@ -681,5 +679,4 @@ static void ospf_verbose(void)
 		} else if (mode == 3) {
 		}
 	}
-	return;
 }

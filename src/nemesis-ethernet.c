@@ -76,7 +76,6 @@ static void ethernet_initdata(void)
 
 	pd.file_mem = NULL;
 	pd.file_s   = 0;
-	return;
 }
 
 static void ethernet_usage(char *arg)
@@ -191,7 +190,6 @@ static void ethernet_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int ethernet_exit(int code)
@@ -217,5 +215,4 @@ static void ethernet_verbose(void)
 {
 	if (verbose)
 		nemesis_printeth(&etherhdr);
-	return;
 }

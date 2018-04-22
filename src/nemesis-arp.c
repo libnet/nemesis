@@ -100,7 +100,6 @@ static void arp_initdata(void)
 
 	pd.file_mem = NULL; /* payload */
 	pd.file_s   = 0;    /* paload size */
-	return;
 }
 
 static void arp_validatedata()
@@ -142,7 +141,6 @@ static void arp_validatedata()
 		if (!arp_src)
 			memcpy(ar_sha, etherhdr.ether_shost, 6);
 	}
-	return;
 }
 
 static void arp_usage(char *arg)
@@ -306,7 +304,6 @@ static void arp_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int arp_exit(int code)
@@ -334,5 +331,4 @@ static void arp_verbose(void)
 		nemesis_printeth(&etherhdr);
 		nemesis_printarp(&arphdr);
 	}
-	return;
 }

@@ -120,7 +120,6 @@ static void rip_initdata(void)
 	pd.file_s     = 0;
 	ipod.file_mem = NULL;
 	ipod.file_s   = 0;
-	return;
 }
 
 static void rip_validatedata(void)
@@ -157,7 +156,6 @@ static void rip_validatedata(void)
 	if (riphdr.rip_addr == 0)
 		riphdr.rip_addr = libnet_get_prand(PRu32);
 
-	return;
 }
 
 static void rip_usage(char *arg)
@@ -370,7 +368,6 @@ static void rip_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int rip_exit(int code)
@@ -408,5 +405,4 @@ static void rip_verbose(void)
 		nemesis_printudp(&udphdr);
 		nemesis_printrip(&riphdr);
 	}
-	return;
 }

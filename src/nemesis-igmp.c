@@ -104,7 +104,6 @@ static void igmp_initdata(void)
 	pd.file_s     = 0;
 	ipod.file_mem = NULL;
 	ipod.file_s   = 0;
-	return;
 }
 
 static void igmp_validatedata(libnet_t *l)
@@ -309,7 +308,6 @@ static void igmp_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int igmp_exit(int code)
@@ -349,5 +347,4 @@ static void igmp_verbose(void)
 		printf("         [IGMP Code] %hu\n", igmphdr.igmp_code);
 		printf("[IGMP group address] %s\n", inet_ntoa(igmphdr.igmp_group));
 	}
-	return;
 }

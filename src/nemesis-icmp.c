@@ -136,7 +136,6 @@ static void icmp_initdata(void)
 	ipod.file_s     = 0;
 	origod.file_mem = NULL;
 	origod.file_s   = 0;
-	return;
 }
 
 static void icmp_validatedata(void)
@@ -203,7 +202,6 @@ static void icmp_validatedata(void)
 			icmphdr.icmp_code = 0;
 		break;
 	}
-	return;
 }
 
 static void icmp_usage(char *arg)
@@ -494,7 +492,6 @@ static void icmp_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int icmp_exit(int code)
@@ -537,5 +534,4 @@ static void icmp_verbose(void)
 		nemesis_printip(&iphdr);
 		nemesis_printicmp(&icmphdr, mode);
 	}
-	return;
 }

@@ -104,7 +104,6 @@ static void ip_initdata(void)
 	pd.file_s     = 0;
 	ipod.file_mem = NULL;
 	ipod.file_s   = 0;
-	return;
 }
 
 static void ip_usage(char *arg)
@@ -265,7 +264,6 @@ static void ip_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int ip_exit(int code)
@@ -301,5 +299,4 @@ static void ip_verbose(void)
 
 		nemesis_printip(&iphdr);
 	}
-	return;
 }

@@ -123,7 +123,6 @@ static void tcp_initdata(void)
 	ipod.file_s    = 0;
 	tcpod.file_mem = NULL;
 	tcpod.file_s   = 0;
-	return;
 }
 
 static void tcp_usage(char *arg)
@@ -338,7 +337,6 @@ static void tcp_cmdline(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-	return;
 }
 
 static int tcp_exit(int code)
@@ -381,5 +379,4 @@ static void tcp_verbose(void)
 		nemesis_printip(&iphdr);
 		nemesis_printtcp(&tcphdr);
 	}
-	return;
 }
