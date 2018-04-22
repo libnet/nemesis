@@ -28,31 +28,28 @@
 char *pcap_outfile;		/* pcap output file name */
 #endif
 
-static int nemesis_readfile(uint8_t *, const char *, const size_t, const uint32_t);
-
 /**
- * Reads a user supplied file or stdin into memory for use in building packet 
+ * Reads a user supplied file or stdin into buf for use in building packet 
  * payloads or adding options to IP or TCP headers.
  *
- * @param memory pointer to allocated payload/options memory
  * @param file pointer to filename to open
- * @param maxsize maximum number of bytes to read from file or stdin
  * @param mode switch controlling mode of operation (for error reporting only)
+ * @param buf pointer to allocated payload/options buf
+ * @param len maximum size, in bytes, of @param buf
  *
  * @return number of bytes read on success, -1 on failure
  **/
-static int nemesis_readfile(uint8_t *memory, const char *file, const size_t maxsize, const uint32_t mode)
+static int nemesis_readfile(const char *file, const uint32_t mode, uint8_t *buf, const size_t len)
 {
-	int   fd = -1, bytesread = 0;
+	ssize_t num;
 	FILE *fp = NULL;
-
+	int   fd = -1;
 #if defined(WIN32)
 	TCHAR WinErrBuf[WINERRBUFFSIZE];
 #endif
 
-	if (memory == NULL) {
-		fprintf(stderr, "ERROR: %s readfile() memory unitialized.\n",
-		        (mode == PAYLOADMODE ? "Payload" : "Options"));
+	if (!buf) {
+		fprintf(stderr, "ERROR: %s readfile() buffer unitialized.\n", mode ? "Payload" : "Options");
 		return -1;
 	}
 
@@ -61,52 +58,54 @@ static int nemesis_readfile(uint8_t *memory, const char *file, const size_t maxs
 		fd = fileno(fp);
 	} else if ((fd = open(file, O_RDONLY)) < 0) {
 #if !defined(WIN32)
-		fprintf(stderr, "ERROR: Unable to open %s file: %s. %s\n",
-		        (mode == PAYLOADMODE) ? "Payload" : "Options", file, strerror(errno));
+		fprintf(stderr, "ERROR: Unable to open %s file %s: %s\n",
+			mode ? "Payload" : "Options", file, strerror(errno));
 #else
 		if (winstrerror(WinErrBuf, sizeof(WinErrBuf)) < 0)
 			return -1;
 
-		fprintf(stderr, "ERROR: Unable to open %s file: %s.\n%s\n",
-		        (mode == PAYLOADMODE) ? "Payload" : "Options", file, WinErrBuf);
+		fprintf(stderr, "ERROR: Unable to open %s file %s:\n%s\n",
+		        mode ? "Payload" : "Options", file, WinErrBuf);
 #endif
 		return -1;
 	}
 
 	/* read() can return negative values on successful reads, test for -1 */
-	if ((bytesread = read(fd, (void *)memory, maxsize)) == -1) {
+	num = read(fd, buf, len);
+	if (num == -1) {
 #if !defined(WIN32)
-		fprintf(stderr, "ERROR: Unable to read %s file: %s. %s\n",
-		        (mode == PAYLOADMODE) ? "Payload" : "Options", file, strerror(errno));
+		fprintf(stderr, "ERROR: Unable to read %s file %s: %s\n",
+		        mode ? "Payload" : "Options", file, strerror(errno));
 #else
 		if (winstrerror(WinErrBuf, sizeof(WinErrBuf)) < 0)
 			return -1;
 
-		fprintf(stderr, "ERROR: Unable to read %s file: %s.\n%s\n",
-		        (mode == PAYLOADMODE) ? "Payload" : "Options", file, WinErrBuf);
+		fprintf(stderr, "ERROR: Unable to read %s file %s:\n%s\n",
+		        mode ? "Payload" : "Options", file, WinErrBuf);
 #endif
-		return -1;
-	} else {
-		if (strncmp(file, "-", 1))
-			close(fd);
 	}
-	return bytesread;
+
+	if (strncmp(file, "-", 1))
+		close(fd);
+
+	return num;
 }
 
 /**
  * Wrapper for calloc() and nemesis_readfile() for building packet payloads, 
  * IP and TCP options from files.
  *
- * @param buffsize maximum number of bytes to read from file or stdin
- * @param memory pointer to FileData structure
+ * @param sz maximum number of bytes to read from file or stdin
+ * @param fd pointer to FileData structure
  * @param file pointer to filename to open
  * @param mode switch controlling mode of operation (for error reporting only)
  *
  * @return 0 on sucess, -1 on failure
  **/
-int builddatafromfile(const size_t buffsize, FileData *memory, const char *file, const u_int32_t mode)
+int builddatafromfile(const size_t sz, FileData *fd, const char *file, const uint32_t mode)
 {
-	if ((memory->file_mem = (u_int8_t *)calloc(buffsize, sizeof(u_int8_t))) == NULL) {
+	fd->file_mem = calloc(sz, sizeof(uint8_t));
+	if (!fd->file_mem) {
 		if (mode == PAYLOADMODE)
 			perror("ERROR: Unable to allocate packet payload memory");
 		else
@@ -115,8 +114,8 @@ int builddatafromfile(const size_t buffsize, FileData *memory, const char *file,
 		return -1;
 	}
 
-	if ((memory->file_s = nemesis_readfile(memory->file_mem, file, buffsize,
-	                                       (mode == PAYLOADMODE ? PAYLOADMODE : OPTIONSMODE))) < 0) {
+	fd->file_s = nemesis_readfile(file, mode == PAYLOADMODE, fd->file_mem, sz);
+	if (fd->file_s < 0) {
 		if (mode == PAYLOADMODE)
 			fprintf(stderr, "ERROR: Unable to read any payload data.\n");
 		else
