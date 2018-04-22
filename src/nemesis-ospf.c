@@ -77,15 +77,15 @@ void nemesis_ospf(int argc, char **argv)
 
 	if (got_payload) {
 #if defined(WIN32)
-		if (builddatafromfile(TCP_LINKBUFFSIZE, &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(TCP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
-		if (builddatafromfile(((got_link == 1) ? TCP_LINKBUFFSIZE : TCP_RAWBUFFSIZE), &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(((got_link == 1) ? TCP_LINKBUFFSIZE : TCP_RAWBUFFSIZE), &pd, payloadfile, PAYLOADMODE) < 0)
 #endif
 			ospf_exit(1);
 	}
 
 	if (got_ipoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, (const char *)ipoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
+		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, ipoptionsfile, OPTIONSMODE) < 0)
 			ospf_exit(1);
 	}
 	if (buildospf(&etherhdr, &iphdr, &pd, &ipod, l, got_type) < 0) {
@@ -185,7 +185,7 @@ static void ospf_validatedata(void)
 
 static void ospf_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("OSPF usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("OSPF Packet Types: \n"
@@ -348,7 +348,7 @@ static void ospf_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
 		case 'i': /* OSPF HELLO link state countdown timer in seconds */
 			if (got_type != 0) {

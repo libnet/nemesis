@@ -54,7 +54,7 @@ void nemesis_ethernet(int argc, char **argv)
 	ethernet_verbose();
 
 	if (got_payload) {
-		if (builddatafromfile(ETHERBUFFSIZE, &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(ETHERBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 			ethernet_exit(1);
 	}
 
@@ -80,7 +80,7 @@ static void ethernet_initdata(void)
 
 static void ethernet_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("Ethernet Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("Ethernet Options: \n"
@@ -146,14 +146,14 @@ static void ethernet_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
@@ -172,7 +172,7 @@ static void ethernet_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 #if defined(WIN32)
 		case 'Z':

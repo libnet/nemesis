@@ -70,32 +70,30 @@ void nemesis_dns(int argc, char **argv)
 	if (got_payload) {
 		if (state) {
 #if defined(WIN32)
-			if (builddatafromfile(DNSTCP_LINKBUFFSIZE, &pd,
-			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+			if (builddatafromfile(DNSTCP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
 			if (builddatafromfile(((got_link == 1) ? DNSTCP_LINKBUFFSIZE : DNSTCP_RAWBUFFSIZE), &pd,
-			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+			                      payloadfile, PAYLOADMODE) < 0)
 #endif
 				dns_exit(1);
 		} else {
 #if defined(WIN32)
-			if (builddatafromfile(DNSUDP_LINKBUFFSIZE, &pd,
-			                      (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+			if (builddatafromfile(DNSUDP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
 			if (builddatafromfile(((got_link == 1) ? DNSUDP_LINKBUFFSIZE : DNSUDP_RAWBUFFSIZE),
-			                      &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+			                      &pd, payloadfile, PAYLOADMODE) < 0)
 #endif
 				dns_exit(1);
 		}
 	}
 
 	if (got_ipoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, (const char *)ipoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
+		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, ipoptionsfile, OPTIONSMODE) < 0)
 			dns_exit(1);
 	}
 
 	if (state && got_tcpoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &tcpod, (const char *)tcpoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
+		if (builddatafromfile(OPTIONSBUFFSIZE, &tcpod, tcpoptionsfile, OPTIONSMODE) < 0)
 			dns_exit(1);
 	}
 
@@ -157,7 +155,7 @@ static void dns_validatedata(void)
 
 static void dns_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("DNS usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("DNS options: \n"
@@ -292,7 +290,7 @@ static void dns_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
 		case 'i': /* DNS ID */
 			dnshdr.id = xgetint16(optarg);
@@ -310,7 +308,7 @@ static void dns_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = (u_int8_t)addr_tmp[i];
+				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
 		case 'o': /* TCP options file */
 			if (strlen(optarg) < 256) {
@@ -372,7 +370,7 @@ static void dns_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 		case 'w': /* TCP window size */
 			tcphdr.th_win = xgetint16(optarg);

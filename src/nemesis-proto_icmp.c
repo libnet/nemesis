@@ -96,7 +96,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 	}
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options((u_int8_t *)ipod->file_mem, ipod->file_s, l, 0)) == -1)
+		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 

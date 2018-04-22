@@ -67,15 +67,15 @@ void nemesis_rip(int argc, char **argv)
 
 	if (got_payload) {
 #if defined(WIN32)
-		if (builddatafromfile(RIP_LINKBUFFSIZE, &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(RIP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
-		if (builddatafromfile(((got_link == 1) ? RIP_LINKBUFFSIZE : RIP_RAWBUFFSIZE), &pd, (const char *)payloadfile, (const u_int32_t)PAYLOADMODE) < 0)
+		if (builddatafromfile(((got_link == 1) ? RIP_LINKBUFFSIZE : RIP_RAWBUFFSIZE), &pd, payloadfile, PAYLOADMODE) < 0)
 #endif
 			rip_exit(1);
 	}
 
 	if (got_ipoptions) {
-		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, (const char *)ipoptionsfile, (const u_int32_t)OPTIONSMODE) < 0)
+		if (builddatafromfile(OPTIONSBUFFSIZE, &ipod, ipoptionsfile, OPTIONSMODE) < 0)
 			rip_exit(1);
 	}
 
@@ -160,7 +160,7 @@ static void rip_validatedata(void)
 
 static void rip_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("RIP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("RIP options: \n"
@@ -341,7 +341,7 @@ static void rip_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 		case 'V': /* RIP version */
 			riphdr.rip_ver = xgetint8(optarg);

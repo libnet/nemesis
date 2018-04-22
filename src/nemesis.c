@@ -19,7 +19,7 @@ static int usage(char *arg)
 	char *module = "NEMESIS";
 
 	nemesis_maketitle(title, module, version);
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("NEMESIS Usage:\n"
 	       "  %s [mode] [options]\n"

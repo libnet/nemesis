@@ -145,7 +145,7 @@ static void arp_validatedata()
 
 static void arp_usage(char *arg)
 {
-	nemesis_printtitle((const char *)title);
+	nemesis_printtitle(title);
 
 	printf("ARP/RARP Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
 	printf("ARP/RARP Options: \n"
@@ -281,7 +281,7 @@ static void arp_cmdline(int argc, char **argv)
 		case 'v':
 			verbose++;
 			if (verbose == 1)
-				nemesis_printtitle((const char *)title);
+				nemesis_printtitle(title);
 			break;
 #if defined(ENABLE_PCAPOUTPUT)
 		case 'W':

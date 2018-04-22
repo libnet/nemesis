@@ -37,7 +37,7 @@ int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *l)
 #endif
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options((u_int8_t *)ipod->file_mem, ipod->file_s, l, 0)) == -1)
+		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 	(void)libnet_build_ipv4(ip_meta_packetlen,

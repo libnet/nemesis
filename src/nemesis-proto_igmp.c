@@ -40,7 +40,7 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
 	(void)libnet_build_igmp(igmp->igmp_type, igmp->igmp_code, 0, igmp->igmp_group.s_addr, pd->file_mem, pd->file_s, l, 0);
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options((u_int8_t *)ipod->file_mem, ipod->file_s, l, 0)) == -1) {
+		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1) {
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 		}
 	}
