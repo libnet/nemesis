@@ -3,6 +3,7 @@ BasedOnStyle: LLVM
 IndentWidth: 8
 ColumnLimit: 0
 DerivePointerAlignment: false
+# https://stackoverflow.com/questions/38392889/clang-format-align-asterisk-of-pointer-declaration-with-variable-name
 PointerAlignment: Right
 ReflowComments: true
 SpacesBeforeTrailingComments: 4

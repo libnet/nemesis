@@ -20,9 +20,9 @@ static IPhdr    iphdr;
 static IGMPhdr  igmphdr;
 static FileData pd, ipod;
 static int      got_group, got_type, got_code;
-static char *   payloadfile   = NULL; /* payload file name */
-static char *   ipoptionsfile = NULL; /* IP options file name */
-static char *   device        = NULL; /* Ethernet device */
+static char    *payloadfile   = NULL; /* payload file name */
+static char    *ipoptionsfile = NULL; /* IP options file name */
+static char    *device        = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -171,7 +171,7 @@ static void igmp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	uint32_t     addr_tmp[6];
-	char *       igmp_options;
+	char        *igmp_options;
 	extern char *optarg;
 	extern int   optind;
 

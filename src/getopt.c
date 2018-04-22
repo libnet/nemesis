@@ -55,9 +55,9 @@ char *optarg;     /* argument associated with option */
  */
 int getopt(int nargc, char *const nargv[], const char *ostr)
 {
-	char *       __progname = "";
 	static char *place      = EMSG; /* option letter processing */
-	char *       oli;               /* option letter list index */
+	char        *__progname = "";
+	char        *oli;               /* option letter list index */
 
 	if (ostr == NULL)
 		return (-1);

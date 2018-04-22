@@ -19,9 +19,9 @@ static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static UDPhdr   udphdr;
 static FileData pd, ipod;
-static char *   payloadfile   = NULL; /* payload file name */
-static char *   ipoptionsfile = NULL; /* IP options file name */
-static char *   device        = NULL; /* Ethernet device */
+static char    *payloadfile   = NULL; /* payload file name */
+static char    *ipoptionsfile = NULL; /* IP options file name */
+static char    *device        = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -145,7 +145,7 @@ static void udp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	u_int32_t    addr_tmp[6];
-	char *       udp_options;
+	char        *udp_options;
 	extern char *optarg;
 	extern int   optind;
 

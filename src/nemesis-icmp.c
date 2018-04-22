@@ -22,10 +22,10 @@ static ICMPhdr  icmphdr;
 static UDPhdr   udphdr;
 static FileData pd, ipod, origod;
 static int      got_mode, got_type, got_code;
-static char *   payloadfile    = NULL; /* payload file name */
-static char *   ipoptionsfile  = NULL; /* IP options file name */
-static char *   unroptionsfile = NULL; /* ICMP unreach IP options file */
-static char *   device         = NULL; /* Ethernet device */
+static char    *payloadfile    = NULL; /* payload file name */
+static char    *ipoptionsfile  = NULL; /* IP options file name */
+static char    *unroptionsfile = NULL; /* ICMP unreach IP options file */
+static char    *device         = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -261,7 +261,7 @@ static void icmp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	uint32_t     addr_tmp[6];
-	char *       icmp_options;
+	char        *icmp_options;
 	char         cmd_mode = 0;
 	extern char *optarg;
 	extern int   optind;

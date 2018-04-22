@@ -33,7 +33,7 @@
  */
 size_t strlcpy(char *dst, const char *src, size_t siz)
 {
-	register char *      d = dst;
+	register char       *d = dst;
 	register const char *s = src;
 	register size_t      n = siz;
 

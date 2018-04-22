@@ -20,9 +20,9 @@ static IPhdr    iphdr;
 static FileData pd, ipod;
 static int      got_mode      = 0;
 static int      got_type      = 0;
-static char *   payloadfile   = NULL; /* payload file name */
-static char *   ipoptionsfile = NULL; /* IP options file name */
-static char *   device        = NULL; /* Ethernet device */
+static char    *payloadfile   = NULL; /* payload file name */
+static char    *ipoptionsfile = NULL; /* IP options file name */
+static char    *device        = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 char *ifacetmp;
@@ -258,7 +258,7 @@ static void ospf_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	uint32_t     addr_tmp[6];
-	char *       ospf_options;
+	char        *ospf_options;
 	char         cmd_mode = 0;
 	extern char *optarg;
 	extern int   optind;

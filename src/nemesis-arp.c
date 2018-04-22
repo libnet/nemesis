@@ -22,8 +22,8 @@ static int      solarismode;
 static int      arp_src, arp_dst; /* modify hardware addresses independantly within arp frame */
 static int      rarp;             /* RARP */
 static int      reply;            /* ARP/RARP request, 1 == reply */
-static char *   device = NULL;    /* Ethernet device */
-static char *   file   = NULL;    /* payload file name */
+static char    *device = NULL;    /* Ethernet device */
+static char    *file   = NULL;    /* payload file name */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -177,7 +177,7 @@ static void arp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	uint32_t     addr_tmp[6];
-	char *       arp_options;
+	char        *arp_options;
 	extern char *optarg;
 	extern int   optind;
 

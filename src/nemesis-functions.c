@@ -71,7 +71,7 @@ int   got_tcpoptions;
  */
 uint32_t xgetint32(const char *str)
 {
-	char * endp;
+	char  *endp;
 	u_long val;
 
 	val = strtoul(str, &endp, 0);
@@ -92,7 +92,7 @@ uint32_t xgetint32(const char *str)
  */
 uint16_t xgetint16(const char *str)
 {
-	char * endp;
+	char  *endp;
 	u_long val;
 
 	val = strtoul(str, &endp, 0);
@@ -113,7 +113,7 @@ uint16_t xgetint16(const char *str)
  */
 uint8_t xgetint8(const char *str)
 {
-	char * endp;
+	char  *endp;
 	u_long val;
 
 	val = strtoul(str, &endp, 0);
@@ -140,9 +140,9 @@ int parsefragoptions(IPhdr *iph, char *str)
 	int      reserved = 0, dont = 0, more = 0, offset = 0;
 	int      i, argcount = 0;
 	uint8_t  error = 0;
-	char *   orig  = NULL;      /* original input string */
-	char *   toks[FP_MAX_ARGS]; /* break all args down into option sets */
-	char **  ap;
+	char    *orig  = NULL;      /* original input string */
+	char    *toks[FP_MAX_ARGS]; /* break all args down into option sets */
+	char   **ap;
 	uint16_t frag_offset = 0;
 
 	orig = strdup(str);

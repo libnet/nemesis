@@ -18,12 +18,12 @@
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static FileData pd, ipod;
-static char *   payloadfile   = NULL; /* payload file name */
-static char *   ipoptionsfile = NULL; /* IP options file name */
-static char *   device        = NULL; /* Ethernet device */
+static char    *payloadfile   = NULL; /* payload file name */
+static char    *ipoptionsfile = NULL; /* IP options file name */
+static char    *device        = NULL; /* Ethernet device */
 
 #if defined(WIN32)
-static char *ifacetmp = NULL;
+static char    *ifacetmp      = NULL;
 #endif
 
 static void ip_cmdline(int, char **);
@@ -141,7 +141,7 @@ static void ip_cmdline(int argc, char **argv)
 {
 	int          opt, i;
 	uint32_t     addr_tmp[6];
-	char *       ip_options;
+	char        *ip_options;
 	extern char *optarg;
 	extern int   optind;
 

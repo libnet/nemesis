@@ -30,7 +30,7 @@ void *GetAdapterFromList(void *device, int index)
 {
 	DWORD  dwVersion;
 	DWORD  dwWindowsMajorVersion;
-	char * Adapter95;
+	char  *Adapter95;
 	WCHAR *Adapter;
 	int    i;
 
@@ -62,10 +62,10 @@ void PrintDeviceList(const char *device)
 	DWORD        dwVersion;
 	DWORD        dwWindowsMajorVersion;
 	const WCHAR *t;
-	const char * t95;
+	const char  *t95;
 	int          i       = 0;
 	int          DescPos = 0;
-	char *       Desc;
+	char        *Desc;
 	int          n = 1;
 
 	dwVersion             = GetVersion();

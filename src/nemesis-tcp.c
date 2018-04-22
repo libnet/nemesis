@@ -19,10 +19,10 @@ static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static TCPhdr   tcphdr;
 static FileData pd, ipod, tcpod;
-static char *   payloadfile    = NULL; /* payload file name */
-static char *   ipoptionsfile  = NULL; /* IP options file name */
-static char *   tcpoptionsfile = NULL; /* IP options file name */
-static char *   device         = NULL; /* Ethernet device */
+static char    *payloadfile    = NULL; /* payload file name */
+static char    *ipoptionsfile  = NULL; /* IP options file name */
+static char    *tcpoptionsfile = NULL; /* IP options file name */
+static char    *device         = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -170,8 +170,8 @@ static void tcp_cmdline(int argc, char **argv)
 {
 	int          opt, i, flag;
 	uint32_t     addr_tmp[6];
-	char *       tcp_options;
-	char *       p, c;
+	char        *tcp_options;
+	char        *p, c;
 	extern char *optarg;
 	extern int   optind;
 

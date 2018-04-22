@@ -21,10 +21,10 @@ static TCPhdr   tcphdr;
 static UDPhdr   udphdr;
 static DNShdr   dnshdr;
 static FileData pd, ipod, tcpod;
-static char *   payloadfile    = NULL; /* payload file name */
-static char *   ipoptionsfile  = NULL; /* TCP options file name */
-static char *   tcpoptionsfile = NULL; /* IP options file name */
-static char *   device         = NULL; /* Ethernet device */
+static char    *payloadfile    = NULL; /* payload file name */
+static char    *ipoptionsfile  = NULL; /* TCP options file name */
+static char    *tcpoptionsfile = NULL; /* IP options file name */
+static char    *device         = NULL; /* Ethernet device */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -210,8 +210,8 @@ static void dns_cmdline(int argc, char **argv)
 {
 	int          opt, i, flag;
 	uint32_t     addr_tmp[6];
-	char *       dns_options;
-	char *       p, c;
+	char        *dns_options;
+	char        *p, c;
 	extern char *optarg;
 	extern int   optind;
 
