@@ -162,7 +162,7 @@ static void dns_usage(char *arg)
 	       "  -i <DNS ID>\n"
 	       "  -g <DNS flags>\n"
 	       "  -q <# of Questions>\n"
-	       "  -W <# of Answer RRs>\n"
+	       "  -b <# of Answer RRs>\n"
 	       "  -A <# of Authority RRs>\n"
 	       "  -r <# of Additional RRs>\n"
 	       "  -P <Payload file>\n"
