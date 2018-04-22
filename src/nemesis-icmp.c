@@ -20,7 +20,7 @@ static IPhdr    iphdr;
 static IPhdr    ipunreach;
 static ICMPhdr  icmphdr;
 static UDPhdr   udphdr;
-static FileData pd, ipod, origod;
+static struct file pd, ipod, origod;
 static int      got_mode, got_type, got_code;
 static char    *payloadfile    = NULL; /* payload file name */
 static char    *ipoptionsfile  = NULL; /* IP options file name */
@@ -131,12 +131,12 @@ static void icmp_initdata(void)
 	icmphdr.dun.ts.its_ttime = 0;                       /* ICMP timestamp rep. trans time */
 	icmphdr.dun.mask         = 0;                       /* ICMP address mask */
 
-	pd.file_mem     = NULL;
-	pd.file_s       = 0;
-	ipod.file_mem   = NULL;
-	ipod.file_s     = 0;
-	origod.file_mem = NULL;
-	origod.file_s   = 0;
+	pd.file_buf     = NULL;
+	pd.file_len     = 0;
+	ipod.file_buf   = NULL;
+	ipod.file_len   = 0;
+	origod.file_buf = NULL;
+	origod.file_len = 0;
 }
 
 static void icmp_validatedata(void)
@@ -151,17 +151,17 @@ static void icmp_validatedata(void)
 		icmp_exit(1);
 	}
 
-	if (pd.file_s == 0 && (mode == ICMP_UNREACH || mode == ICMP_REDIRECT || mode == ICMP_TIMXCEED)) {
+	if (pd.file_len == 0 && (mode == ICMP_UNREACH || mode == ICMP_REDIRECT || mode == ICMP_TIMXCEED)) {
 		udphdr.uh_sport = libnet_get_prand(PRu16);
 		udphdr.uh_dport = libnet_get_prand(PRu16);
 		udphdr.uh_ulen  = htons(20);
 		udphdr.uh_sum   = 0;
-		if ((pd.file_mem = calloc(8, sizeof(char))) == NULL) {
+		if ((pd.file_buf = calloc(8, sizeof(char))) == NULL) {
 			perror("ERROR: Unable to allocate ICMP original datagram payload memory");
 			icmp_exit(1);
 		}
-		pd.file_s = 8;
-		memcpy(pd.file_mem, &udphdr, pd.file_s);
+		pd.file_len = 8;
+		memcpy(pd.file_buf, &udphdr, pd.file_len);
 	}
 
 	/* Attempt to send valid packets if the user hasn't decided to craft an anomolous packet */
@@ -498,13 +498,13 @@ static void icmp_cmdline(int argc, char **argv)
 static int icmp_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (got_origoptions)
-		free(origod.file_mem);
+		free(origod.file_buf);
 
 	if (device != NULL)
 		free(device);

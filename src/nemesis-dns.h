@@ -34,6 +34,6 @@
 
 int state; /* default to UDP */
 
-int builddns(ETHERhdr *, IPhdr *, TCPhdr *, UDPhdr *, DNShdr *, FileData *, FileData *, FileData *, libnet_t *);
+int builddns(ETHERhdr *, IPhdr *, TCPhdr *, UDPhdr *, DNShdr *, struct file *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_DNS_H_ */

@@ -17,7 +17,7 @@
 
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
-static FileData pd, ipod;
+static struct file pd, ipod;
 static char    *payloadfile   = NULL; /* payload file name */
 static char    *ipoptionsfile = NULL; /* IP options file name */
 static char    *device        = NULL; /* Ethernet device */
@@ -100,10 +100,10 @@ static void ip_initdata(void)
 	iphdr.ip_ttl        = 255;                     /* IP TTL */
 	iphdr.ip_p          = 0;                       /* IP protocol */
 
-	pd.file_mem   = NULL;
-	pd.file_s     = 0;
-	ipod.file_mem = NULL;
-	ipod.file_s   = 0;
+	pd.file_buf   = NULL;
+	pd.file_len   = 0;
+	ipod.file_buf = NULL;
+	ipod.file_len = 0;
 }
 
 static void ip_usage(char *arg)
@@ -269,10 +269,10 @@ static void ip_cmdline(int argc, char **argv)
 static int ip_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (device != NULL)
 		free(device);

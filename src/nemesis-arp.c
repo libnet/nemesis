@@ -17,7 +17,7 @@
 
 static ETHERhdr etherhdr;
 static ARPhdr   arphdr;
-static FileData pd;
+static struct file pd;
 static int      solarismode;
 static int      arp_src, arp_dst; /* modify hardware addresses independantly within arp frame */
 static int      rarp;             /* RARP */
@@ -98,8 +98,8 @@ static void arp_initdata(void)
 	memset(ar_tha, 0, 6); /* ARP frame target address */
 	memset(ar_tpa, 0, 4); /* ARP target protocol (IP) addr */
 
-	pd.file_mem = NULL; /* payload */
-	pd.file_s   = 0;    /* paload size */
+	pd.file_buf = NULL; /* payload */
+	pd.file_len = 0;    /* paload size */
 }
 
 static void arp_validatedata()
@@ -309,7 +309,7 @@ static void arp_cmdline(int argc, char **argv)
 static int arp_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (file != NULL)
 		free(file);

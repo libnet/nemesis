@@ -12,7 +12,7 @@
 #include "nemesis-icmp.h"
 #include "nemesis.h"
 
-int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileData *pd, FileData *ipod, FileData *origod,
+int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, struct file *pd, struct file *ipod, struct file *origod,
               libnet_t *l)
 {
 	int             n;
@@ -20,18 +20,18 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 	static uint8_t *pkt;
 	uint8_t         link_offset = 0;
 
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
-	if (ipod->file_mem == NULL)
-		ipod->file_s = 0;
-	if (origod->file_mem == NULL)
-		origod->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
+	if (ipod->file_buf == NULL)
+		ipod->file_len = 0;
+	if (origod->file_buf == NULL)
+		origod->file_len = 0;
 
 	if (got_link) { /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 	}
 
-	icmp_packetlen = link_offset + LIBNET_IPV4_H + pd->file_s + ipod->file_s;
+	icmp_packetlen = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
 
 	switch (mode) {
 	case ICMP_ECHO:
@@ -40,7 +40,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 	case ICMP_UNREACH:
 	case ICMP_REDIRECT:
 	case ICMP_TIMXCEED:
-		icmp_packetlen += LIBNET_ICMPV4_ECHO_H + LIBNET_IPV4_H + origod->file_s;
+		icmp_packetlen += LIBNET_ICMPV4_ECHO_H + LIBNET_IPV4_H + origod->file_len;
 		break;
 	case ICMP_TSTAMP:
 		icmp_packetlen += LIBNET_ICMPV4_TS_H;
@@ -54,25 +54,25 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 
 #ifdef DEBUG
 	printf("DEBUG: ICMP packet length %u.\n", icmp_packetlen);
-	printf("DEBUG: IP   options size  %u.\n", ipod->file_s);
-	printf("DEBUG: ICMP original IP options size %u.\n", origod->file_s);
-	printf("DEBUG: ICMP payload size  %u.\n", pd->file_s);
+	printf("DEBUG: IP   options size  %u.\n", ipod->file_len);
+	printf("DEBUG: ICMP original IP options size %u.\n", origod->file_len);
+	printf("DEBUG: ICMP payload size  %u.\n", pd->file_len);
 #endif
 
 	switch (mode) {
 	case ICMP_ECHO:
 		libnet_build_icmpv4_echo(icmp->icmp_type, icmp->icmp_code, 0,
-		                         icmp->hun.echo.id, icmp->hun.echo.seq, pd->file_mem, pd->file_s, l, 0);
+		                         icmp->hun.echo.id, icmp->hun.echo.seq, pd->file_buf, pd->file_len, l, 0);
 		break;
 	case ICMP_MASKREQ:
 		libnet_build_icmpv4_mask(icmp->icmp_type, icmp->icmp_code, 0,
-		                         icmp->hun.echo.id, icmp->hun.echo.seq, icmp->dun.mask, pd->file_mem, pd->file_s, l, 0);
+		                         icmp->hun.echo.id, icmp->hun.echo.seq, icmp->dun.mask, pd->file_buf, pd->file_len, l, 0);
 		break;
 	case ICMP_TSTAMP:
 		libnet_build_icmpv4_timestamp(icmp->icmp_type, icmp->icmp_code, 0,
 		                              icmp->hun.echo.id, icmp->hun.echo.seq,
 		                              icmp->dun.ts.its_otime, icmp->dun.ts.its_rtime,
-		                              icmp->dun.ts.its_ttime, pd->file_mem, pd->file_s, l, 0);
+		                              icmp->dun.ts.its_ttime, pd->file_buf, pd->file_len, l, 0);
 		break;
 		/* 
 		 * Behind the scenes, the packet builder functions for unreach,
@@ -81,22 +81,22 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, FileDat
 		 */
 	case ICMP_UNREACH:
 	case ICMP_TIMXCEED:
-		libnet_build_icmpv4_unreach(icmp->icmp_type, icmp->icmp_code, 0, pd->file_mem, pd->file_s, l, 0);
+		libnet_build_icmpv4_unreach(icmp->icmp_type, icmp->icmp_code, 0, pd->file_buf, pd->file_len, l, 0);
 		break;
 	case ICMP_REDIRECT:
 		libnet_build_icmpv4_redirect(icmp->icmp_type, icmp->icmp_code, 0,
-		                             ntohl(icmp->hun.gateway), pd->file_mem, pd->file_s, l, 0);
+		                             ntohl(icmp->hun.gateway), pd->file_buf, pd->file_len, l, 0);
 		break;
 	}
 
 	if ((mode == ICMP_UNREACH || mode == ICMP_TIMXCEED || mode == ICMP_REDIRECT) && got_origoptions) {
-		if (libnet_build_ipv4_options(origod->file_mem, origod->file_s, l, 0) == -1) {
+		if (libnet_build_ipv4_options(origod->file_buf, origod->file_len, l, 0) == -1) {
 			fprintf(stderr, "ERROR: Unable to add original IP options, discarding them.\n");
 		}
 	}
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1)
+		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 

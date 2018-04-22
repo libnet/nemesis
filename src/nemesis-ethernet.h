@@ -47,6 +47,6 @@
 #define ETHERTYPE_PPPOE         0x8864		/* PPP Over Ethernet Session Stage */
 #endif
 
-int buildether(ETHERhdr *, FileData *, libnet_t *);
+int buildether(ETHERhdr *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_ETHERNET_H_ */

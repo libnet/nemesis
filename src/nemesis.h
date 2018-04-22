@@ -150,10 +150,10 @@ int                got_payload;
 int                got_ipoptions;
 int                got_tcpoptions;
 
-typedef struct _FileData {
-	int32_t  file_s;   /* file size */
-	uint8_t *file_mem; /* pointer to file memory */
-} FileData;
+struct file {
+	uint8_t *file_buf; /* pointer to file memory */
+	ssize_t  file_len; /* file size */
+};
 
 /* support functions */
 uint32_t xgetint32(const char *);
@@ -190,7 +190,7 @@ int   winstrerror(LPSTR, int);
 #endif
 
 /* file I/O functions */
-int builddatafromfile(const size_t, FileData *, const char *, const uint32_t);
+int builddatafromfile(const size_t, struct file *, const char *, const uint32_t);
 
 /* printout functions */
 void nemesis_hexdump(uint8_t *, uint32_t, int);

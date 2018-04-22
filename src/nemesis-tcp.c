@@ -18,7 +18,7 @@
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static TCPhdr   tcphdr;
-static FileData pd, ipod, tcpod;
+static struct file pd, ipod, tcpod;
 static char    *payloadfile    = NULL; /* payload file name */
 static char    *ipoptionsfile  = NULL; /* IP options file name */
 static char    *tcpoptionsfile = NULL; /* IP options file name */
@@ -117,12 +117,12 @@ static void tcp_initdata(void)
 	tcphdr.th_flags |= TH_SYN; /* TCP flags */
 	tcphdr.th_win = 4096;      /* TCP window size */
 
-	pd.file_mem    = NULL;
-	pd.file_s      = 0;
-	ipod.file_mem  = NULL;
-	ipod.file_s    = 0;
-	tcpod.file_mem = NULL;
-	tcpod.file_s   = 0;
+	pd.file_buf    = NULL;
+	pd.file_len    = 0;
+	ipod.file_buf  = NULL;
+	ipod.file_len  = 0;
+	tcpod.file_buf = NULL;
+	tcpod.file_len = 0;
 }
 
 static void tcp_usage(char *arg)
@@ -342,13 +342,13 @@ static void tcp_cmdline(int argc, char **argv)
 static int tcp_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (got_tcpoptions)
-		free(tcpod.file_mem);
+		free(tcpod.file_buf);
 
 	if (device != NULL)
 		free(device);

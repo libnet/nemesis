@@ -15,7 +15,7 @@
 #endif
 
 static ETHERhdr etherhdr;
-static FileData pd;
+static struct file pd;
 static char    *payloadfile = NULL; /* payload file name */
 static char    *device      = NULL; /* Ethernet device */
 
@@ -74,8 +74,8 @@ static void ethernet_initdata(void)
 	memset(etherhdr.ether_shost, 0, 6);    /* Ethernet source address */
 	memset(etherhdr.ether_dhost, 0xff, 6); /* Ethernet destination address */
 
-	pd.file_mem = NULL;
-	pd.file_s   = 0;
+	pd.file_buf = NULL;
+	pd.file_len = 0;
 }
 
 static void ethernet_usage(char *arg)
@@ -195,7 +195,7 @@ static void ethernet_cmdline(int argc, char **argv)
 static int ethernet_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (device != NULL)
 		free(device);

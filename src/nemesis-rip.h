@@ -35,6 +35,6 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-int buildrip(ETHERhdr *, IPhdr *, UDPhdr *, RIPhdr *, FileData *, FileData *, libnet_t *);
+int buildrip(ETHERhdr *, IPhdr *, UDPhdr *, RIPhdr *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_RIP_H_ */

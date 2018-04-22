@@ -13,55 +13,55 @@
 #include "nemesis.h"
 
 int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
-             FileData *pd, FileData *ipod, FileData *tcpod, libnet_t *l)
+             struct file *pd, struct file *ipod, struct file *tcpod, libnet_t *l)
 {
 	int             n;
 	uint32_t        dns_packetlen = 0, dns_meta_packetlen = 0;
 	static uint8_t *pkt;
 	uint8_t         link_offset = 0;
 
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
-	if (ipod->file_mem == NULL)
-		ipod->file_s = 0;
-	if (tcpod->file_mem == NULL)
-		tcpod->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
+	if (ipod->file_buf == NULL)
+		ipod->file_len = 0;
+	if (tcpod->file_buf == NULL)
+		tcpod->file_len = 0;
 
 	if (got_link) { /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 	}
 
-	dns_packetlen = link_offset + LIBNET_IPV4_H + pd->file_s + ipod->file_s;
+	dns_packetlen = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
 
 	if (state == 0) /* UDP */
 		dns_packetlen += LIBNET_UDP_H + LIBNET_UDP_DNSV4_H;
 	else /* TCP */
-		dns_packetlen += LIBNET_TCP_H + tcpod->file_s + LIBNET_TCP_DNSV4_H;
+		dns_packetlen += LIBNET_TCP_H + tcpod->file_len + LIBNET_TCP_DNSV4_H;
 
 	dns_meta_packetlen = dns_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: DNS packet length %u.\n", dns_packetlen);
-	printf("DEBUG: IP  options size  %u.\n", ipod->file_s);
-	printf("DEBUG: TCP options size  %u.\n", tcpod->file_s);
-	printf("DEBUG: DNS payload size  %u.\n", pd->file_s);
+	printf("DEBUG: IP  options size  %u.\n", ipod->file_len);
+	printf("DEBUG: TCP options size  %u.\n", tcpod->file_len);
+	printf("DEBUG: DNS payload size  %u.\n", pd->file_len);
 #endif
 
 	// build dns header
-	(void)libnet_build_dnsv4(((state == 0) ? LIBNET_UDP_DNSV4_H : LIBNET_TCP_DNSV4_H) + pd->file_s,
+	(void)libnet_build_dnsv4(((state == 0) ? LIBNET_UDP_DNSV4_H : LIBNET_TCP_DNSV4_H) + pd->file_len,
 	                         dns->id,
 	                         dns->flags,
-	                         dns->num_q, dns->num_answ_rr, dns->num_auth_rr, dns->num_addi_rr, pd->file_mem, pd->file_s, l, 0);
+	                         dns->num_q, dns->num_answ_rr, dns->num_auth_rr, dns->num_addi_rr, pd->file_buf, pd->file_len, l, 0);
 
 	if (state == 0)    // build UDP
 	{
 		(void)libnet_build_udp(udp->uh_sport,
-		                       udp->uh_dport, LIBNET_UDP_H + LIBNET_UDP_DNSV4_H + pd->file_s, 0, NULL, 0, l, 0);
+		                       udp->uh_dport, LIBNET_UDP_H + LIBNET_UDP_DNSV4_H + pd->file_len, 0, NULL, 0, l, 0);
 
 	} else    // BUILD TCP
 	{
 		if (got_tcpoptions) {
-			if (libnet_build_tcp_options(tcpod->file_mem, tcpod->file_s, l, 0) == -1)
+			if (libnet_build_tcp_options(tcpod->file_buf, tcpod->file_len, l, 0) == -1)
 				fprintf(stderr, "ERROR: Unable to add TCP options, discarding them.\n");
 		}
 
@@ -70,11 +70,11 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 		                       tcp->th_seq,
 		                       tcp->th_ack,
 		                       tcp->th_flags,
-		                       tcp->th_win, 0, tcp->th_urp, LIBNET_TCP_H + LIBNET_TCP_DNSV4_H + pd->file_s, NULL, 0, l, 0);
+		                       tcp->th_win, 0, tcp->th_urp, LIBNET_TCP_H + LIBNET_TCP_DNSV4_H + pd->file_len, NULL, 0, l, 0);
 	}
 
 	if (got_ipoptions) {
-		if (libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0) == -1) {
+		if (libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0) == -1) {
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 		}
 	}

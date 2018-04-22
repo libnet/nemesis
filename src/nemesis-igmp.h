@@ -32,6 +32,6 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-int buildigmp(ETHERhdr *, IPhdr *, IGMPhdr *, FileData *, FileData *, libnet_t *);
+int buildigmp(ETHERhdr *, IPhdr *, IGMPhdr *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_IGMP_H_ */

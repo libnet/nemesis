@@ -12,32 +12,32 @@
 #include "nemesis-ip.h"
 #include "nemesis.h"
 
-int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *l)
+int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet_t *l)
 {
 	int             n;
 	uint32_t        ip_packetlen = 0, ip_meta_packetlen = 0;
 	static uint8_t *pkt;
 	uint8_t         link_offset = 0;
 
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
-	if (ipod->file_mem == NULL)
-		ipod->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
+	if (ipod->file_buf == NULL)
+		ipod->file_len = 0;
 
 	if (got_link) /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 
-	ip_packetlen      = link_offset + LIBNET_IPV4_H + pd->file_s + ipod->file_s;
+	ip_packetlen      = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
 	ip_meta_packetlen = ip_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: IP packet length %u.\n", ip_packetlen);
-	printf("DEBUG: IP options size  %u.\n", ipod->file_s);
-	printf("DEBUG: IP payload size  %u.\n", pd->file_s);
+	printf("DEBUG: IP options size  %u.\n", ipod->file_len);
+	printf("DEBUG: IP payload size  %u.\n", pd->file_len);
 #endif
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1)
+		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 	libnet_build_ipv4(ip_meta_packetlen,
@@ -49,8 +49,8 @@ int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *l)
 			  0,
 			  ip->ip_src.s_addr,
 			  ip->ip_dst.s_addr,
-			  pd->file_mem,
-			  pd->file_s,
+			  pd->file_buf,
+			  pd->file_len,
 			  l,
 			  0);
 

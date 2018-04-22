@@ -12,38 +12,38 @@
 #include "nemesis-tcp.h"
 #include "nemesis.h"
 
-int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, FileData *pd,
-             FileData *ipod, FileData *tcpod, libnet_t *l)
+int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
+             struct file *ipod, struct file *tcpod, libnet_t *l)
 {
 	int             n;
 	uint32_t        tcp_packetlen = 0, tcp_meta_packetlen = 0;
 	static uint8_t *pkt;
 	uint8_t         link_offset = 0;
 
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
-	if (ipod->file_mem == NULL)
-		ipod->file_s = 0;
-	if (tcpod->file_mem == NULL)
-		tcpod->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
+	if (ipod->file_buf == NULL)
+		ipod->file_len = 0;
+	if (tcpod->file_buf == NULL)
+		tcpod->file_len = 0;
 
 	if (got_link) { /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 	}
 
-	tcp_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_TCP_H + pd->file_s + ipod->file_s + tcpod->file_s;
+	tcp_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_TCP_H + pd->file_len + ipod->file_len + tcpod->file_len;
 
 	tcp_meta_packetlen = tcp_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: TCP packet length %u.\n", tcp_packetlen);
-	printf("DEBUG: IP  options size  %u.\n", ipod->file_s);
-	printf("DEBUG: TCP options size  %u.\n", tcpod->file_s);
-	printf("DEBUG: TCP payload size  %u.\n", pd->file_s);
+	printf("DEBUG: IP  options size  %u.\n", ipod->file_len);
+	printf("DEBUG: TCP options size  %u.\n", tcpod->file_len);
+	printf("DEBUG: TCP payload size  %u.\n", pd->file_len);
 #endif
 
 	if (got_tcpoptions) {
-		if ((libnet_build_tcp_options(tcpod->file_mem, tcpod->file_s, l, 0)) == -1) {
+		if ((libnet_build_tcp_options(tcpod->file_buf, tcpod->file_len, l, 0)) == -1) {
 			fprintf(stderr, "ERROR: Unable to add TCP options, discarding them.\n");
 		}
 	}
@@ -55,13 +55,13 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, FileData *pd,
 	                 tcp->th_flags,
 	                 tcp->th_win,
 	                 0, tcp->th_urp,
-	                 LIBNET_TCP_H + pd->file_s + tcpod->file_s,
-	                 pd->file_mem,
-	                 pd->file_s,
+	                 LIBNET_TCP_H + pd->file_len + tcpod->file_len,
+	                 pd->file_buf,
+	                 pd->file_len,
 	                 l,
 	                 0);
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1) {
+		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1) {
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 		}
 	}

@@ -32,6 +32,6 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-int buildtcp(ETHERhdr *, IPhdr *, TCPhdr *, FileData *, FileData *, FileData *, libnet_t *);
+int buildtcp(ETHERhdr *, IPhdr *, TCPhdr *, struct file *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_TCP_H_ */

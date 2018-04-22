@@ -11,7 +11,7 @@
 #include "nemesis-ethernet.h"
 #include "nemesis.h"
 
-int buildether(ETHERhdr *eth, FileData *pd, libnet_t *l)
+int buildether(ETHERhdr *eth, struct file *pd, libnet_t *l)
 {
 	static uint8_t *pkt;
 	uint32_t        eth_packetlen;
@@ -19,16 +19,16 @@ int buildether(ETHERhdr *eth, FileData *pd, libnet_t *l)
 	int             n;
 
 	/* sanity checks */
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
 
-	eth_packetlen = LIBNET_ETH_H + pd->file_s;
+	eth_packetlen = LIBNET_ETH_H + pd->file_len;
 
 	libnet_build_ethernet(eth->ether_dhost,
 	                      eth->ether_shost,
 	                      eth->ether_type,
-	                      pd->file_mem,
-	                      pd->file_s,
+	                      pd->file_buf,
+	                      pd->file_len,
 	                      l,
 	                      0);
 

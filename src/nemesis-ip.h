@@ -28,6 +28,6 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-int buildip(ETHERhdr *, IPhdr *, FileData *, FileData *, libnet_t *);
+int buildip(ETHERhdr *, IPhdr *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_IP_H_ */

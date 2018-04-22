@@ -19,7 +19,7 @@ static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static UDPhdr   udphdr;
 static RIPhdr   riphdr;
-static FileData pd, ipod;
+static struct file pd, ipod;
 static int      got_domain;
 static char    *payloadfile   = NULL; /* payload file name */
 static char    *ipoptionsfile = NULL; /* IP options file name */
@@ -116,10 +116,10 @@ static void rip_initdata(void)
 	riphdr.rip_next_hop = 0;                       /* RIP next-hop IP address */
 	riphdr.rip_metric   = 1;                       /* RIP metric */
 
-	pd.file_mem   = NULL;
-	pd.file_s     = 0;
-	ipod.file_mem = NULL;
-	ipod.file_s   = 0;
+	pd.file_buf   = NULL;
+	pd.file_len     = 0;
+	ipod.file_buf = NULL;
+	ipod.file_len   = 0;
 }
 
 static void rip_validatedata(void)
@@ -372,10 +372,10 @@ static void rip_cmdline(int argc, char **argv)
 static int rip_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (device != NULL)
 		free(device);

@@ -48,6 +48,6 @@ extern SUMLSAhdr    sumlsahdr;
 
 int mode; /* OSPF injection mode */
 
-int buildospf(ETHERhdr *, IPhdr *, FileData *, FileData *, libnet_t *, int);
+int buildospf(ETHERhdr *, IPhdr *, struct file *, struct file *, libnet_t *, int);
 
 #endif /* NEMESIS_OSPF_H_ */

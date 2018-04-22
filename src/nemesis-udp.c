@@ -18,7 +18,7 @@
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static UDPhdr   udphdr;
-static FileData pd, ipod;
+static struct file pd, ipod;
 static char    *payloadfile   = NULL; /* payload file name */
 static char    *ipoptionsfile = NULL; /* IP options file name */
 static char    *device        = NULL; /* Ethernet device */
@@ -102,10 +102,10 @@ static void udp_initdata(void)
 	udphdr.uh_sport     = libnet_get_prand(PRu16);
 	/* UDP source port */
 	udphdr.uh_dport = 33435; /* UDP destination port */
-	pd.file_mem     = NULL;
-	pd.file_s       = 0;
-	ipod.file_mem   = NULL;
-	ipod.file_s     = 0;
+	pd.file_buf     = NULL;
+	pd.file_len     = 0;
+	ipod.file_buf   = NULL;
+	ipod.file_len   = 0;
 }
 
 static void udp_usage(char *arg)
@@ -276,10 +276,10 @@ static void udp_cmdline(int argc, char **argv)
 static int udp_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (device != NULL)
 		free(device);

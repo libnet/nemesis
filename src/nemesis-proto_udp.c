@@ -12,36 +12,36 @@
 #include "nemesis-udp.h"
 #include "nemesis.h"
 
-int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, FileData *pd,
-             FileData *ipod, libnet_t *l)
+int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
+             struct file *ipod, libnet_t *l)
 {
 	int             n;
 	uint32_t        udp_packetlen = 0, udp_meta_packetlen = 0;
 	static uint8_t *pkt;
 	uint8_t         link_offset = 0;
 
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
-	if (ipod->file_mem == NULL)
-		ipod->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
+	if (ipod->file_buf == NULL)
+		ipod->file_len = 0;
 
 	if (got_link) { /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 	}
 
-	udp_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_s + ipod->file_s;
+	udp_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
 	udp_meta_packetlen = udp_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: UDP packet length %u.\n", udp_packetlen);
-	printf("DEBUG:  IP options size  %u.\n", ipod->file_s);
-	printf("DEBUG: UDP payload size  %u.\n", pd->file_s);
+	printf("DEBUG:  IP options size  %u.\n", ipod->file_len);
+	printf("DEBUG: UDP payload size  %u.\n", pd->file_len);
 #endif
 
-	(void)libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_s + LIBNET_UDP_H, 0, pd->file_mem, pd->file_s, l, 0);
+	(void)libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_len + LIBNET_UDP_H, 0, pd->file_buf, pd->file_len, l, 0);
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1) {
+		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1) {
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 		}
 	}

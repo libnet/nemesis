@@ -17,7 +17,7 @@
 
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
-static FileData pd, ipod;
+static struct file pd, ipod;
 static int      got_mode      = 0;
 static int      got_type      = 0;
 static char    *payloadfile   = NULL; /* payload file name */
@@ -111,10 +111,10 @@ static void ospf_initdata(void)
 	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
 	iphdr.ip_ttl        = 255;                     /* IP TTL */
 	iphdr.ip_p          = IPPROTO_OSPF;
-	pd.file_mem         = NULL;
-	pd.file_s           = 0;
-	ipod.file_mem       = NULL;
-	ipod.file_s         = 0;
+	pd.file_buf         = NULL;
+	pd.file_len           = 0;
+	ipod.file_buf       = NULL;
+	ipod.file_len         = 0;
 
 	/* OSPF initialization */
 	ospfhdr.ospf_v              = 2;
@@ -642,10 +642,10 @@ static void ospf_cmdline(int argc, char **argv)
 static int ospf_exit(int code)
 {
 	if (got_payload)
-		free(pd.file_mem);
+		free(pd.file_buf);
 
 	if (got_ipoptions)
-		free(ipod.file_mem);
+		free(ipod.file_buf);
 
 	if (device != NULL)
 		free(device);

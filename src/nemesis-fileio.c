@@ -96,16 +96,16 @@ static int nemesis_readfile(const char *file, const uint32_t mode, uint8_t *buf,
  * IP and TCP options from files.
  *
  * @param sz maximum number of bytes to read from file or stdin
- * @param fd pointer to FileData structure
+ * @param fd pointer to struct file structure
  * @param file pointer to filename to open
  * @param mode switch controlling mode of operation (for error reporting only)
  *
  * @return 0 on sucess, -1 on failure
  **/
-int builddatafromfile(const size_t sz, FileData *fd, const char *file, const uint32_t mode)
+int builddatafromfile(const size_t sz, struct file *fd, const char *file, const uint32_t mode)
 {
-	fd->file_mem = calloc(sz, sizeof(uint8_t));
-	if (!fd->file_mem) {
+	fd->file_buf = calloc(sz, sizeof(uint8_t));
+	if (!fd->file_buf) {
 		if (mode == PAYLOADMODE)
 			perror("ERROR: Unable to allocate packet payload memory");
 		else
@@ -114,8 +114,8 @@ int builddatafromfile(const size_t sz, FileData *fd, const char *file, const uin
 		return -1;
 	}
 
-	fd->file_s = nemesis_readfile(file, mode == PAYLOADMODE, fd->file_mem, sz);
-	if (fd->file_s < 0) {
+	fd->file_len = nemesis_readfile(file, mode == PAYLOADMODE, fd->file_buf, sz);
+	if (fd->file_len < 0) {
 		if (mode == PAYLOADMODE)
 			fprintf(stderr, "ERROR: Unable to read any payload data.\n");
 		else

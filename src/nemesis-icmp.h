@@ -45,6 +45,6 @@
 int mode; /* ICMP injection mode */
 int got_origoptions;
 
-int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, FileData *, FileData *, FileData *, libnet_t *);
+int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, struct file *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_ICMP_H_ */

@@ -12,21 +12,21 @@
 #include "nemesis-arp.h"
 #include "nemesis.h"
 
-int buildarp(ETHERhdr *eth, ARPhdr *arp, FileData *pd, libnet_t *l)
+int buildarp(ETHERhdr *eth, ARPhdr *arp, struct file *pd, libnet_t *l)
 {
 	int      n = 0;
 	uint32_t arp_packetlen;
 	uint8_t *pkt;
 
 	/* validation tests */
-	if (pd->file_mem == NULL)
-		pd->file_s = 0;
+	if (pd->file_buf == NULL)
+		pd->file_len = 0;
 
-	arp_packetlen = LIBNET_ARP_H + LIBNET_ETH_H + pd->file_s;
+	arp_packetlen = LIBNET_ARP_H + LIBNET_ETH_H + pd->file_len;
 
 #ifdef DEBUG
 	printf("DEBUG: ARP packet length %u.\n", arp_packetlen);
-	printf("DEBUG: ARP payload size  %u.\n", pd->file_s);
+	printf("DEBUG: ARP payload size  %u.\n", pd->file_len);
 #endif
 
 	// build arp header for packets
@@ -39,8 +39,8 @@ int buildarp(ETHERhdr *eth, ARPhdr *arp, FileData *pd, libnet_t *l)
 	                 ar_spa,
 	                 ar_tha,
 	                 ar_tpa,
-	                 pd->file_mem,
-	                 pd->file_s,
+	                 pd->file_buf,
+	                 pd->file_len,
 	                 l,
 	                 0);
 

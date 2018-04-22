@@ -37,6 +37,6 @@ uint8_t ar_spa[4];
 uint8_t ar_tha[6];
 uint8_t ar_tpa[4];
 
-int buildarp(ETHERhdr *, ARPhdr *, FileData *, libnet_t *);
+int buildarp(ETHERhdr *, ARPhdr *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_ARP_H_ */
