@@ -27,7 +27,7 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, FileData *pd, F
 	if (got_link) /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 
-	rip_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + LIBNET_RIP_H + pd->file_s + ipod->file_s;
+	rip_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + LIBNET_RIP_H + pd->file_s + ipod->file_s;
 	rip_meta_packetlen = rip_packetlen - link_offset;
 
 #ifdef DEBUG

@@ -324,7 +324,7 @@ static void dns_cmdline(int argc, char **argv)
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				if (ipoptionsfile)
-					free (ipoptionsfile);
+					free(ipoptionsfile);
 				ipoptionsfile = strdup(optarg);
 				got_ipoptions = 1;
 			} else {

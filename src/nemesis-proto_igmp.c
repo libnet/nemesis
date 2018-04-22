@@ -37,7 +37,7 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
 	printf("DEBUG: IGMP payload size  %u.\n", pd->file_s);
 #endif
 
-	(void)libnet_build_igmp(igmp->igmp_type, igmp->igmp_code, 0, igmp->igmp_group.s_addr, pd->file_mem, pd->file_s, l, 0);
+	libnet_build_igmp(igmp->igmp_type, igmp->igmp_code, 0, igmp->igmp_group.s_addr, pd->file_mem, pd->file_s, l, 0);
 
 	if (got_ipoptions) {
 		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1) {
@@ -45,13 +45,13 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, FileData *pd, FileData *i
 		}
 	}
 
-	(void)libnet_build_ipv4(igmp_meta_packetlen + LIBNET_IPV4_H,
-	                        ip->ip_tos,
-	                        ip->ip_id,
-	                        ip->ip_off, ip->ip_ttl, ip->ip_p, 0, ip->ip_src.s_addr, ip->ip_dst.s_addr, NULL, 0, l, 0);
+	libnet_build_ipv4(igmp_meta_packetlen + LIBNET_IPV4_H,
+			  ip->ip_tos,
+			  ip->ip_id,
+			  ip->ip_off, ip->ip_ttl, ip->ip_p, 0, ip->ip_src.s_addr, ip->ip_dst.s_addr, NULL, 0, l, 0);
 
 	if (got_link)
-		(void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
+		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
 	printf("%d\n", libnet_pblock_coalesce(l, &pkt, &igmp_packetlen));
 	n = libnet_write(l);

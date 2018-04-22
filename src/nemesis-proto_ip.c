@@ -40,24 +40,24 @@ int buildip(ETHERhdr *eth, IPhdr *ip, FileData *pd, FileData *ipod, libnet_t *l)
 		if ((libnet_build_ipv4_options(ipod->file_mem, ipod->file_s, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
-	(void)libnet_build_ipv4(ip_meta_packetlen,
-	                        ip->ip_tos,
-	                        ip->ip_id,
-	                        ip->ip_off,
-	                        ip->ip_ttl,
-	                        ip->ip_p,
-	                        0,
-	                        ip->ip_src.s_addr,
-	                        ip->ip_dst.s_addr,
-	                        pd->file_mem,
-	                        pd->file_s,
-	                        l,
-	                        0);
+	libnet_build_ipv4(ip_meta_packetlen,
+			  ip->ip_tos,
+			  ip->ip_id,
+			  ip->ip_off,
+			  ip->ip_ttl,
+			  ip->ip_p,
+			  0,
+			  ip->ip_src.s_addr,
+			  ip->ip_dst.s_addr,
+			  pd->file_mem,
+			  pd->file_s,
+			  l,
+			  0);
 
 	if (got_link)
-		(void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
+		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	(void)libnet_pblock_coalesce(l, &pkt, &ip_packetlen);
+	libnet_pblock_coalesce(l, &pkt, &ip_packetlen);
 	n = libnet_write(l);
 
 	if (verbose == 2)

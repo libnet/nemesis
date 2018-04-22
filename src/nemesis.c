@@ -38,41 +38,42 @@ static int usage(char *arg)
 	       "\n"
 	       "NEMESIS options:\n"
 	       "  To display options, specify a mode with the option \"help\".\n"
-	       "\n", arg);
+	       "\n",
+	       arg);
 
 	return 1;
 }
 
 static char *progname(char *arg0)
 {
-       char *nm;
+	char *nm;
 
-       nm = strrchr(arg0, '/');
-       if (nm)
-               nm++;
-       else
-               nm = arg0;
+	nm = strrchr(arg0, '/');
+	if (nm)
+		nm++;
+	else
+		nm = arg0;
 
-       return nm;
+	return nm;
 }
 
 int main(int argc, char **argv)
 {
 	struct {
-		char  *name;
-		char  *link;
+		char *name;
+		char *link;
 		void (*func)(int, char **);
 	} mod[] = {
-		{ "arp",      "nemesis-arp",      nemesis_arp  },
-		{ "dns",      "nemesis-dns",      nemesis_dns  },
+		{ "arp", "nemesis-arp", nemesis_arp },
+		{ "dns", "nemesis-dns", nemesis_dns },
 		{ "ethernet", "nemesis-ethernet", nemesis_ethernet },
-		{ "icmp",     "nemesis-icmp",     nemesis_icmp },
-		{ "igmp",     "nemesis-igmp",     nemesis_igmp },
-		{ "ip",       "nemesis-ip",       nemesis_ip   },
-		{ "ospf",     "nemesis-ospf",     nemesis_ospf },
-		{ "rip",      "nemesis-rip",      nemesis_rip  },
-		{ "tcp",      "nemesis-tcp",      nemesis_tcp  },
-		{ "udp",      "nemesis-udp",      nemesis_udp  },
+		{ "icmp", "nemesis-icmp", nemesis_icmp },
+		{ "igmp", "nemesis-igmp", nemesis_igmp },
+		{ "ip", "nemesis-ip", nemesis_ip },
+		{ "ospf", "nemesis-ospf", nemesis_ospf },
+		{ "rip", "nemesis-rip", nemesis_rip },
+		{ "tcp", "nemesis-tcp", nemesis_tcp },
+		{ "udp", "nemesis-udp", nemesis_udp },
 		{ NULL, NULL, NULL },
 	};
 	int i;
