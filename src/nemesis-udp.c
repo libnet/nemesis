@@ -13,7 +13,6 @@
 #include "nemesis.h"
 #if defined(WIN32)
 #include <pcap.h>
-#define u_int32_t uint32_t
 #endif
 
 static ETHERhdr etherhdr;
@@ -145,7 +144,7 @@ static void udp_usage(char *arg)
 static void udp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
-	u_int32_t    addr_tmp[6];
+	uint32_t     addr_tmp[6];
 	char        *udp_options;
 	extern char *optarg;
 	extern int   optind;
