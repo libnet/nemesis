@@ -381,7 +381,7 @@ static void dns_cmdline(int argc, char **argv)
 				perror(errbuf);
 
 			PrintDeviceList(ifacetmp);
-			dns_exit(1);
+			dns_exit(1); /* FALLTHROUGH */
 #endif
 		case '?': /* FALLTHROUGH */
 		default:

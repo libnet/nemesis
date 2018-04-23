@@ -17,6 +17,7 @@
 #include <string.h>
 #if defined(WIN32)
 #include <pcap.h>
+#include <fcntl.h>
 #endif
 #include <unistd.h>
 #if defined(HAVE_ERRNO_H) || defined(WIN32)
