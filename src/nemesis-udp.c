@@ -13,6 +13,7 @@
 #include "nemesis.h"
 #if defined(WIN32)
 #include <pcap.h>
+#define u_int32_t uint32_t
 #endif
 
 static ETHERhdr etherhdr;
@@ -252,7 +253,7 @@ static void udp_cmdline(int argc, char **argv)
 				perror(errbuf);
 
 			PrintDeviceList(ifacetmp);
-			udp_exit(1);
+			udp_exit(1); /* FALLTHROUGH */
 #endif
 		case '?': /* FALLTHROUGH */
 		default:
