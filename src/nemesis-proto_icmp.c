@@ -84,8 +84,13 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, struct 
 		libnet_build_icmpv4_unreach(icmp->icmp_type, icmp->icmp_code, 0, pd->file_buf, pd->file_len, l, 0);
 		break;
 	case ICMP_REDIRECT:
-		libnet_build_icmpv4_redirect(icmp->icmp_type, icmp->icmp_code, 0,
-		                             ntohl(icmp->hun.gateway), pd->file_buf, pd->file_len, l, 0);
+		libnet_build_icmpv4_redirect(icmp->icmp_type,
+					     icmp->icmp_code,
+					     0,
+		                             icmp->hun.gateway,
+					     pd->file_buf,
+					     pd->file_len,
+					     l, 0);
 		break;
 	}
 
