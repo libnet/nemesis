@@ -110,28 +110,29 @@ static void ip_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("IP Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("IP Options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -p <IP protocol number>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n"
-	       "  -P <Payload file>\n\n");
-	printf("Data Link Options: \n"
+	printf("Usage:\n"
+	       "  %s [-v (verbose)] [options]\n\n", arg);
+	printf("IP Options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -p <PROTO>   IP protocol number\n"
+	       "  -T <TTL>     IP TTL\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "  -P <FILE>    Raw IP payload file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number>\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	ip_exit(1);
