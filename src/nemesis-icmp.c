@@ -209,49 +209,57 @@ static void icmp_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("ICMP Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("ICMP options: \n"
-	       "  -i <ICMP type>\n"
-	       "  -c <ICMP code>\n"
-	       "  -s <ICMP sequence number>\n"
-	       "  -m <IP address mask for ICMP address mask>\n"
-	       "  -G <Preferred gateway IP address for ICMP redirect>\n"
-	       "  -e <ICMP ID>\n"
-	       "  -P <Payload file>\n"
-	       "  -q <ICMP injection mode>\n"
-	       "     -qE echo, -qM mask, -qU unreach, -qX time exceeded, \n"
-	       "     -qR redirect, -qT timestamp\n"
-	       " ICMP timestamp options: \n"
-	       "  -o <Time ICMP timestamp request was sent>\n"
-	       "  -r <Time ICMP timestamp request was received (for reply)>\n"
-	       "  -a <Time ICMP timestamp request reply was transmitted>\n"
-	       " ICMP original datagram options: \n"
-	       "  -B <Original source IP address>\n"
-	       "  -b <Original destination IP address>\n"
-	       "  -p <Original IP protocol>\n"
-	       "  -f <Original IP fragmentation offset>\n"
-	       "  -j <Original IP TOS>\n"
-	       "  -J <Original IP TTL>\n"
-	       "  -l <Original IP options file>\n\n");
-	printf("IP options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	printf("Usage:\n"
+	       "  %s [-v (verbose)] [options]\n\n", arg);
+	printf("ICMP options:\n"
+	       "  -i <TYPE>    ICMP type\n"
+	       "  -c <CODE>    ICMP code\n"
+	       "  -s <NUM>     ICMP sequence number\n"
+	       "  -m <MASK>    IP network mask for ICMP address mask\n"
+	       "  -G <ADDR>    Preferred gateway IP address for ICMP redirect\n"
+	       "  -e <ID>      ICMP ID\n"
+	       "  -P <FILE>    Raw ICMP payload file\n"
+	       "  -q <MODE>    ICMP injection mode:\n"
+	       "                    -qE: echo\n"
+	       "                    -qM: mask\n"
+	       "                    -qU: unreach\n"
+	       "                    -qX: time exceeded\n"
+	       "                    -qR: redirect\n"
+	       "                    -qT: timestamp\n"
+	       "\n"
+	       " ICMP timestamp options:\n"
+	       "  -o <TIME>    Time ICMP timestamp request was sent\n"
+	       "  -r <TIME>    Time ICMP timestamp request was received (for reply)\n"
+	       "  -a <TIME>    Time ICMP timestamp request reply was transmitted\n"
+	       "\n"
+	       " ICMP original datagram options:\n"
+	       "  -B <ADDR>    Original source IP address\n"
+	       "  -b <ADDR>    Original destination IP address\n"
+	       "  -p <PROTO>   Original IP protocol\n"
+	       "  -f <OFFSET>  Original IP fragmentation offset\n"
+	       "  -j <TOS>     Original IP TOS\n"
+	       "  -J <TTL>     Original IP TTL\n"
+	       "  -l <FILE>    Raw Original IP options file\n"
+	       "\n");
+	printf("IP options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	icmp_exit(1);
