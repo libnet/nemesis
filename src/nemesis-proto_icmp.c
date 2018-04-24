@@ -116,7 +116,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach, struct 
 	if (got_link)
 		(void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	printf("%d\n", libnet_pblock_coalesce(l, &pkt, &icmp_packetlen));
+	libnet_pblock_coalesce(l, &pkt, &icmp_packetlen);
 	n = libnet_write(l);
 	if (verbose == 2)
 		nemesis_hexdump(pkt, icmp_packetlen, HEX_ASCII_DECODE);

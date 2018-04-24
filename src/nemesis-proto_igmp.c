@@ -53,7 +53,7 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd, struct f
 	if (got_link)
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	printf("%d\n", libnet_pblock_coalesce(l, &pkt, &igmp_packetlen));
+	libnet_pblock_coalesce(l, &pkt, &igmp_packetlen);
 	n = libnet_write(l);
 	if (verbose == 2)
 		nemesis_hexdump(pkt, igmp_packetlen, HEX_ASCII_DECODE);
