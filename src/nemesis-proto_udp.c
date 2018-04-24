@@ -38,7 +38,8 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 	printf("DEBUG: UDP payload size  %u.\n", pd->file_len);
 #endif
 
-	(void)libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_len + LIBNET_UDP_H, 0, pd->file_buf, pd->file_len, l, 0);
+	libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_len + LIBNET_UDP_H,
+			 0, pd->file_buf, pd->file_len, l, 0);
 
 	if (got_ipoptions) {
 		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1) {
@@ -46,24 +47,24 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 		}
 	}
 
-	(void)libnet_build_ipv4(udp_meta_packetlen,
-	                        ip->ip_tos,
-	                        ip->ip_id,
-	                        ip->ip_off,
-	                        ip->ip_ttl,
-	                        ip->ip_p,
-	                        0,
-	                        ip->ip_src.s_addr,
-	                        ip->ip_dst.s_addr,
-	                        NULL,
-	                        0,
-	                        l,
-	                        0);
+	libnet_build_ipv4(udp_meta_packetlen,
+			  ip->ip_tos,
+			  ip->ip_id,
+			  ip->ip_off,
+			  ip->ip_ttl,
+			  ip->ip_p,
+			  0,
+			  ip->ip_src.s_addr,
+			  ip->ip_dst.s_addr,
+			  NULL,
+			  0,
+			  l,
+			  0);
 
 	if (got_link)
-		(void)libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
+		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	(void)libnet_pblock_coalesce(l, &pkt, &udp_packetlen);
+	libnet_pblock_coalesce(l, &pkt, &udp_packetlen);
 	n = libnet_write(l);
 
 	if (verbose == 2)

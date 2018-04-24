@@ -12,21 +12,22 @@
 #include "nemesis-igmp.h"
 #include "nemesis.h"
 
-int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd, struct file *ipod, libnet_t *l)
+int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
+	      struct file *ipod, libnet_t *l)
 {
-	int             n;
-	uint32_t        igmp_packetlen = 0, igmp_meta_packetlen = 0;
 	static uint8_t *pkt;
+	uint32_t        igmp_packetlen = 0;
+	uint32_t	igmp_meta_packetlen = 0;
 	uint8_t         link_offset = 0;
+	int             n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
 	if (ipod->file_buf == NULL)
 		ipod->file_len = 0;
 
-	if (got_link) { /* data link layer transport */
+	if (got_link)
 		link_offset = LIBNET_ETH_H;
-	}
 
 	igmp_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_IGMP_H + pd->file_len + ipod->file_len;
 	igmp_meta_packetlen = igmp_packetlen - (link_offset + LIBNET_IPV4_H);
@@ -37,24 +38,39 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd, struct f
 	printf("DEBUG: IGMP payload size  %u.\n", pd->file_len);
 #endif
 
-	libnet_build_igmp(igmp->igmp_type, igmp->igmp_code, 0, igmp->igmp_group.s_addr, pd->file_buf, pd->file_len, l, 0);
+	libnet_build_igmp(igmp->igmp_type,
+			  igmp->igmp_code,
+			  0,
+			  igmp->igmp_group.s_addr,
+			  pd->file_buf,
+			  pd->file_len,
+			  l, 0);
 
 	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1) {
+		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
-		}
 	}
 
 	libnet_build_ipv4(igmp_meta_packetlen + LIBNET_IPV4_H,
 			  ip->ip_tos,
 			  ip->ip_id,
-			  ip->ip_off, ip->ip_ttl, ip->ip_p, 0, ip->ip_src.s_addr, ip->ip_dst.s_addr, NULL, 0, l, 0);
+			  ip->ip_off,
+			  ip->ip_ttl,
+			  ip->ip_p,
+			  0,
+			  ip->ip_src.s_addr,
+			  ip->ip_dst.s_addr,
+			  NULL, 0, l, 0);
 
 	if (got_link)
-		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
+		libnet_build_ethernet(eth->ether_dhost,
+				      eth->ether_shost,
+				      ETHERTYPE_IP,
+				      NULL, 0, l, 0);
 
 	libnet_pblock_coalesce(l, &pkt, &igmp_packetlen);
 	n = libnet_write(l);
+
 	if (verbose == 2)
 		nemesis_hexdump(pkt, igmp_packetlen, HEX_ASCII_DECODE);
 	if (verbose == 3)
