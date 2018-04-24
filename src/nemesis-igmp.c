@@ -135,33 +135,45 @@ static void igmp_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("IGMP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("IGMP options: \n"
-	       "  -p <IGMP type>    0x11: Query, 0x12: v1 Join, 0x16: v2 Join, 0x17: v2 Join\n"
-	       "  -c <IGMP code>    v1: unused, v2: query response time\n"
-	       "  -i <IGMP group>   Multicast group for join/leave, or group spec. query\n"
-	       "  -P <FILE>         Raw IGMP payload file\n"
+	printf("Usage:\n"
+	       "  %s [-v (verbose)] [options]\n\n", arg);
+	printf("IGMP options:\n"
+	       "  -p <TYPE>    IGMP type:\n"
+	       "                    0x11:  Query, length determines version\n"
+	       "                    0x12:  Join, v1\n"
+	       "                    0x13:  DVMRP\n"
+	       "                    0x14:  PIM, v1\n"
+	       "                    0x16:  Join, v2\n"
+	       "                    0x17:  Leave, v2\n"
+	       "                    0x1e:  Multicast traceroute, response\n"
+	       "                    0x1f:  Multicast traceroute\n"
+	       "                    0x22:  Membership report, v3 join/leave\n"
+	       "                    0x30:  Multicast router advertisement\n"
+	       "                    0x31:  Multicast router solicitation\n"
+	       "                    0x31:  Multicast router termination\n"
+	       "  -c <CODE>    v1: unused, v2: query response time\n"
+	       "  -i <GROUP>   Multicast group for join/leave, or group spec. query\n"
+	       "  -P <FILE>    Raw IGMP payload file\n"
 	       "\n");
-	printf("IP options: \n"
-	       "  -S <ADDR>         Source IP address\n"
-	       "  -D <ADDR>         Destination IP address\n"
-	       "  -I <IP ID>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <OPT>          IP fragmentation options:\n"
-	       "                    -F[D],[M],[R],[offset]\n"
-	       "  -O <FILE>         Raw IP options file\n"
+	printf("IP options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
 	       "\n");
 	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <IFNUM>        Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number>\n"
 #else
-	       "  -d <IFNAME>       Ethernet device name\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <MAC>          Source MAC address\n"
-	       "  -M <MAC>          Destination MAC address\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z                List available network interfaces by number\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	igmp_exit(1);
