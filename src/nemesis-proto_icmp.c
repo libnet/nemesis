@@ -95,9 +95,9 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 					      pd->file_len,
 					      l, 0);
 		break;
-		/* 
+		/*
 		 * Behind the scenes, the packet builder functions for unreach,
-		 * and time exceeded are the same.  Therefore, the unreach function 
+		 * and time exceeded are the same.  Therefore, the unreach function
 		 * is used to build both packet types.
 		 */
 	case ICMP_UNREACH:
