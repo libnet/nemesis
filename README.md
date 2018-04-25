@@ -1,6 +1,6 @@
 N E M E S I S  -  TCP/IP Packet Injection
 =========================================
-[![Travis Status][]][Travis] [![Coverity Status]][Coverity Scan] <img align="right" src="logo.png">
+[![License Badge][]][License]  [![Travis Status][]][Travis] [![Coverity Status]][Coverity Scan] <img align="right" src="logo.png">
 
 The Nemesis Project is designed to be a command line based, portable
 human IP stack for UNIX-like and Windows systems.  The suite is broken
@@ -120,6 +120,8 @@ The project is currently maintained at [GitHub][] with the intention to
 serve as a focal point for new development.  If you have patches and/or
 ideas, please submit them using the issue tracker or as pull requests.
 
+[License]:         https://en.wikipedia.org/wiki/BSD_licenses
+[License Badge]:   https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
 [GitHub]:          https://github.com/troglobit/mini-snmpd
 [libnet]:          https://sourceforge.net/projects/libnet-dev/
 [libpcap]:         http://www.tcpdump.org/
