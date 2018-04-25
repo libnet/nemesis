@@ -52,7 +52,7 @@ void nemesis_rip(int argc, char **argv)
 	rip_initdata();
 	rip_cmdline(argc, argv);
 
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		rip_exit(1);
 	if (got_link) {

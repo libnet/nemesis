@@ -53,7 +53,7 @@ void nemesis_dns(int argc, char **argv)
 	dns_initdata();
 	dns_cmdline(argc, argv);
 
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		dns_exit(1);
 

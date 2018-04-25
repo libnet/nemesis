@@ -51,7 +51,7 @@ void nemesis_igmp(int argc, char **argv)
 	igmp_initdata();
 	igmp_cmdline(argc, argv);
 
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		igmp_exit(1);
 

@@ -60,7 +60,7 @@ void nemesis_ospf(int argc, char **argv)
 		fprintf(stderr, "ERROR: Unable to seed random number generator.\n");
 	ospf_initdata();
 	ospf_cmdline(argc, argv);
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		ospf_exit(1);
 	if (got_link) {

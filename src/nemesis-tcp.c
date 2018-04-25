@@ -50,7 +50,7 @@ void nemesis_tcp(int argc, char **argv)
 	tcp_initdata();
 	tcp_cmdline(argc, argv);
 
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		tcp_exit(1);
 	if (got_link) {

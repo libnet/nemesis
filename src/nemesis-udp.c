@@ -49,7 +49,7 @@ void nemesis_udp(int argc, char **argv)
 	udp_initdata();
 	udp_cmdline(argc, argv);
 
-	l = libnet_init(LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		udp_exit(1);
 	if (got_link) {
