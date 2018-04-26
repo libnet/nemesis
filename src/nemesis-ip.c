@@ -79,10 +79,9 @@ void nemesis_ip(int argc, char **argv)
 	if (buildip(&etherhdr, &iphdr, &pd, &ipod, l) < 0) {
 		puts("\nIP Injection Failure");
 		ip_exit(1);
-	} else {
-		puts("\nIP Packet Injected");
-		ip_exit(0);
 	}
+
+	ip_exit(0);
 }
 
 static void ip_initdata(void)

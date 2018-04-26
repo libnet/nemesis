@@ -91,10 +91,9 @@ void nemesis_ospf(int argc, char **argv)
 	if (buildospf(&etherhdr, &iphdr, &pd, &ipod, l, got_type) < 0) {
 		puts("\nOSPF Injection Failure");
 		ospf_exit(1);
-	} else {
-		puts("\nOSPF Packet Injected");
-		ospf_exit(0);
 	}
+
+	ospf_exit(0);
 }
 
 static void ospf_initdata(void)

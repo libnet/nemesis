@@ -91,10 +91,9 @@ void nemesis_icmp(int argc, char **argv)
 	if (buildicmp(&etherhdr, &iphdr, &icmphdr, &ipunreach, &pd, &ipod, &origod, l) < 0) {
 		puts("\nICMP Injection Failure");
 		icmp_exit(1);
-	} else {
-		puts("\nICMP Packet Injected");
-		icmp_exit(0);
 	}
+
+	icmp_exit(0);
 }
 
 static void icmp_initdata(void)

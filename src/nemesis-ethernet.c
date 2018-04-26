@@ -61,10 +61,9 @@ void nemesis_ethernet(int argc, char **argv)
 	if (buildether(&etherhdr, &pd, l) < 0) {
 		puts("\nEthernet Injection Failure");
 		ethernet_exit(1);
-	} else {
-		puts("\nEthernet Packet Injected");
-		ethernet_exit(0);
 	}
+
+	ethernet_exit(0);
 }
 
 static void ethernet_initdata(void)

@@ -100,10 +100,9 @@ void nemesis_dns(int argc, char **argv)
 	if (builddns(&etherhdr, &iphdr, &tcphdr, &udphdr, &dnshdr, &pd, &ipod, &tcpod, l) < 0) {
 		puts("\nDNS Injection Failure");
 		dns_exit(1);
-	} else {
-		puts("\nDNS Packet Injected");
-		dns_exit(0);
 	}
+
+	dns_exit(0);
 }
 
 static void dns_initdata(void)

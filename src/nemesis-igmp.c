@@ -75,10 +75,9 @@ void nemesis_igmp(int argc, char **argv)
 	if (buildigmp(&etherhdr, &iphdr, &igmphdr, &pd, &ipod, l) < 0) {
 		puts("\nIGMP Injection Failure");
 		igmp_exit(1);
-	} else {
-		puts("\nIGMP Packet Injected");
-		igmp_exit(0);
 	}
+
+	igmp_exit(0);
 }
 
 static void igmp_initdata(void)

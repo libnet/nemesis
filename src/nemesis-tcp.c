@@ -85,10 +85,9 @@ void nemesis_tcp(int argc, char **argv)
 	if (buildtcp(&etherhdr, &iphdr, &tcphdr, &pd, &ipod, &tcpod, l) < 0) {
 		puts("\nTCP Injection Failure");
 		tcp_exit(1);
-	} else {
-		puts("\nTCP Packet Injected");
-		tcp_exit(0);
 	}
+
+	tcp_exit(0);
 }
 
 static void tcp_initdata(void)

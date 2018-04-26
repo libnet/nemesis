@@ -82,10 +82,9 @@ void nemesis_rip(int argc, char **argv)
 	if (buildrip(&etherhdr, &iphdr, &udphdr, &riphdr, &pd, &ipod, l) < 0) {
 		puts("\nRIP Injection Failure");
 		rip_exit(1);
-	} else {
-		puts("\nRIP Packet Injected");
-		rip_exit(0);
 	}
+
+	rip_exit(0);
 }
 
 static void rip_initdata(void)

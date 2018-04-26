@@ -74,10 +74,9 @@ void nemesis_arp(int argc, char **argv)
 	if (buildarp(&etherhdr, &arphdr, &pd, l) < 0) {
 		printf("\n%s Injection Failure\n", (rarp == 0 ? "ARP" : "RARP"));
 		arp_exit(1);
-	} else {
-		printf("\n%s Packet Injected\n", (rarp == 0 ? "ARP" : "RARP"));
-		arp_exit(0);
 	}
+
+	arp_exit(0);
 }
 
 static void arp_initdata(void)

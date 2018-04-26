@@ -79,10 +79,9 @@ void nemesis_udp(int argc, char **argv)
 	if (buildudp(&etherhdr, &iphdr, &udphdr, &pd, &ipod, l) < 0) {
 		puts("\nUDP Injection Failure");
 		udp_exit(1);
-	} else {
-		puts("\nUDP Packet Injected");
-		udp_exit(0);
 	}
+
+	udp_exit(0);
 }
 
 static void udp_initdata(void)
