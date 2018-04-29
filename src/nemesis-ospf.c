@@ -122,7 +122,7 @@ static void ospf_initdata(void)
 	ospfhdr.ospf_sum            = 0;
 	ospfhdr.ospf_auth_type      = LIBNET_OSPF_AUTH_NULL;
 	ospfhdr.ospf_rtr_id.s_addr  = libnet_get_prand(PRu32);
-	ospfhdr.ospf_area_id.s_addr = libnet_get_prand(PRu32);
+	ospfhdr.ospf_area_id.s_addr = 0;
 
 	ospfhellohdr.hello_nmask.s_addr    = libnet_get_prand(PRu32);
 	ospfhellohdr.hello_intrvl          = libnet_get_prand(PRu16);
@@ -253,6 +253,16 @@ static void ospf_usage(char *arg)
 	ospf_exit(1);
 }
 
+static uint32_t ip2int(char *arg)
+{
+	struct in_addr ia;
+
+	if (!inet_aton(arg, &ia))
+		return 0;
+
+	return ntohl(ia.s_addr);
+}
+
 static void ospf_cmdline(int argc, char **argv)
 {
 	int          opt, i;
@@ -273,10 +283,7 @@ static void ospf_cmdline(int argc, char **argv)
 			ospfhdr.ospf_auth_type = xgetint16(optarg);
 			break;
 		case 'A': /* OSPF area ID */
-			if ((nemesis_name_resolve(optarg, &ospfhdr.ospf_area_id.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid OSPF area ID IP address: \"%s\".\n", optarg);
-				ospf_exit(1);
-			}
+			ospfhdr.ospf_area_id.s_addr = ip2int(optarg);
 			break;
 		case 'B': /* OSPF # of broadcasted link state advertisements */
 			if (got_type != 3) {
