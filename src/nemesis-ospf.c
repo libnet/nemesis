@@ -443,16 +443,19 @@ static void ospf_cmdline(int argc, char **argv)
 			switch (cmd_mode) {
 			case 'N': /* OSPF link state advertisement NET */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
+				lsahdr.lsa_type   = LIBNET_LS_TYPE_NET;
 				got_mode++;
 				got_type = 4;
 				break;
 			case 'E': /* OSPF link state advertisement AS_EXTERNAL */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
+				lsahdr.lsa_type   = LIBNET_LS_TYPE_ASEXT;
 				got_mode++;
 				got_type = 5;
 				break;
 			case 'R': /* OSPF link state advertisement ROUTER */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
+				lsahdr.lsa_type   = LIBNET_LS_TYPE_RTR;
 				got_mode++;
 				got_type = 6;
 				break;
@@ -478,6 +481,7 @@ static void ospf_cmdline(int argc, char **argv)
 				break;
 			case 'U': /* OSPF link state update */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSU;
+				lsahdr.lsa_type   = LIBNET_LS_TYPE_IP; /* XXX: How about ASBR? */
 				got_mode++;
 				got_type = 3;
 				break;
