@@ -371,12 +371,13 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			ospfhellohdr.hello_intrvl = xgetint16(optarg);
 			break;
-		case 'L': /* OSPF link state request ID */
-			if (got_type != 2) {
-				fprintf(stderr, "error type of packet parameter\n");
+		case 'L': /* OSPF link state request ID, or LSA ID */
+			lsrhdr.lsr_lsid = ip2int(optarg);
+			if (!lsrhdr.lsr_lsid) {
+				fprintf(stderr, "ERROR: Invalid Link State ID (LSA ID): \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
-			lsrhdr.lsr_lsid = xgetint32(optarg);
+			lsahdr.lsa_id = lsrhdr.lsr_lsid;
 			break;
 		case 'm': /* OSPF link state acknowledgment link metric */
 			if (got_type != 6) {
