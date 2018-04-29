@@ -273,9 +273,9 @@ static void ospf_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vZ?";
+	ospf_options = "a:A:B:b:c:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vZ?";
 #else
-	ospf_options = "a:A:B:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:v?";
+	ospf_options = "a:A:B:b:c:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:v?";
 #endif
 	while ((opt = getopt(argc, argv, ospf_options)) != -1) {
 		switch (opt) {
@@ -575,12 +575,13 @@ static void ospf_cmdline(int argc, char **argv)
 				ospf_exit(1);
 			}
 			break;
-		case 'b': /* LSA_SUM netmask */
-			if (got_type != 7) {
+		case 'b': /* LSA_SUM or LSU Summary-LSA netmask */
+			if (got_type != 7 && got_type != 3) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
-			if ((nemesis_name_resolve(optarg, &sumlsahdr.sum_nmask.s_addr)) < 0) {
+			sumlsahdr.sum_nmask.s_addr = ip2int(optarg);
+			if (!sumlsahdr.sum_nmask.s_addr) {
 				fprintf(stderr, "ERROR: Invalid netmask: \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
@@ -592,8 +593,8 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			netlsahdr.net_rtr_id = xgetint32(optarg);
 			break;
-		case 'c': /* LSA_NET metric */
-			if (got_type != 7) {
+		case 'c': /* LSA_SUM or LSU Summary-LSA metric */
+			if (got_type != 7 && got_type != 3) {
 				fprintf(stderr, "error type of packet parameter\n");
 				ospf_exit(1);
 			}
