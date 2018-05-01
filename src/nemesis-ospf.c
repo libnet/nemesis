@@ -144,7 +144,7 @@ static void ospf_initdata(void)
 
 	lsrhdr.lsr_type         = libnet_get_prand(PRu32); /* type of LS being requested */
 	lsrhdr.lsr_lsid         = libnet_get_prand(PRu32); /* link state ID */
-	lsrhdr.lsr_adrtr.s_addr = libnet_get_prand(PRu32);
+	lsrhdr.lsr_adrtr.s_addr = libnet_get_prand(PRu32); /* router ID of Advertising router */
 
 	lsuhdr.lsu_num = libnet_get_prand(PRu32);
 
@@ -434,10 +434,14 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			break;
 		case 'p': /* OSPF injection mode */
-			if (strlen(optarg) == 1) {
-				cmd_mode = *optarg;
+			if (strlen(optarg) >= 1) {
+				cmd_mode = optarg[0];
+				if (strlen(optarg) > 1) {
+					optarg[0] = optarg[1];
+					optarg[1] = 0;
+				}
 			} else {
-				fprintf(stderr, "ERROR: Invalide OSPF injection mode: %s.\n", optarg);
+				fprintf(stderr, "ERROR: Invalid OSPF injection mode: %s.\n", optarg);
 				ospf_exit(1);
 			}
 			switch (cmd_mode) {
@@ -478,6 +482,32 @@ static void ospf_cmdline(int argc, char **argv)
 				ospfhdr.ospf_type = LIBNET_OSPF_LSR;
 				got_mode++;
 				got_type = 2;
+
+				/* Predefined LS Requst types */
+				cmd_mode = optarg[0];
+				switch (cmd_mode) {
+				case 'E':
+					lsrhdr.lsr_type = 5;
+					break;
+
+				case 'N':
+					lsrhdr.lsr_type = 2;
+					break;
+
+				case 'R':
+					lsrhdr.lsr_type = 1;
+					break;
+
+				case 'S':
+					lsrhdr.lsr_type = 3;
+					break;
+
+				default:
+					fprintf(stderr, "ERROR: Unsupported LS Request type.\n");
+					ospf_exit(1);
+					/* NOTREACHED */
+					break;
+				}
 				break;
 			case 'U': /* OSPF link state update */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSU;
@@ -505,10 +535,12 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			break;
 		case 'r': /* OSPF advertising router ID */
-			if ((nemesis_name_resolve(optarg, &lsahdr.lsa_adv.s_addr)) < 0) {
+			lsahdr.lsa_adv.s_addr = ip2int(optarg);
+			if (!lsahdr.lsa_adv.s_addr) {
 				fprintf(stderr, "ERROR: Invalid OSPF advertising router ID (IP address): \"%s\".\n", optarg);
 				ospf_exit(1);
 			}
+			lsrhdr.lsr_adrtr.s_addr = lsahdr.lsa_adv.s_addr;
 			break;
 		case 'R': /* OSPF source router ID */
 			if ((nemesis_name_resolve(optarg, &ospfhdr.ospf_rtr_id.s_addr)) < 0) {

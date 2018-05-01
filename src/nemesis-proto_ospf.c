@@ -86,24 +86,24 @@ static void build_dbd(struct file *pd, libnet_t *l)
 
 static void build_lsr(struct file *pd, libnet_t *l)
 {
-	libnet_build_ospfv2_lsr(lsrhdr.lsr_type, lsrhdr.lsr_lsid, lsrhdr.lsr_adrtr.s_addr, pd->file_buf, pd->file_len, l, 0);
+	libnet_build_ospfv2_lsr(lsrhdr.lsr_type,
+				lsrhdr.lsr_lsid,
+				lsrhdr.lsr_adrtr.s_addr,
+				pd->file_buf,
+				pd->file_len,
+				l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LSR_H + pd->file_len +
+			    LIBNET_OSPF_AUTH_H,                 /* OSPF packet length */
+			    ospfhdr.ospf_type,                  /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,         /* router id */
+			    ospfhdr.ospf_area_id.s_addr,        /* area id */
+			    0,                                  /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,              /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsu(struct file *pd, libnet_t *l)
