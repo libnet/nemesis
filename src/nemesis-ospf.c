@@ -185,68 +185,100 @@ static void ospf_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("OSPF usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("OSPF Packet Types: \n"
-	       "  -p <OSPF Protocol>\n"
-	       "     -pH HELLO, -pN LSA NET, -pR LSA Router, -pE LSA AS_EXTERNAL, -pS LSA_SUM -pD DBD, -pL LSR, -pU LSU\n");
-	printf("OSPF HELLO options: \n"
-	       "  -N <Neighbor Router Address>\n"
-	       "  -i <Dead Router Interval>\n"
-	       "  -l <OSPF Interval>\n");
-	printf("OSPF DBD options: \n"
-	       "  -z <MAX DGRAM Length>\n"
-	       "  -x <Exchange Type>\n");
-	printf("OSPF LSU options: \n"
-	       "  -B <num of LSAs to bcast>\n");
-	printf("OSPF LSR related options: \n"
-	       "  -L <router id>\n"
-	       "  -G <LSA age>\n");
-	printf("OSPF LSA_RTR options: \n"
-	       "  -u <LSA_RTR num>\n"
-	       "  -y <LSA_RTR router type>\n"
-	       "  -j <LSA_RTR link ID>\n"
-	       "  -q <LSA_RTR rtr_metric>\n"
-	       "  -w <LSA_RTR TOS number>\n"
-	       "  -k <LSA_RTR link data>\n");
-	printf("OSPF LSA_AS_EXT options: \n"
-	       "  -f <LSA_AS_EXT forward address>\n"
-	       "  -g <LSA_AS_EXT tag>\n");
-	printf("OSPF LSA_NET options: \n"
-	       "  -e <LSA_NET netmask>\n"
-	       "  -h <LSA_NET RTR_ID>\n");
-	printf("OSPF LSA_SUM options: \n"
-	       "  -b <LSA_SUM netmask> \n"
-	       "  -c <LSA_SUM metric>\n"
-	       "  -Q <LSA_SUM TOS metric>\n");
-	printf("OSPF options: \n"
-	       "  -R <OSPF source router ID (IP address)>\n"
-	       "  -A <OSPF Area id>\n"
-	       "  -a <OSPF authorization type>\n"
-	       "  -m <OSPF Metric>\n"
-	       "  -s <Sequence Number>\n"
-	       "  -r <Advertising Router Address>\n"
-	       "  -n <OSPF Netmask>\n"
-	       "  -o <OSPF Options>\n"
-	       "  -P <Payload file>\n\n");
-	printf("IP Options\n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -t <IP/OSPF tos>\n"
-	       "  -T <IP TTL>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	printf("Usage:\n"
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
+	printf("OSPF packet types:\n"
+	       "  -p <TYPE>    OSPF packet type:\n"
+	       "               -pH: HELLO\n"
+	       "               -pD: Database Descriptor (DBD)\n"
+	       "               -pR: Link State Request (LSR)\n"
+	       "                    -pRN: request Network LSA\n"
+	       "                    -pRR: request Router LSA\n"
+	       "                    -pRE: request AS-External LSA\n"
+	       "                    -pRS: request Network Summary LSA\n"
+	       "               -pU: Link State Update (LSU)\n"
+	       "                    -pUN: LSU with Network LSA\n"
+	       "                    -pUR: LSU with Router LSA\n"
+	       "                    -pUE: LSU with AS-External LSA\n"
+	       "                    -pUS: LSU with Network Summary LSA\n"
+	       "               -pA: Link State Acknowledge (LSAck)\n"
+	       "                    -pAN: LSAck of Network LSA\n"
+	       "                    -pAR: LSAck of Router LSA\n"
+	       "                    -pAE: LSAck of AS-External LSA\n"
+	       "                    -pAS: LSAck of Network Summary LSA\n"
+	       "\n");
+	printf("OSPF HELLO options:\n"
+	       "  -N <ADDR>    Neighbor Router Address\n"
+	       "  -i <INTV>    Dead Router Interval, seconds\n"
+	       "  -l <INTV>    OSPF Hello Interval, seconds\n"
+	       "\n");
+	printf("OSPF DBD options:\n"
+	       "  -z <LEN>     MAX DGRAM Length\n"
+	       "  -x <TYPE>    Exchange Type\n"
+	       "\n");
+	printf("OSPF LSU options:\n"
+	       "  -B <NUM>     Number of LSAs\n"
+	       "  -P <FILE>    RAW payload file with LSAs, -pU mode\n"
+	       "\n");
+	printf("OSPF Router LSA options:\n"
+	       "  -L <ADDR>    Link State ID: Originating Router ID (IP address)\n"
+	       "  -u <NUM>     Number of links, default: 1\n"
+	       "  -j <ADDR>    Link ID\n"
+	       "  -k <DATA>    Link data\n"
+	       "  -y <TYPE>    Link type, default: 1\n"
+	       "  -w <TOS>     Link TOS number, default: 0\n"
+	       "  -m <METRIC>  Link TOS (0) metric (2 bytes)\n"
+	       "\n");
+	printf("OSPF External LSA options:\n"
+	       "  -f <ADDR>    Forward address\n"
+	       "  -g <TAG>     External route tag\n"
+	       "\n");
+	printf("OSPF Network LSA options:\n"
+	       "  -L <ADDR>    Link State ID: Designated Router (IP address)\n"
+	       "  -n <MASK>    Netmask\n"
+	       "  -h <ID>      Attachd Router (IP address)\n"
+	       "\n");
+	printf("OSPF Summary LSA options:\n"
+	       "  -L <ADDR>    Link State ID: Network route to summarize\n"
+	       "  -n <MASK>    Netmask of route\n"
+	       "  -c <NUM>     Cost of this route (4 bytes)\n"
+	       "\n");
+	printf("OSPF LSR and LSU/LSA options (generic):\n"
+	       "  -G <SEC>     LSA age\n"
+	       "  -L <ADDR>    Link State ID\n"
+	       "  -r <ADDR>    Advertising Router Address\n"
+	       "  -s <NUM>     Sequence Number\n"
+	       "  -r <ADDR>    Advertising Router Address\n"
+	       "  -n <MASK>    Multi-purpose netmask\n"
+	       "\n");
+	printf("OSPF options:\n"
+	       "  -R <ADDR>    OSPF source router ID\n"
+	       "  -A <ADDR>    OSPF Area ID, e.g. 0.0.0.1\n"
+	       "  -a <TYPE>    OSPF authorization type\n"
+	       "  -o <OPTS>    Generic OSPF Options, for HELLO, LSA or DBD\n"
+	       "  -P <FILE>    Raw OSPF payload file\n"
+	       "\n");
+	printf("IP options\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address, default 224.0.0.5, but\n"
+	       "               can be 224.0.0.6 or a unicast address as well\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL, default: 1\n"
+	       "  -t <TOS>     IP/OSPF TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number>\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC Address>\n"
-	       "  -M <Destination MAC Address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	ospf_exit(1);
