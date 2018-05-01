@@ -47,16 +47,14 @@ static void build_hello(struct file *pd, libnet_t *l)
 	                  l,                  /* libnet handle */
 	                  0);                 /* libnet id */
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-	                    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-	                    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-	                    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-	                    0,                                                     /* checksum */
-	                    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-	                    NULL,                                                  /* payload */
-	                    0,                                                     /* payload size */
-	                    l,                                                     /* libnet handle */
-	                    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + pd->file_len +
+			    LIBNET_OSPF_AUTH_H,                   /* OSPF packet length */
+	                    ospfhdr.ospf_type,                    /* OSPF packet type */
+	                    ospfhdr.ospf_rtr_id.s_addr,           /* router id */
+	                    ospfhdr.ospf_area_id.s_addr,          /* area id */
+	                    0,                                    /* checksum */
+	                    LIBNET_OSPF_AUTH_NULL,                /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_dbd(struct file *pd, libnet_t *l)
@@ -72,16 +70,14 @@ static void build_dbd(struct file *pd, libnet_t *l)
 			  l,                  /* libnet handle */
 			  0);                 /* libnet id */
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_DBD_H + pd->file_len +
+			    LIBNET_OSPF_AUTH_H,                 /* OSPF packet length */
+			    ospfhdr.ospf_type,                  /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,         /* router id */
+			    ospfhdr.ospf_area_id.s_addr,        /* area id */
+			    0,                                  /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,              /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsr(struct file *pd, libnet_t *l)
@@ -111,21 +107,16 @@ static void build_lsu(struct file *pd, libnet_t *l)
 	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, pd->file_buf, pd->file_len, l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LSU_H + pd->file_len +
+			    LIBNET_OSPF_AUTH_H,	                /* OSPF packet length */
+			    ospfhdr.ospf_type,                  /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,         /* router id */
+			    ospfhdr.ospf_area_id.s_addr,        /* area id */
+			    0,                                  /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,              /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsartr(struct file *pd, libnet_t *l)
@@ -137,40 +128,33 @@ static void build_lsartr(struct file *pd, libnet_t *l)
 				    rtrlsahdr.rtr_type,
 				    rtrlsahdr.rtr_tos_num,
 				    rtrlsahdr.rtr_metric,
-				    pd->file_buf,
-				    pd->file_len,
-				    l,
-				    0);
+				    pd->file_buf, pd->file_len, l, 0);
 
 	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
-				lsahdr.lsa_opts,
-				lsahdr.lsa_type,
-				lsahdr.lsa_id,
-				lsahdr.lsa_adv.s_addr,
-				lsahdr.lsa_seq,
-				lsahdr.lsa_sum,
-				lsahdr.lsa_len,
-				NULL,
-				0,
-				l,
-				0);
+		lsahdr.lsa_opts,
+		lsahdr.lsa_type,
+		lsahdr.lsa_id,
+		lsahdr.lsa_adv.s_addr,
+		lsahdr.lsa_seq,
+		lsahdr.lsa_sum,
+		LIBNET_OSPF_LSA_H +
+		LIBNET_OSPF_LS_RTR_H,
+		NULL, 0, l, 0);
+
+	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, NULL, 0, l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LS_RTR_H + pd->file_len +
+		LIBNET_OSPF_LSA_H + (LIBNET_OSPF_LSU_H - 4) +
+			    LIBNET_OSPF_AUTH_H,                     /* OSPF packet length */
+			    ospfhdr.ospf_type,                      /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,             /* router id */
+			    ospfhdr.ospf_area_id.s_addr,            /* area id */
+			    0,                                      /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                  /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsanet(struct file *pd, libnet_t *l)
@@ -189,39 +173,38 @@ static void build_lsanet(struct file *pd, libnet_t *l)
 				lsahdr.lsa_adv.s_addr,
 				lsahdr.lsa_seq,
 				lsahdr.lsa_sum,
-				lsahdr.lsa_len,
-				NULL,
-				0,
-				l,
-				0);
+				LIBNET_OSPF_LSA_H +
+				LIBNET_OSPF_LS_NET_H,
+				NULL, 0, l, 0);
+
+	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, NULL, 0, l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LS_NET_H + pd->file_len +
+			    LIBNET_OSPF_LSA_H + (LIBNET_OSPF_LSU_H - 4) +
+			    LIBNET_OSPF_AUTH_H, /* OSPF packet length */
+			    ospfhdr.ospf_type,                      /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,             /* router id */
+			    ospfhdr.ospf_area_id.s_addr,            /* area id */
+			    0,                                      /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                  /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsasum(struct file *pd, libnet_t *l)
 {
-	libnet_build_ospfv2_lsa_sum(sumlsahdr.sum_nmask.s_addr,
+	/*
+	 * XXX: Workaround for old style struct libnet_sum_lsa_hdr in libnet1
+	 *      The TOS and TOS-metric fields (4 bytes) are optional, only for
+	 *      compat with RFC1583.
+	 *
+	 * So we use libnet_build_ospfv2_lsa_net() to create the Summary-LSA.
+	 */
+	libnet_build_ospfv2_lsa_net(sumlsahdr.sum_nmask.s_addr,
 				    sumlsahdr.sum_metric,
-				    sumlsahdr.sum_tos_metric,
-				    pd->file_buf,
-				    pd->file_len,
-				    l,
-				    0);
+				    pd->file_buf, pd->file_len, l, 0);
 
 	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
 				lsahdr.lsa_opts,
@@ -230,28 +213,58 @@ static void build_lsasum(struct file *pd, libnet_t *l)
 				lsahdr.lsa_adv.s_addr,
 				lsahdr.lsa_seq,
 				lsahdr.lsa_sum,
-				lsahdr.lsa_len,
-				NULL,
-				0,
-				l,
-				0);
+				LIBNET_OSPF_LSA_H +
+				LIBNET_OSPF_LS_NET_H,
+				pd->file_buf, pd->file_len, l, 0);
+
+	/* Number of LSAs included, this function (and Nemesi) defaults to 1 */
+	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, NULL, 0, l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LS_NET_H + pd->file_len +
+			    LIBNET_OSPF_LSA_H + LIBNET_OSPF_LSU_H +
+			    LIBNET_OSPF_AUTH_H,	                   /* OSPF packet length */
+			    ospfhdr.ospf_type,                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,           /* area id */
+			    0,                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                 /* auth type */
+			    NULL, 0, l, 0);
+}
+
+/*
+ * Build LS Acknowledge for Summary-LSA (IP Network)
+ */
+static void build_lsack(struct file *pd, libnet_t *l)
+{
+	size_t acklen = 8;
+
+	if (LIBNET_LS_TYPE_ASEXT == lsahdr.lsa_type)
+		acklen = 16;
+
+	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
+				lsahdr.lsa_opts,
+				lsahdr.lsa_type,
+				lsahdr.lsa_id,
+				lsahdr.lsa_adv.s_addr,
+				lsahdr.lsa_seq,
+				lsahdr.lsa_sum,
+				LIBNET_OSPF_LSA_H + acklen,
+				pd->file_buf, pd->file_len, l, 0);
+
+	/* authentication data */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
+
+	libnet_build_ospfv2(LIBNET_OSPF_LSA_H + pd->file_len +
+			    LIBNET_OSPF_AUTH_H,	                   /* OSPF packet length */
+			    ospfhdr.ospf_type,                     /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,            /* router id */
+			    ospfhdr.ospf_area_id.s_addr,           /* area id */
+			    0,                                     /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                 /* auth type */
+			    NULL, 0, l, 0);
 }
 
 static void build_lsaas(struct file *pd, libnet_t *l)
@@ -260,10 +273,7 @@ static void build_lsaas(struct file *pd, libnet_t *l)
 				   aslsahdr.as_metric,
 				   aslsahdr.as_fwd_addr.s_addr,
 				   aslsahdr.as_rte_tag,
-				   pd->file_buf,
-				   pd->file_len,
-				   l,
-				   0);
+				   pd->file_buf, pd->file_len, l, 0);
 
 	libnet_build_ospfv2_lsa(lsahdr.lsa_age,
 				lsahdr.lsa_opts,
@@ -272,28 +282,24 @@ static void build_lsaas(struct file *pd, libnet_t *l)
 				lsahdr.lsa_adv.s_addr,
 				lsahdr.lsa_seq,
 				lsahdr.lsa_sum,
-				lsahdr.lsa_len,
-				NULL,
-				0,
-				l,
-				0);
+				LIBNET_OSPF_LSA_H +
+				LIBNET_OSPF_LS_AS_EXT_H,
+				NULL, 0, l, 0);
+
+	libnet_build_ospfv2_lsu(lsuhdr.lsu_num, NULL, 0, l, 0);
 
 	/* authentication data */
-	libnet_build_data(auth,               /* auth data */
-			  LIBNET_OSPF_AUTH_H, /* payload size */
-			  l,                  /* libnet handle */
-			  0);                 /* libnet id */
+	libnet_build_data(auth, LIBNET_OSPF_AUTH_H, l, 0);
 
-	libnet_build_ospfv2(LIBNET_OSPF_HELLO_H + LIBNET_OSPF_AUTH_H + pd->file_len, /* OSPF packet length */
-			    LIBNET_OSPF_HELLO,                                     /* OSPF packet type */
-			    ospfhdr.ospf_rtr_id.s_addr,                            /* router id */
-			    ospfhdr.ospf_area_id.s_addr,                           /* area id */
-			    0,                                                     /* checksum */
-			    LIBNET_OSPF_AUTH_NULL,                                 /* auth type */
-			    NULL,                                                  /* payload */
-			    0,                                                     /* payload size */
-			    l,                                                     /* libnet handle */
-			    0);                                                    /* libnet id */
+	libnet_build_ospfv2(LIBNET_OSPF_LS_AS_EXT_H + pd->file_len +
+			    LIBNET_OSPF_LSA_H + (LIBNET_OSPF_LSU_H - 4) +
+			    LIBNET_OSPF_AUTH_H,                      /* OSPF packet length */
+			    ospfhdr.ospf_type,                       /* OSPF packet type */
+			    ospfhdr.ospf_rtr_id.s_addr,              /* router id */
+			    ospfhdr.ospf_area_id.s_addr,             /* area id */
+			    0,                                       /* checksum */
+			    LIBNET_OSPF_AUTH_NULL,                   /* auth type */
+			    NULL, 0, l, 0);
 }
 
 int buildospf(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet_t *l, int got_type)
@@ -330,21 +336,25 @@ int buildospf(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libn
 		ospf_packetlen += LIBNET_OSPF_LSU_H;
 		build_lsu(pd, l);
 		break;
-	case 4: /* lsa net */
+	case 4: /* lsu: lsa net */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_NET_H;
 		build_lsanet(pd, l);
 		break;
-	case 5: /* lsa as_e */
+	case 5: /* lsu: lsa as_e */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_AS_EXT_H;
 		build_lsaas(pd, l);
 		break;
-	case 6: /* lsa router */
+	case 6: /* lsu: lsa router */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_RTR_H;
 		build_lsartr(pd, l);
 		break;
-	case 7: /* lsa sum */
+	case 7: /* lsu: lsa sum */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_SUM_H;
 		build_lsasum(pd, l);
+		break;
+	case 8: /* lsack */
+		ospf_packetlen += LIBNET_OSPF_LSA_H;
+		build_lsack(pd, l);
 		break;
 	}
 

@@ -131,7 +131,18 @@ typedef struct libnet_ospf_hello_hdr OSPFHELLOhdr;
 typedef struct libnet_net_lsa_hdr    NETLSAhdr;
 typedef struct libnet_rip_hdr        RIPhdr;
 typedef struct libnet_rtr_lsa_hdr    RTRLSAhdr;
-typedef struct libnet_sum_lsa_hdr    SUMLSAhdr;
+
+/*
+ * Workaround for old RFC style libnet_sum_lsa_hdr from libnet1
+ *
+ *   typedef struct libnet_sum_lsa_hdr    SUMLSAhdr;
+ *
+ * For details, see https://tools.ietf.org/html/rfc2328#appendix-A.4.4
+ */
+typedef struct {
+	struct in_addr sum_nmask;      /* Netmask of destination IP address */
+	uint32_t       sum_metric;     /* Same as in rtr_lsa, &0xfff to use last 24bit */
+} SUMLSAhdr;
 typedef struct libnet_tcp_hdr        TCPhdr;
 typedef struct libnet_udp_hdr        UDPhdr;
 typedef struct libnet_vrrp_hdr       VRRPhdr;

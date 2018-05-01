@@ -126,7 +126,7 @@ static void ospf_initdata(void)
 
 	ospfhellohdr.hello_nmask.s_addr    = libnet_get_prand(PRu32);
 	ospfhellohdr.hello_intrvl          = libnet_get_prand(PRu16);
-	ospfhellohdr.hello_opts            = libnet_get_prand(PR8);   /* Options for HELLO packets (look above) */
+	ospfhellohdr.hello_opts            = libnet_get_prand(PR8) & 0xEF; /* Skip LLS bit */
 	ospfhellohdr.hello_rtr_pri         = libnet_get_prand(PR8);   /* router's priority (if 0, can't be backup) */
 	ospfhellohdr.hello_dead_intvl      = libnet_get_prand(PRu32); /* # of secs a router is silent till deemed down */
 	ospfhellohdr.hello_des_rtr.s_addr  = libnet_get_prand(PRu32); /* Designated router on the network */
@@ -146,7 +146,7 @@ static void ospf_initdata(void)
 	lsrhdr.lsr_lsid         = libnet_get_prand(PRu32); /* link state ID */
 	lsrhdr.lsr_adrtr.s_addr = libnet_get_prand(PRu32); /* router ID of Advertising router */
 
-	lsuhdr.lsu_num = libnet_get_prand(PRu32);
+	lsuhdr.lsu_num = 1;
 
 	aslsahdr.as_nmask.s_addr    = libnet_get_prand(PRu32); /* Netmask for advertised destination */
 	aslsahdr.as_metric          = LIBNET_AS_E_BIT_ON;      /* May have to set E bit in first 8bits */
@@ -154,11 +154,11 @@ static void ospf_initdata(void)
 	aslsahdr.as_rte_tag         = libnet_get_prand(PRu16);
 
 	rtrlsahdr.rtr_flags     = libnet_get_prand(PRu16); /* set to help describe packet */
-	rtrlsahdr.rtr_num       = libnet_get_prand(PRu16); /* number of links within that packet */
+	rtrlsahdr.rtr_num       = 1;                       /* number of links in LSA */
 	rtrlsahdr.rtr_link_id   = libnet_get_prand(PRu32); /* describes link_data (look below) */
 	rtrlsahdr.rtr_link_data = libnet_get_prand(PRu32); /* Depending on link_id, info is here */
-	rtrlsahdr.rtr_type      = libnet_get_prand(PR8);   /* Description of router link */
-	rtrlsahdr.rtr_tos_num   = libnet_get_prand(PR8);   /* number of different TOS metrics for this link */
+	rtrlsahdr.rtr_type      = 1;
+	rtrlsahdr.rtr_tos_num   = 0;
 	rtrlsahdr.rtr_metric    = libnet_get_prand(PRu16); /* the "cost" of using this link */
 
 	dbdhdr.dbd_mtu_len = libnet_get_prand(PRu16); /* max length of IP dgram that this 'if' can use */
@@ -170,8 +170,7 @@ static void ospf_initdata(void)
 	netlsahdr.net_rtr_id       = libnet_get_prand(PRu32);
 
 	sumlsahdr.sum_nmask.s_addr = libnet_get_prand(PRu32); /* Netmask of destination IP address */
-	sumlsahdr.sum_metric       = libnet_get_prand(PRu32); /* Same as in rtr_lsa (&0xfff to use last 24bit */
-	sumlsahdr.sum_tos_metric   = libnet_get_prand(PRu32);
+	sumlsahdr.sum_metric       = libnet_get_prand(PRu32) & 0x0fff;
 }
 
 static void ospf_validatedata(void)
@@ -273,9 +272,9 @@ static void ospf_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	ospf_options = "a:A:B:b:c:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:vZ?";
+	ospf_options = "a:A:B:c:d:D:f:F:g:G:h:H:i:I:j:k:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:vw:x:y:z:Z?";
 #else
-	ospf_options = "a:A:B:b:c:d:D:f:F:g:G:H:i:k:I:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:x:y:z:v?";
+	ospf_options = "a:A:B:c:d:D:f:F:g:G:h:H:i:I:j:k:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:vw:x:y:z:?";
 #endif
 	while ((opt = getopt(argc, argv, ospf_options)) != -1) {
 		switch (opt) {
@@ -292,6 +291,15 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			lsuhdr.lsu_num = xgetint32(optarg);
 			break;
+
+		case 'c': /* LSA_SUM or LSU Summary-LSA metric */
+			if (got_type != 7 && got_type != 3) {
+				fprintf(stderr, "error type of packet parameter\n");
+				ospf_exit(1);
+			}
+			sumlsahdr.sum_metric = xgetint32(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
@@ -340,6 +348,13 @@ static void ospf_cmdline(int argc, char **argv)
 		case 'G': /* OSPF link state acknowledgment age in seconds */
 			lsahdr.lsa_age = xgetint16(optarg);
 			break;
+		case 'h': /* LSA_NET RTR ID */
+			if (got_type != 4) {
+				fprintf(stderr, "error type of packet parameter\n");
+				ospf_exit(1);
+			}
+			netlsahdr.net_rtr_id = ip2int(optarg);
+			break;
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -357,12 +372,11 @@ static void ospf_cmdline(int argc, char **argv)
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
 			break;
+		case 'j':
+			rtrlsahdr.rtr_link_id = ip2int(optarg);
+			break;
 		case 'k': /* OSPF link state acknowledgment link data */
-			if (got_type != 6) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			rtrlsahdr.rtr_link_data = xgetint32(optarg);
+			rtrlsahdr.rtr_link_data = ip2int(optarg);
 			break;
 		case 'l': /* OSPF HELLO las packet interval in seconds */
 			if (got_type != 0) {
@@ -394,18 +408,8 @@ static void ospf_cmdline(int argc, char **argv)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
 		case 'n': /* OSPF multi-purpose netmask placement */
-			if (got_type != 0) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			if ((nemesis_name_resolve(optarg, &ospfhellohdr.hello_nmask.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid netmask IP address: \"%s\".\n", optarg);
-				ospf_exit(1);
-			} else {
-				memcpy(&ospfhellohdr.hello_nmask.s_addr, &netlsahdr.net_nmask.s_addr, sizeof(u_int));
-				memcpy(&ospfhellohdr.hello_nmask.s_addr, &sumlsahdr.sum_nmask.s_addr, sizeof(u_int));
-				memcpy(&ospfhellohdr.hello_nmask.s_addr, &aslsahdr.as_nmask.s_addr, sizeof(u_int));
-			}
+			netlsahdr.net_nmask.s_addr = sumlsahdr.sum_nmask.s_addr =
+				aslsahdr.as_nmask.s_addr = ospfhellohdr.hello_nmask.s_addr = ip2int(optarg);
 			break;
 		case 'N': /* OSPF HELLO neighbor router */
 			if (got_type != 0) {
@@ -445,28 +449,40 @@ static void ospf_cmdline(int argc, char **argv)
 				ospf_exit(1);
 			}
 			switch (cmd_mode) {
-			case 'N': /* OSPF link state advertisement NET */
-				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
-				lsahdr.lsa_type   = LIBNET_LS_TYPE_NET;
-				got_mode++;
-				got_type = 4;
-				break;
-			case 'E': /* OSPF link state advertisement AS_EXTERNAL */
-				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
-				lsahdr.lsa_type   = LIBNET_LS_TYPE_ASEXT;
-				got_mode++;
-				got_type = 5;
-				break;
-			case 'R': /* OSPF link state advertisement ROUTER */
-				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
-				lsahdr.lsa_type   = LIBNET_LS_TYPE_RTR;
-				got_mode++;
-				got_type = 6;
-				break;
-			case 'S': /* OSPF link state advertisement Summary */
+			case 'A': /* OSPF Link State Acknowledge */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSA;
 				got_mode++;
-				got_type = 7;
+				got_type = 8;
+
+				/* Possible to create RAW LS Ack with -pA */
+				cmd_mode = optarg[0];
+				if (!cmd_mode)
+					break;
+
+				/* Predefined LS Ack types */
+				switch (cmd_mode) {
+				case 'E': /* OSPF link state advertisement AS_EXTERNAL */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_ASEXT;
+					break;
+
+				case 'N': /* OSPF link state advertisement NET */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_NET;
+					break;
+
+				case 'R': /* OSPF link state advertisement ROUTER */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_RTR;
+					break;
+
+				case 'S': /* OSPF link state advertisement Summary */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_IP; /* XXX: How about ASBR? */
+					break;
+
+				default:
+					fprintf(stderr, "ERROR: Unsupported LS Ack type.\n");
+					ospf_exit(1);
+					/* NOTREACHED */
+					break;
+				}
 				break;
 			case 'D': /* OSPF database description */
 				ospfhdr.ospf_type = LIBNET_OSPF_DBD;
@@ -478,7 +494,7 @@ static void ospf_cmdline(int argc, char **argv)
 				got_mode++;
 				got_type = 0;
 				break;
-			case 'L': /* OSPF link state request */
+			case 'R': /* OSPF link state request */
 				ospfhdr.ospf_type = LIBNET_OSPF_LSR;
 				got_mode++;
 				got_type = 2;
@@ -514,10 +530,44 @@ static void ospf_cmdline(int argc, char **argv)
 				lsahdr.lsa_type   = LIBNET_LS_TYPE_IP; /* XXX: How about ASBR? */
 				got_mode++;
 				got_type = 3;
+
+				/* Possible to create RAW LS Update with -pU */
+				cmd_mode = optarg[0];
+				if (!cmd_mode)
+					break;
+
+				/* Predefined LS Update types */
+				switch (cmd_mode) {
+				case 'E': /* OSPF link state advertisement AS_EXTERNAL */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_ASEXT;
+					got_type = 5;
+					break;
+
+				case 'N': /* OSPF link state advertisement NET */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_NET;
+					got_type = 4;
+					break;
+
+				case 'R': /* OSPF link state advertisement ROUTER */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_RTR;
+					got_type = 6;
+					break;
+
+				case 'S': /* OSPF link state advertisement Summary */
+					lsahdr.lsa_type = LIBNET_LS_TYPE_IP; /* XXX: How about ASBR? */
+					got_type = 7;
+					break;
+
+				default:
+					fprintf(stderr, "ERROR: Unsupported LS Update type.\n");
+					ospf_exit(1);
+					/* NOTREACHED */
+					break;
+				}
 				break;
 			case '?': /* FALLTHROUGH */
 			default:
-				fprintf(stderr, "ERROR: Invalid OSPF injection mode: %c.\n", cmd_mode);
+				fprintf(stderr, "ERROR: OSPF injection mode -p%c not found.\n", cmd_mode);
 				ospf_exit(1);
 				/* NOTREACHED */
 				break;
@@ -579,6 +629,13 @@ static void ospf_cmdline(int argc, char **argv)
 			if (verbose == 1)
 				nemesis_printtitle(title);
 			break;
+		case 'w': /* LSA_RTR TOS number */
+			if (got_type != 6) {
+				fprintf(stderr, "error type of packet parameter\n");
+				ospf_exit(1);
+			}
+			rtrlsahdr.rtr_tos_num = xgetint8(optarg);
+			break;
 		case 'x': /* OSPF DBD exchange type */
 			if (got_type != 1) {
 				fprintf(stderr, "error type of packet parameter\n");
@@ -587,10 +644,6 @@ static void ospf_cmdline(int argc, char **argv)
 			dbdhdr.dbd_type = xgetint8(optarg);
 			break;
 		case 'y': /* OSPF description of router link */
-			if (got_type != 6) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
 			rtrlsahdr.rtr_type = xgetint8(optarg);
 			break;
 		case 'z': /* OSPF DBD interface MTU size */
@@ -601,69 +654,6 @@ static void ospf_cmdline(int argc, char **argv)
 			dbdhdr.dbd_mtu_len = xgetint16(optarg);
 			break;
 
-		case 'e': /* LSA_NET netmask */
-			if (got_type != 4) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			if ((nemesis_name_resolve(optarg, &netlsahdr.net_nmask.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid netmask: \"%s\".\n", optarg);
-				ospf_exit(1);
-			}
-			break;
-		case 'b': /* LSA_SUM or LSU Summary-LSA netmask */
-			if (got_type != 7 && got_type != 3) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			sumlsahdr.sum_nmask.s_addr = ip2int(optarg);
-			if (!sumlsahdr.sum_nmask.s_addr) {
-				fprintf(stderr, "ERROR: Invalid netmask: \"%s\".\n", optarg);
-				ospf_exit(1);
-			}
-			break;
-		case 'h': /* LSA_NET RTR ID */
-			if (got_type != 4) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			netlsahdr.net_rtr_id = xgetint32(optarg);
-			break;
-		case 'c': /* LSA_SUM or LSU Summary-LSA metric */
-			if (got_type != 7 && got_type != 3) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			sumlsahdr.sum_metric = xgetint32(optarg);
-			break;
-		case 'Q': /* LSA_SUM TOS metric */
-			if (got_type != 7) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			sumlsahdr.sum_tos_metric = xgetint32(optarg);
-			break;
-		case 'j': /* LSA_RTR link ID */
-			if (got_type != 6) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			rtrlsahdr.rtr_link_id = xgetint32(optarg);
-			break;
-		case 'q': /* LSA_RTR metric */
-			if (got_type != 6) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			rtrlsahdr.rtr_metric = xgetint16(optarg);
-			break;
-		case 'w': /* LSA_RTR TOS number */
-			if (got_type != 6) {
-				fprintf(stderr, "error type of packet parameter\n");
-				ospf_exit(1);
-			}
-			rtrlsahdr.rtr_tos_num = xgetint8(optarg);
-			break;
 #if defined(WIN32)
 		case 'Z':
 			if ((ifacetmp = pcap_lookupdev(errbuf)) == NULL)
