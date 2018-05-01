@@ -25,7 +25,7 @@ static char    *ipoptionsfile = NULL; /* IP options file name */
 static char    *device        = NULL; /* Ethernet device */
 
 #if defined(WIN32)
-char *ifacetmp;
+static char *ifacetmp = NULL;
 #endif
 
 OSPFhdr      ospfhdr;
@@ -664,6 +664,15 @@ static void ospf_cmdline(int argc, char **argv)
 			}
 			rtrlsahdr.rtr_tos_num = xgetint8(optarg);
 			break;
+#if defined(WIN32)
+		case 'Z':
+			if ((ifacetmp = pcap_lookupdev(errbuf)) == NULL)
+				perror(errbuf);
+
+			PrintDeviceList(ifacetmp);
+			ospf_exit(1);
+#endif
+
 		case '?': /* FALLTHROUGH */
 		default:
 			ospf_usage(argv[0]);
