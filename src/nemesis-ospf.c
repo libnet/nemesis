@@ -104,16 +104,16 @@ static void ospf_initdata(void)
 	memset(etherhdr.ether_dhost, 0xff, 6); /* Ethernet destination address */
 
 	iphdr.ip_src.s_addr = libnet_get_prand(PRu32);
-	iphdr.ip_dst.s_addr = libnet_get_prand(PRu32);
+	iphdr.ip_dst.s_addr = inet_addr("224.0.0.5");  /* All OSPF routers */
 	iphdr.ip_tos        = IPTOS_LOWDELAY;          /* IP type of service */
 	iphdr.ip_id         = libnet_get_prand(PRu16); /* IP ID */
 	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
-	iphdr.ip_ttl        = 255;                     /* IP TTL */
+	iphdr.ip_ttl        = 1;                       /* IP TTL, default 1 because of IP dst default */
 	iphdr.ip_p          = IPPROTO_OSPF;
 	pd.file_buf         = NULL;
-	pd.file_len           = 0;
+	pd.file_len         = 0;
 	ipod.file_buf       = NULL;
-	ipod.file_len         = 0;
+	ipod.file_len       = 0;
 
 	/* OSPF initialization */
 	ospfhdr.ospf_v              = 2;
