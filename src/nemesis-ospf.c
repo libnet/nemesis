@@ -210,8 +210,8 @@ static void ospf_usage(char *arg)
 	       "\n");
 	printf("OSPF HELLO options:\n"
 	       "  -N <ADDR>    Neighbor Router Address\n"
-	       "  -i <INTV>    Dead Router Interval, seconds\n"
-	       "  -l <INTV>    OSPF Hello Interval, seconds\n"
+	       "  -i <SEC>     Dead Router Interval, seconds\n"
+	       "  -l <SEC>     OSPF Hello Interval, seconds\n"
 	       "\n");
 	printf("OSPF DBD options:\n"
 	       "  -z <LEN>     MAX DGRAM Length\n"
@@ -230,14 +230,14 @@ static void ospf_usage(char *arg)
 	       "  -w <TOS>     Link TOS number, default: 0\n"
 	       "  -m <METRIC>  Link TOS (0) metric (2 bytes)\n"
 	       "\n");
-	printf("OSPF External LSA options:\n"
+	printf("OSPF AS-External LSA options:\n"
 	       "  -f <ADDR>    Forward address\n"
 	       "  -g <TAG>     External route tag\n"
 	       "\n");
 	printf("OSPF Network LSA options:\n"
 	       "  -L <ADDR>    Link State ID: Designated Router (IP address)\n"
 	       "  -n <MASK>    Netmask\n"
-	       "  -h <ID>      Attachd Router (IP address)\n"
+	       "  -h <ADDR>    Attached Router (IP address)\n"
 	       "\n");
 	printf("OSPF Summary LSA options:\n"
 	       "  -L <ADDR>    Link State ID: Network route to summarize\n"
@@ -249,14 +249,13 @@ static void ospf_usage(char *arg)
 	       "  -L <ADDR>    Link State ID\n"
 	       "  -r <ADDR>    Advertising Router Address\n"
 	       "  -s <NUM>     Sequence Number\n"
-	       "  -r <ADDR>    Advertising Router Address\n"
 	       "  -n <MASK>    Multi-purpose netmask\n"
 	       "\n");
 	printf("OSPF options:\n"
 	       "  -R <ADDR>    OSPF source router ID\n"
 	       "  -A <ADDR>    OSPF Area ID, e.g. 0.0.0.1\n"
 	       "  -a <TYPE>    OSPF authorization type\n"
-	       "  -o <OPTS>    Generic OSPF Options, for HELLO, LSA or DBD\n"
+	       "  -o <OPT>     Generic OSPF Options, for HELLO, LSA or DBD, 1 byte\n"
 	       "  -P <FILE>    Raw OSPF payload file\n"
 	       "\n");
 	printf("IP options\n"
