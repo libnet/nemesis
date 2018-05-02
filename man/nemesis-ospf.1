@@ -5,7 +5,7 @@
 .\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
 .\" 
-.TH NEMESIS-OSPF 1 "20 June 2001" 
+.TH NEMESIS-OSPF 1 "2 May 2018" 
 .SH NAME
 nemesis-ospf \- OSPF Protocol (The Nemesis Project)
 .SH SYNOPSIS
@@ -17,93 +17,137 @@ and Windows systems.  The suite is broken down by protocol, and should allow
 for useful scripting of injected packets from simple shell scripts.
 .SS OSPF Packet Types
 .TP
-\fB\-p\fP \fIOSPF Protocol (\-pH, \-pL, \-pR)\fR
+\fB\-p\fP \fITYPE (\-pH, \-pD, \-pR, \-pU, \-pA)\fR
 Hello (\-pH), Database Description (\-pD), 
-Link State Request (\-pL),
+Link State Request (\-pR),
 Link State Update (\-pU),
-Router Links Advertisement (\-pR),
-Network Links Advertisement (\-pN),
-IP Summary Links Advertisement (\-pM),
-AS External Link Advertisement (\-pA),
+Router Links Advertisement (\-pUR),
+Network Links Advertisement (\-pUN),
+IP Summary Links Advertisement (\-pUS),
+AS External Link Advertisement (\-pUE),
 .SS OSPF HELLO options
 .TP
-\fB-N\fP \fINeighbor Router Address\fR
-Neighbor Router Address.
+\fB-N\fP \fIADDR\fR
+Neighbor Router Address
 .TP
-\fB-i\fP \fIDead Router Interval\fR
-Dead Router Interval.
+\fB-i\fP \fISEC\fR
+Dead Router Interval, seconds
 .TP
-\fB-l\fP \fIOSPF Interval\fR
-OSPF Interval.
+\fB-l\fP \fISEC\fR
+OSPF Interval, seconds
 .SS OSPF Database Description (DBD) options
 .TP
-\fB-z\fP \fIMAX DGRAM Length\fR
+\fB-z\fP \fILEN\fR
 OSPF Maximum Datagram Length
 .TP
-\fB-x\fP \fIExchange Type\fR
+\fB-x\fP \fITYPE\fR
 OSPF DBD Exchange Type
 .SS OSPF Link State Update (LSU) options
 .TP
-\fB-x\fP \fINum LSAs to bcast\fR
-Number of Link State Advertisements to broadcast
-.SS OSPF Link State Advertisement (LSA) related options
-\fB-L\fP \fIRouter ID\fR
-Router ID for Link State Advertisement packets.
+\fB-B\fP \fINUM\fR
+Number of Link State Advertisements (LSAs) to broadcast
 .TP
+\fB-P\fP \fIFILE\fR
+RAW payload file with LSAs, in plain \-pU mode
+.SS OSPF Router LSA options
+\fB-L\fP \fIADDR\fR
+Link State ID: Originating Router ID (IP address)
+.TP
+\fB-u\fP \fINUM\fR
+Number of links, default 1
+.TP
+\fB-j\fP \fIADDR\fR
+Link ID
+.TP
+\fB-k\fP \fIDATA\fR
+Link data
+.TP
+\fB-y\fP \fITYPE\fR
+Link type, default 1
+.TP
+\fB-w\fP \fITOS\fR
+Link TOS number, default 0
+.TP
+\fB-m\fP \fIMETRIC\fR
+Link TOS (0) metric (2 bytes)
+.SS OSPF Autonomous System External LSA options
+\fB-f\fP \fIADDR\fR
+Forward Address
+.TP
+\fB-g\fP \fITAG\fR
+External route tag
+.SS OSPF Network LSA options
+\fB-L\fP \fIADDR\fR
+Link State ID: Originating Router ID (IP address)
+.TP
+\fB-n\fP \fIMASK\fR
+Netmask
+.TP
+\fB-h\fP \fIADDR\fR
+Attached Router (IP address)
+.SS OSPF Summary LSA (IP Network) options
+\fB-L\fP \fIADDR\fR
+Link State ID: Network route to summarize
+.TP
+\fB-n\fP \fIMASK\fR
+Netmask of route
+.TP
+\fB-c\fP \fINUM\fR
+Cost of this route (4 bytes)
+.SS Generic LSA options for LSR and LSU packets
 \fB-G\fP \fILSA Age\fR
 Link State Advertisement Age.
-.SS OSPF Router Links Advertisement (LSA_RTR) options
-\fB-u\fP \fILSA_RTR Number\fR
-Router Links Advertisement Number
 .TP
-\fB-y\fP \fILSA_RTR Router Type\fR
-Router Links Advertisement Router Type
+\fB-L\fP \fIADDR\fR
+Link State ID, usually the Router ID of the originating router
 .TP
-\fB-k\fP \fILSA_RTR Router Data\fR
-Router Links Advertisement Router Data
-.SS OSPF Autonomous System External Link Advertisement (LSA_AS_EXT) options
-\fB-f\fP \fILSA_AS_EXT Forward Address\fR
-Autonomous System Forward Address
+\fB-r\fP \fIADDR\fR
+Advertising Router Address
 .TP
-\fB-g\fP \fILSA_AS_EXT Tag\fR
-Autonomous System Tag
+\fB-s\fP \fINUM\fR
+Sequence Number
+.TP
+\fB-n\fP \fIMASK\fR
+Multi-purpose netmask
 .SS OSPF options
-\fB-m\fP \fIOSPF Metric\fR
+\fB-m\fP \fIMETRIC\fR
 OSPF Metric
 .TP
-\fB-s\fP \fIOSPF Sequence Number\fR
+\fB-s\fP \fINUM\fR
 OSPF Sequence Number 
 .TP
-\fB-r\fP \fIOSPF Advertising Router Address\fR
+\fB-r\fP \fIADDR\fR
 OSPF Advertising Router Address
 .TP
-\fB-n\fP \fIOSPF Netmask\fR
-OSPF Netmask Address
+\fB-n\fP \fIMASK\fR
+OSPF Netmask
 .TP
-\fB-O\fP \fIOSPF Options\fR
-OSPF Options
+\fB-o\fP \fIOPT\fR
+OSPF Options, 1 byte value
 .TP
-\fB-R\fP \fIOSPF Router ID\fR
-OSPF Router Identifier
+\fB-R\fP \fIADDR\fR
+OSPF Source Router ID
 .TP
-\fB-A\fP \fIOSPF Area ID\fR
-OSPF Area Identifier
+\fB-A\fP \fIADDR\fR
+OSPF Area ID, e.g. 0.0.0.1, default 0.0.0.0
 .TP
-\fB-P\fP \fIPayload File\fR
-Filename to read for packet payload.
+\fB-P\fP \fIFILE\fR
+Filename to read for raw (HEX) OSPF packet payload, appended after
+selected packet type.  I.e., can be used with \-pU to create multi LSA
+Link State Updates.
 .TP
-.IP "-v verbose-mode"
+.IP "-v"
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected package with printable ASCII characters on the right.  Use three
 times for a hexdump without decoded ASCII.
 .SH IP OPTIONS
-.IP "-D destination-IP-address"
-Specify the
-.I destination-IP-address
-within the IP header.
-.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
-Specify the
-.I fragmentation options:
+.IP "-S ADDR"
+Specify the source address within the IP header.
+.IP "-D ADDR"
+Specify the destination address within the IP header.  Defaults to the
+link-local multicast address 224.0.0.5 (All OSPF Routers).
+.IP "-F OPT"
+Specify the IP header fragmentation options:
 
 .in +.51
 .nf
@@ -114,30 +158,26 @@ Specify the
 .fi
 .in -.51
 
-within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the \-F command line switch by separating 
-the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
-fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
-Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
-are 1-bit fields.  
+IP fragmentation options can be specified individually or combined into
+a single argument to the \-F command line switch by separating the
+options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP
+fragmentation offset is a 13-bit field with valid values from 0 to 8189.
+Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED
+or RB) are 1-bit fields.
 
 NOTE: Under normal conditions, the reserved flag is unset.
-.IP "-I IP-ID"
+.IP "-I ID"
 Specify the
-.I IP-ID
+.I ID
 within the IP header.
-.IP "-O IP-options-file"
-This will cause nemesis-ospf to use the specified
-.I IP-options-file
-as the options when building the IP header for the injected packet.  IP 
-options can be up to 40 bytes in length.  The IP options file must be created
-manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '\-O \-' instead of an IP-options-file.
-.IP "-S source-IP-address"
-Specify the
-.I source-IP-address
-within the IP header.
-.I IP-type-of-service (TOS)
+.IP "-O FILE"
+This will cause nemesis-ospf to use the specified raw (HEX)
+.I FILE
+as the options when building the IP header for the injected packet.  IP
+options can be up to 40 bytes in length.  The IP options file must be
+created manually based upon the desired options.  IP options can also be
+read from stdin by specifying '\-O \-' instead of a file.
+.IP "-t TOS"
 within the IP header.  Valid type of service values:
 
 .in +.51
@@ -152,26 +192,19 @@ within the IP header.  Valid type of service values:
 NOTE: Under normal conditions, only one type of service is set within a 
 packet.  To specify multiple types, specify the sum of the desired values as
 the type of service.
-.IP "-T IP-TTL"
-Specify the
-.I IP-time-to-live (TTL)
-within the IP header.
+.IP "-T TTL"
+Specify the TTL value within the IP header.  This defaults to 1 since
+the default destination IP address is a link-local multicast address.
 .SH DATA LINK OPTIONS
-.IP "-d Ethernet-device"
-Specify the name (for UNIX-like systems) or the number (for Windows systems) 
-of the
-.I Ethernet-device
-to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
-Specify the
-.I source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
-Specify the
-.I destintion-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-Z list-network-interfaces"
-Lists the available network interfaces by number for use in link-layer 
+.IP "-d <NAME|NUM>"
+Specify the interface name, for UNIX-like systems, or number for Windows systems,
+of the Ethernet device to use (eg. fxp0, eth0, hme0, 1).
+.IP "-H MAC"
+Specify the source MAC address, XX:XX:XX:XX:XX:XX
+.IP "-M MAC"
+Specify the destintion MAC address, XX:XX:XX:XX:XX:XX
+.IP "-Z"
+Lists available network interfaces by number for use in link-layer 
 injection.
 
 NOTE: This feature is only relevant to Windows systems.
