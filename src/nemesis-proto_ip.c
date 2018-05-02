@@ -29,8 +29,8 @@ int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet
 
 #ifdef DEBUG
 	printf("DEBUG: IP packet length %u.\n", ip_packetlen);
-	printf("DEBUG: IP options size  %u.\n", ipod->file_len);
-	printf("DEBUG: IP payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: IP payload size  %zd.\n", pd->file_len);
 #endif
 
 	if (got_ipoptions) {

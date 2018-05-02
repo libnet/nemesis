@@ -55,9 +55,9 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 
 #ifdef DEBUG
 	printf("DEBUG: ICMP packet length %u.\n", icmp_packetlen);
-	printf("DEBUG: IP   options size  %u.\n", ipod->file_len);
-	printf("DEBUG: ICMP original IP options size %u.\n", origod->file_len);
-	printf("DEBUG: ICMP payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP   options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: ICMP original IP options size %zd.\n", origod->file_len);
+	printf("DEBUG: ICMP payload size  %zd.\n", pd->file_len);
 #endif
 
 	switch (mode) {

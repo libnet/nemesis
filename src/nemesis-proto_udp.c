@@ -31,8 +31,8 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 
 #ifdef DEBUG
 	printf("DEBUG: UDP packet length %u.\n", udp_packetlen);
-	printf("DEBUG:  IP options size  %u.\n", ipod->file_len);
-	printf("DEBUG: UDP payload size  %u.\n", pd->file_len);
+	printf("DEBUG:  IP options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: UDP payload size  %zd.\n", pd->file_len);
 #endif
 
 	libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_len + LIBNET_UDP_H,

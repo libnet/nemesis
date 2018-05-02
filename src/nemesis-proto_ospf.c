@@ -367,8 +367,8 @@ int buildospf(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libn
 
 #ifdef DEBUG
 	printf("DEBUG: OSPF packet length %u.\n", ospf_packetlen);
-	printf("DEBUG: IP   options size  %u.\n", ipod->file_len);
-	printf("DEBUG: OSPF payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP   options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: OSPF payload size  %zd.\n", pd->file_len);
 #endif
 
 	libnet_build_ipv4(ospf_meta_packetlen,

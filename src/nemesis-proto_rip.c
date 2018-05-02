@@ -29,8 +29,8 @@ int buildrip(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, RIPhdr *rip, struct file *pd
 
 #ifdef DEBUG
 	printf("DEBUG: RIP packet length %u.\n", rip_packetlen);
-	printf("DEBUG:  IP options size  %u.\n", ipod->file_len);
-	printf("DEBUG: RIP payload size  %u.\n", pd->file_len);
+	printf("DEBUG:  IP options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: RIP payload size  %zd.\n", pd->file_len);
 #endif
 
 	(void)libnet_build_rip(rip->rip_cmd,

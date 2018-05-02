@@ -31,8 +31,8 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 
 #ifdef DEBUG
 	printf("DEBUG: IGMP packet length %u.\n", igmp_packetlen);
-	printf("DEBUG: IP   options size  %u.\n", ipod->file_len);
-	printf("DEBUG: IGMP payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP   options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: IGMP payload size  %zd.\n", pd->file_len);
 #endif
 
 	libnet_build_igmp(igmp->igmp_type,

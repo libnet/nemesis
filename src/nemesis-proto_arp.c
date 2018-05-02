@@ -23,7 +23,7 @@ int buildarp(ETHERhdr *eth, ARPhdr *arp, struct file *pd, libnet_t *l)
 
 #ifdef DEBUG
 	printf("DEBUG: ARP packet length %u.\n", arp_packetlen);
-	printf("DEBUG: ARP payload size  %u.\n", pd->file_len);
+	printf("DEBUG: ARP payload size  %zd.\n", pd->file_len);
 #endif
 
 	// build arp header for packets

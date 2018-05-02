@@ -39,9 +39,9 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 
 #ifdef DEBUG
 	printf("DEBUG: DNS packet length %u.\n", dns_packetlen);
-	printf("DEBUG: IP  options size  %u.\n", ipod->file_len);
-	printf("DEBUG: TCP options size  %u.\n", tcpod->file_len);
-	printf("DEBUG: DNS payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP  options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: TCP options size  %zd.\n", tcpod->file_len);
+	printf("DEBUG: DNS payload size  %zd.\n", pd->file_len);
 #endif
 
 	libnet_build_dnsv4(((state == 0)

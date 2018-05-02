@@ -34,9 +34,9 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
 
 #ifdef DEBUG
 	printf("DEBUG: TCP packet length %u.\n", tcp_packetlen);
-	printf("DEBUG: IP  options size  %u.\n", ipod->file_len);
-	printf("DEBUG: TCP options size  %u.\n", tcpod->file_len);
-	printf("DEBUG: TCP payload size  %u.\n", pd->file_len);
+	printf("DEBUG: IP  options size  %zd.\n", ipod->file_len);
+	printf("DEBUG: TCP options size  %zd.\n", tcpod->file_len);
+	printf("DEBUG: TCP payload size  %zd.\n", pd->file_len);
 #endif
 
 	if (got_tcpoptions) {
