@@ -1,12 +1,9 @@
 /*
- * $Id: nemesis-arp.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeffsnort.org>
  *
  * nemesis-arp.h (ARP Packet Injector)
- *
  */
 
 #ifndef NEMESIS_ARP_H_

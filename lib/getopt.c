@@ -1,6 +1,4 @@
 /*
- * $Id: getopt.c,v 1.2 2004/10/07 02:46:35 jnathan Exp $
- *
  * Copyright (c) 1987, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *

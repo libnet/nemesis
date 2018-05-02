@@ -1,8 +1,3 @@
-dnl
-dnl $Id: configure.in,v 1.3 2004/10/07 01:23:25 jnathan Exp $
-dnl
-dnl configure.in
-dnl
 dnl Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
 dnl
 dnl Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press

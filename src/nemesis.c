@@ -1,6 +1,4 @@
 /*
- * $Id: nemesis.c,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
  *

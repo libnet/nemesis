@@ -1,11 +1,8 @@
 /*
- * $Id: nemesis-fileio.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
  *
- * nemesis-functions.c (nemesis utility functions)
- *
+ * nemesis-fileio.c (nemesis file utility functions)
  */
 
 #if defined(HAVE_CONFIG_H)

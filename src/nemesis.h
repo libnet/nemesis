@@ -1,11 +1,8 @@
 /*
- * $Id: nemesis.h,v 1.3.4.1 2005/01/27 20:14:53 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
  *
  * nemesis.h
- *
  */
 
 #ifndef NEMESIS_H_

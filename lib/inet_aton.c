@@ -1,4 +1,3 @@
-/*	$Id: inet_aton.c,v 1.1 2003/10/31 21:29:36 jnathan Exp $	*/
 /*	$OpenBSD: inet_addr.c,v 1.6 1999/05/03 22:31:14 yanick Exp $	*/
 
 /*

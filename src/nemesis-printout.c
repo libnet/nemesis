@@ -1,11 +1,8 @@
 /*
- * $Id: nemesis-printout.c,v 1.1 2003/10/31 21:29:37 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
  *
  * nemesis-functions.c (nemesis utility functions)
- *
  */
 
 #if defined(HAVE_CONFIG_H)

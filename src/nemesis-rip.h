@@ -1,12 +1,9 @@
 /*
- * $Id: nemesis-rip.h,v 1.1.1.1.4.1 2005/01/27 20:14:53 jnathan Exp $
- *
  * THE NEMESIS PROJECT
  * Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
  * Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
  *
  * nemesis-rip.h (RIP Packet Injector)
- *
  */
 
 #ifndef NEMESIS_RIP_H_
