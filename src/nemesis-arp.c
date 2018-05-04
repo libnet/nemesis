@@ -89,10 +89,10 @@ static void arp_initdata(void)
 	arphdr.ar_hln = 6;             /* 6 byte hardware addresses */
 	arphdr.ar_pln = 4;             /* 4 byte protocol addresses */
 
-	memset(ar_sha, 0, 6); /* ARP frame sender address */
-	memset(ar_spa, 0, 4); /* ARP sender protocol (IP) addr */
-	memset(ar_tha, 0, 6); /* ARP frame target address */
-	memset(ar_tpa, 0, 4); /* ARP target protocol (IP) addr */
+	memset(arphdr.ar_sha, 0, 6);   /* ARP frame sender address */
+	memset(arphdr.ar_spa, 0, 4);   /* ARP sender protocol (IP) addr */
+	memset(arphdr.ar_tha, 0, 6);   /* ARP frame target address */
+	memset(arphdr.ar_tpa, 0, 4);   /* ARP target protocol (IP) addr */
 
 	pd.file_buf = NULL; /* payload */
 	pd.file_len = 0;    /* paload size */
@@ -101,7 +101,7 @@ static void arp_initdata(void)
 static void arp_validatedata()
 {
 	/* validation tests */
-	if ((!memcmp(ar_spa, zero, 4)) || (!memcmp(ar_tpa, zero, 4))) {
+	if ((!memcmp(arphdr.ar_spa, zero, 4)) || (!memcmp(arphdr.ar_tpa, zero, 4))) {
 		fprintf(stderr, "ERROR: Source and/or Destination IP address missing.\n");
 		arp_exit(1);
 	}
@@ -130,12 +130,12 @@ static void arp_validatedata()
 	 */
 	if (reply) {
 		if (!arp_src)
-			memcpy(ar_sha, etherhdr.ether_shost, 6);
+			memcpy(arphdr.ar_sha, etherhdr.ether_shost, 6);
 		if (!arp_dst)
-			memcpy(ar_tha, etherhdr.ether_dhost, 6);
+			memcpy(arphdr.ar_tha, etherhdr.ether_dhost, 6);
 	} else {
 		if (!arp_src)
-			memcpy(ar_sha, etherhdr.ether_shost, 6);
+			memcpy(arphdr.ar_sha, etherhdr.ether_shost, 6);
 	}
 }
 
@@ -205,7 +205,7 @@ static void arp_cmdline(int argc, char **argv)
 #endif
 			break;
 		case 'D': /* ARP target IP address */
-			if (nemesis_name_resolve(optarg, (uint32_t *)ar_tpa) < 0) {
+			if (nemesis_name_resolve(optarg, (uint32_t *)arphdr.ar_tpa) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				arp_exit(1);
 			}
@@ -216,7 +216,7 @@ static void arp_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				ar_sha[i] = addr_tmp[i];
+				arphdr.ar_sha[i] = addr_tmp[i];
 			break;
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -231,7 +231,7 @@ static void arp_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
-				ar_tha[i] = addr_tmp[i];
+				arphdr.ar_tha[i] = addr_tmp[i];
 			break;
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
@@ -260,10 +260,10 @@ static void arp_cmdline(int argc, char **argv)
 			break;
 		case 's':
 			solarismode = 1;
-			memset(ar_tha, 0xff, 6);
+			memset(arphdr.ar_tha, 0xff, 6);
 			break;
 		case 'S': /* ARP sender IP address */
-			if (nemesis_name_resolve(optarg, (uint32_t *)ar_spa) < 0) {
+			if (nemesis_name_resolve(optarg, (uint32_t *)arphdr.ar_spa) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				arp_exit(1);
 			}
