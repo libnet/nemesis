@@ -108,30 +108,33 @@ static void udp_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("UDP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("UDP options: \n"
-	       "  -x <Source port>\n"
-	       "  -y <Destination port>\n"
-	       "  -P <Payload file>\n\n");
-	printf("IP options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	printf("UDP usage:\n"
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
+	printf("UDP options:\n"
+	       "  -x <PORT>    Source port\n"
+	       "  -y <PORT>    Destination port\n"
+	       "  -P <FILE>    Raw UDP payload file\n"
+	       "\n");
+	printf("IP options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	udp_exit(1);
