@@ -142,6 +142,15 @@ void nemesis_printeth(ETHERhdr *eth)
 	printf("     [Ethernet type] %s (%#.4x)\n\n", ethertype, eth->ether_type);
 }
 
+static char *arp_proto_addr(uint8_t *pa)
+{
+	struct in_addr ina;
+
+	ina.s_addr = pa[3] << 24 | pa[2] << 16 | pa[1] << 8 | pa[0];
+
+	return strdup(inet_ntoa(ina));
+}
+
 /**
  * Verbosely print portions of the ARP header in ASCII form.
  *
@@ -151,9 +160,8 @@ void nemesis_printeth(ETHERhdr *eth)
  */
 void nemesis_printarp(ARPhdr *arp)
 {
-	char *src = NULL, *dst = NULL;
+	char *src, *dst;
 	char *opcode = "Unknown";
-	struct in_addr s, d;
 
 	switch (arp->ar_op) {
 	case ARPOP_REQUEST:
@@ -170,11 +178,8 @@ void nemesis_printarp(ARPhdr *arp)
 		break;
 	}
 
-	s.s_addr = *(uint32_t *)arp->ar_spa;
-	d.s_addr = *(uint32_t *)arp->ar_tpa;
-	src = strdup(inet_ntoa(s));
-	dst = strdup(inet_ntoa(d));
-
+	src = arp_proto_addr(arp->ar_spa);
+	dst = arp_proto_addr(arp->ar_tpa);
 	printf("  [Protocol addr:IP] %s > %s\n", src, dst);
 	printf(" [Hardware addr:MAC] %02x:%02x:%02x:%02x:%02x:%02x > "
 	       "%02X:%02X:%02X:%02X:%02X:%02X\n",
