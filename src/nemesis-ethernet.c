@@ -130,6 +130,7 @@ static void ethernet_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -137,6 +138,7 @@ static void ethernet_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -144,6 +146,7 @@ static void ethernet_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (payloadfile)
@@ -155,9 +158,11 @@ static void ethernet_cmdline(int argc, char **argv)
 				ethernet_exit(1);
 			}
 			break;
+
 		case 'T':
 			etherhdr.ether_type = xgetint16(optarg);
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)

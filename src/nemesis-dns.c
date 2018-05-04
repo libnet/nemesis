@@ -225,12 +225,15 @@ static void dns_cmdline(int argc, char **argv)
 		case 'a': /* ACK window */
 			tcphdr.th_ack = xgetint32(optarg);
 			break;
+
 		case 'A': /* number of authoritative resource records */
 			dnshdr.num_auth_rr = xgetint16(optarg);
 			break;
+
 		case 'b': /* number of answers */
 			dnshdr.num_answ_rr = xgetint16(optarg);
 			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
@@ -249,12 +252,14 @@ static void dns_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'D': /* destination IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				dns_exit(1);
 			}
 			break;
+
 		case 'f': /* TCP flags */
 			p = optarg;
 			while (*p != '\0') {
@@ -269,13 +274,16 @@ static void dns_cmdline(int argc, char **argv)
 				}
 			}
 			break;
+
 		case 'F': /* IP fragmentation options */
 			if (parsefragoptions(&iphdr, optarg) < 0)
 				dns_exit(1);
 			break;
+
 		case 'g': /* DNS flags */
 			dnshdr.flags = xgetint16(optarg);
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -283,17 +291,21 @@ static void dns_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'i': /* DNS ID */
 			dnshdr.id = xgetint16(optarg);
 			break;
+
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
 			break;
+
 		case 'k': /* use TCP */
 			iphdr.ip_tos = 0;
 			iphdr.ip_p   = IPPROTO_TCP;
 			state        = 1;
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -301,6 +313,7 @@ static void dns_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'o': /* TCP options file */
 			if (strlen(optarg) < 256) {
 				if (tcpoptionsfile)
@@ -312,6 +325,7 @@ static void dns_cmdline(int argc, char **argv)
 				dns_exit(1);
 			}
 			break;
+
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				if (ipoptionsfile)
@@ -323,6 +337,7 @@ static void dns_cmdline(int argc, char **argv)
 				dns_exit(1);
 			}
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (payloadfile)
@@ -334,43 +349,54 @@ static void dns_cmdline(int argc, char **argv)
 				dns_exit(1);
 			}
 			break;
+
 		case 'q': /* number of questions */
 			dnshdr.num_q = xgetint16(optarg);
 			break;
+
 		case 'r': /* number of additional resource records */
 			dnshdr.num_addi_rr = xgetint16(optarg);
 			break;
+
 		case 's': /* TCP sequence number */
 			tcphdr.th_seq = xgetint32(optarg);
 			break;
+
 		case 'S': /* source IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				dns_exit(1);
 			}
 			break;
+
 		case 't': /* IP type of service */
 			iphdr.ip_tos = xgetint8(optarg);
 			break;
+
 		case 'T': /* IP time to live */
 			iphdr.ip_ttl = xgetint8(optarg);
 			break;
+
 		case 'u': /* TCP urgent pointer */
 			tcphdr.th_urp = xgetint16(optarg);
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)
 				nemesis_printtitle(title);
 			break;
+
 		case 'w': /* TCP window size */
 			tcphdr.th_win = xgetint16(optarg);
 			break;
+
 
 		case 'x': /* TCP/UDP source port */
 			tcphdr.th_sport = xgetint16(optarg);
 			udphdr.uh_sport = xgetint16(optarg);
 			break;
+
 		case 'y': /* TCP/UDP destination port */
 			tcphdr.th_dport = xgetint16(optarg);
 			udphdr.uh_dport = xgetint16(optarg);

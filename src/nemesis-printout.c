@@ -57,6 +57,7 @@ void nemesis_hexdump(uint8_t *buf, uint32_t len, int mode)
 		predump  = "   ";
 		postdump = "";
 		break;
+
 	case HEX_ASCII_DECODE: /* FALLTHROUGH */
 	default:
 		linemod  = 16;
@@ -107,24 +108,31 @@ void nemesis_printeth(ETHERhdr *eth)
 	case ETHERTYPE_PUP:
 		ethertype = "PUP";
 		break;
+
 	case ETHERTYPE_IP:
 		ethertype = "IP";
 		break;
+
 	case ETHERTYPE_ARP:
 		ethertype = "ARP";
 		break;
+
 	case ETHERTYPE_REVARP:
 		ethertype = "RARP";
 		break;
+
 	case ETHERTYPE_VLAN:
 		ethertype = "802.1q";
 		break;
+
 	case ETHERTYPE_IPV6:
 		ethertype = "IPv6";
 		break;
+
 	case 34915:
 		ethertype = "PPOE discovery";
 		break;
+
 	case 34916:
 		ethertype = "PPOE session";
 		break;
@@ -167,12 +175,15 @@ void nemesis_printarp(ARPhdr *arp)
 	case ARPOP_REQUEST:
 		opcode = "Request";
 		break;
+
 	case ARPOP_REPLY:
 		opcode = "Reply";
 		break;
+
 	case ARPOP_REVREQUEST:
 		opcode = "Reverse request";
 		break;
+
 	case ARPOP_REVREPLY:
 		opcode = "Reverse reply";
 		break;
@@ -221,312 +232,415 @@ void nemesis_printip(IPhdr *ip)
 	case 0:
 		protoname = "IP";
 		break;
+
 	case 1:
 		protoname = "ICMP";
 		break;
+
 	case 2:
 		protoname = "IGMP";
 		break;
+
 	case 3:
 		protoname = "GGP";
 		break;
+
 	case 4:
 		protoname = "IP-ENCAP";
 		break;
+
 	case 5:
 		protoname = "ST";
 		break;
+
 	case 6:
 		protoname = "TCP";
 		break;
+
 	case 7:
 		protoname = "UCL";
 		break;
+
 	case 8:
 		protoname = "EGP";
 		break;
+
 	case 9:
 		protoname = "IGP";
 		break;
+
 	case 10:
 		protoname = "BBN-RCC-MON";
 		break;
+
 	case 11:
 		protoname = "NVP-II";
 		break;
+
 	case 12:
 		protoname = "PUP";
 		break;
+
 	case 13:
 		protoname = "ARGUS";
 		break;
+
 	case 14:
 		protoname = "EMCON";
 		break;
+
 	case 15:
 		protoname = "XNET";
 		break;
+
 	case 16:
 		protoname = "CHAOS";
 		break;
+
 	case 17:
 		protoname = "UDP";
 		break;
+
 	case 18:
 		protoname = "MUX";
 		break;
+
 	case 19:
 		protoname = "DCN-MEAS";
 		break;
+
 	case 20:
 		protoname = "HMP";
 		break;
+
 	case 21:
 		protoname = "PRM";
 		break;
+
 	case 22:
 		protoname = "XNS-IDP";
 		break;
+
 	case 23:
 		protoname = "TRUNK-1";
 		break;
+
 	case 24:
 		protoname = "TRUNK-2";
 		break;
+
 	case 25:
 		protoname = "LEAF-1";
 		break;
+
 	case 26:
 		protoname = "LEAF-2";
 		break;
+
 	case 27:
 		protoname = "RDP";
 		break;
+
 	case 28:
 		protoname = "IRTP";
 		break;
+
 	case 29:
 		protoname = "ISO-TP4";
 		break;
+
 	case 30:
 		protoname = "NETBLT";
 		break;
+
 	case 31:
 		protoname = "MFE-NSP";
 		break;
+
 	case 32:
 		protoname = "MERIT-INP";
 		break;
+
 	case 33:
 		protoname = "SEP";
 		break;
+
 	case 34:
 		protoname = "3PC";
 		break;
+
 	case 35:
 		protoname = "IDPR";
 		break;
+
 	case 36:
 		protoname = "XTP";
 		break;
+
 	case 37:
 		protoname = "DDP";
 		break;
+
 	case 38:
 		protoname = "IDPR-CMTP";
 		break;
+
 	case 39:
 		protoname = "IDPR-CMTP";
 		break;
+
 	case 40:
 		protoname = "IL";
 		break;
+
 	case 41:
 		protoname = "IPv6";
 		break;
+
 	case 42:
 		protoname = "SDRP";
 		break;
+
 	case 43:
 		protoname = "SIP-SR";
 		break;
+
 	case 44:
 		protoname = "SIP-FRAG";
 		break;
+
 	case 45:
 		protoname = "IDRP";
 		break;
+
 	case 46:
 		protoname = "RSVP";
 		break;
+
 	case 47:
 		protoname = "GRE";
 		break;
+
 	case 48:
 		protoname = "MHRP";
 		break;
+
 	case 49:
 		protoname = "BNA";
 		break;
+
 	case 50:
 		protoname = "IPSEC-ESP";
 		break;
+
 	case 51:
 		protoname = "IPSEC-AH";
 		break;
+
 	case 52:
 		protoname = "I-NLSP";
 		break;
+
 	case 53:
 		protoname = "SWIPE";
 		break;
+
 	case 54:
 		protoname = "NHRP";
 		break;
+
 	case 55:
 		protoname = "MOBILEIP";
 		break;
+
 	case 57:
 		protoname = "SKIP";
 		break;
+
 	case 58:
 		protoname = "IPv6-ICMP";
 		break;
+
 	case 59:
 		protoname = "IPv6-NoNxt";
 		break;
+
 	case 60:
 		protoname = "IPv6-Opts";
 		break;
+
 	case 61:
 		protoname = "any";
 		break;
+
 	case 62:
 		protoname = "CFTP";
 		break;
+
 	case 63:
 		protoname = "any";
 		break;
+
 	case 64:
 		protoname = "SAT-EXPAK";
 		break;
+
 	case 65:
 		protoname = "KRYPTOLAN";
 		break;
+
 	case 66:
 		protoname = "RVD";
 		break;
+
 	case 67:
 		protoname = "IPPC";
 		break;
+
 	case 68:
 		protoname = "any";
 		break;
+
 	case 69:
 		protoname = "SAT-MON";
 		break;
+
 	case 70:
 		protoname = "VISA";
 		break;
+
 	case 71:
 		protoname = "IPCV";
 		break;
+
 	case 72:
 		protoname = "CPNX";
 		break;
+
 	case 73:
 		protoname = "CPHB";
 		break;
+
 	case 74:
 		protoname = "WSN";
 		break;
+
 	case 75:
 		protoname = "PVP";
 		break;
+
 	case 76:
 		protoname = "BR-SAT-MON";
 		break;
+
 	case 77:
 		protoname = "SUN-ND";
 		break;
+
 	case 78:
 		protoname = "WB-MON";
 		break;
+
 	case 79:
 		protoname = "WB-EXPAK";
 		break;
+
 	case 80:
 		protoname = "ISO-IP";
 		break;
+
 	case 81:
 		protoname = "VMTP";
 		break;
+
 	case 82:
 		protoname = "SECURE-VMTP";
 		break;
+
 	case 83:
 		protoname = "VINES";
 		break;
+
 	case 84:
 		protoname = "TTP";
 		break;
+
 	case 85:
 		protoname = "NSFNET-IGP";
 		break;
+
 	case 86:
 		protoname = "DGP";
 		break;
+
 	case 87:
 		protoname = "TCF";
 		break;
+
 	case 88:
 		protoname = "IGRP";
 		break;
+
 	case 89:
 		protoname = "OSPFIGP";
 		break;
+
 	case 90:
 		protoname = "Sprite-RPC";
 		break;
+
 	case 91:
 		protoname = "LARP";
 		break;
+
 	case 92:
 		protoname = "MTP";
 		break;
+
 	case 93:
 		protoname = "AX.25";
 		break;
+
 	case 94:
 		protoname = "IPIP";
 		break;
+
 	case 95:
 		protoname = "MICP";
 		break;
+
 	case 96:
 		protoname = "SCC-SP";
 		break;
+
 	case 97:
 		protoname = "ETHERIP";
 		break;
+
 	case 98:
 		protoname = "ENCAP";
 		break;
+
 	case 99:
 		protoname = "any";
 		break;
+
 	case 100:
 		protoname = "GMTP";
 		break;
+
 	case 103:
 		protoname = "PIM";
 		break;
+
 	case 108:
 		protoname = "IPComp";
 		break;
+
 	case 112:
 		protoname = "VRRP";
 		break;
+
 	case 255:
 		protoname = "Reserved";
 		break;
@@ -625,54 +739,70 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 		if (icmp->icmp_code == 0)
 			icmpcode = "Echo Reply";
 		break;
+
 	case 3:
 		icmptype = "Destination Unreachable";
 		switch (icmp->icmp_code) {
 		case 0:
 			icmpcode = "Network Unreachable";
 			break;
+
 		case 1:
 			icmpcode = "Host Unreachable";
 			break;
+
 		case 2:
 			icmpcode = "Protocol Unreachable";
 			break;
+
 		case 3:
 			icmpcode = "Port Unreachable";
 			break;
+
 		case 4:
 			icmpcode = "Fragmentation Needed";
 			break;
+
 		case 5:
 			icmpcode = "Source Route Failed";
 			break;
+
 		case 6:
 			icmpcode = "Destination Network Unknown";
 			break;
+
 		case 7:
 			icmpcode = "Destination Host Unknown";
 			break;
+
 		case 8:
 			icmpcode = "Source Host Isolated (obsolete)";
 			break;
+
 		case 9:
 			icmpcode = "Destination Network Administratively Prohibited";
 			break;
+
 		case 10:
 			icmpcode = "Destination Host Administratively Prohibited";
 			break;
+
 		case 11:
 			icmpcode = "Network Unreachable For TOS";
 			break;
+
 		case 12:
 			icmpcode = "Host Unreachable For TOS";
 			break;
+
 		case 13:
 			icmpcode = "Communication Administratively Prohibited By Filtering";
 			break;
+
 		case 14:
 			icmpcode = "Host Precedence Violation";
 			break;
+
 		case 15:
 			icmpcode = "Precedence Cutoff In Effect";
 			break;
@@ -680,23 +810,28 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 			break;
 		}
 		break;
+
 	case 4:
 		icmptype = "Source Quench";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Source Quench";
 		break;
+
 	case 5:
 		icmptype = "Redirect";
 		switch (icmp->icmp_code) {
 		case 0:
 			icmpcode = "Redirect For Network";
 			break;
+
 		case 1:
 			icmpcode = "Redirect For Host";
 			break;
+
 		case 2:
 			icmpcode = "Redirect For TOS and Network";
 			break;
+
 		case 3:
 			icmpcode = "Redirect For TOS and Host";
 			break;
@@ -704,27 +839,32 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 			break;
 		}
 		break;
+
 	case 8:
 		icmptype = "Echo Request";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Echo Request";
 		break;
+
 	case 9:
 		icmptype = "Router Advertisement";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Router Advertisement";
 		break;
+
 	case 10:
 		icmptype = "Router Solicitation";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Router Solicitation";
 		break;
+
 	case 11:
 		icmptype = "Time Exceeded";
 		switch (icmp->icmp_code) {
 		case 0:
 			icmpcode = "TTL = 0 During Transmit";
 			break;
+
 		case 1:
 			icmpcode = "TTL = 0 During Reassembly";
 			break;
@@ -732,12 +872,14 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 			break;
 		}
 		break;
+
 	case 12:
 		icmptype = "Parameter Problem";
 		switch (icmp->icmp_code) {
 		case 0:
 			icmpcode = "IP Header Bad (catchall error)";
 			break;
+
 		case 1:
 			icmpcode = "Required Option Missing";
 			break;
@@ -745,31 +887,37 @@ void nemesis_printicmp(ICMPhdr *icmp, int mode)
 			break;
 		}
 		break;
+
 	case 13:
 		icmptype = "Timestamp Request";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Timestamp Request";
 		break;
+
 	case 14:
 		icmpcode = "Timestamp Reply";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Timestamp Reply";
 		break;
+
 	case 15:
 		icmptype = "Information Request";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Information Request";
 		break;
+
 	case 16:
 		icmptype = "Information Reply";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Information Reply";
 		break;
+
 	case 17:
 		icmptype = "Address Mask Request";
 		if (icmp->icmp_code == 0)
 			icmpcode = "Address Mask Request";
 		break;
+
 	case 18:
 		icmptype = "Address Mask Reply";
 		if (icmp->icmp_code == 0)
@@ -821,21 +969,27 @@ void nemesis_printrip(RIPhdr *rip)
 	case RIPCMD_REQUEST:
 		cmd = "Request";
 		break;
+
 	case RIPCMD_RESPONSE:
 		cmd = "Response";
 		break;
+
 	case RIPCMD_TRACEON:
 		cmd = "Tracing on (obsolete)";
 		break;
+
 	case RIPCMD_TRACEOFF:
 		cmd = "Tracing off (obsolete)";
 		break;
+
 	case RIPCMD_POLL:
 		cmd = "Poll";
 		break;
+
 	case RIPCMD_POLLENTRY:
 		cmd = "Poll entry";
 		break;
+
 	case RIPCMD_MAX:
 		cmd = "Max";
 		break;
@@ -885,15 +1039,19 @@ void nemesis_printospf(OSPFhdr *ospf)
 	case LIBNET_OSPF_HELLO:
 		type = "Hello";
 		break;
+
 	case LIBNET_OSPF_DBD:
 		type = "Database Description";
 		break;
+
 	case LIBNET_OSPF_LSR:
 		type = "Link State Request";
 		break;
+
 	case LIBNET_OSPF_LSU:
 		type = "Link State Update";
 		break;
+
 	case LIBNET_OSPF_LSA:
 		type = "Link State Acknowledgement";
 		break;
@@ -903,9 +1061,11 @@ void nemesis_printospf(OSPFhdr *ospf)
 	case LIBNET_OSPF_AUTH_NULL:
 		auth_type = "None";
 		break;
+
 	case LIBNET_OSPF_AUTH_SIMPLE:
 		auth_type = "Simple password";
 		break;
+
 	case LIBNET_OSPF_AUTH_MD5:
 		auth_type = "MD5";
 		break;

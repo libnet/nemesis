@@ -168,30 +168,35 @@ static void icmp_validatedata(void)
 		if (!got_code)
 			icmphdr.icmp_code = 0;
 		break;
+
 	case ICMP_MASKREQ: /* send an address mask request */
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_MASKREQ;
 		if (!got_code)
 			icmphdr.icmp_code = 0;
 		break;
+
 	case ICMP_UNREACH:
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_UNREACH;
 		if (!got_code)
 			icmphdr.icmp_code = ICMP_UNREACH_PORT;
 		break;
+
 	case ICMP_TIMXCEED:
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_TIMXCEED;
 		if (!got_code)
 			icmphdr.icmp_code = ICMP_TIMXCEED_INTRANS;
 		break;
+
 	case ICMP_REDIRECT:
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_REDIRECT;
 		if (!got_code)
 			icmphdr.icmp_code = ICMP_REDIRECT_NET;
 		break;
+
 	case ICMP_TSTAMP:
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_TSTAMP;
@@ -281,25 +286,30 @@ static void icmp_cmdline(int argc, char **argv)
 		case 'a': /* ICMP timestamp reply transmit time (epoch) */
 			icmphdr.dun.ts.its_ttime = xgetint32(optarg);
 			break;
+
 		case 'A': /* ICMP unreach original IP ID */
 			ipunreach.ip_id = xgetint16(optarg);
 			break;
+
 		case 'b': /* ICMP unreach original destination IP address */
 			if ((nemesis_name_resolve(optarg, &ipunreach.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				icmp_exit(1);
 			}
 			break;
+
 		case 'B': /* ICMP unreach original source IP address */
 			if ((nemesis_name_resolve(optarg, &ipunreach.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				icmp_exit(1);
 			}
 			break;
+
 		case 'c': /* ICMP code */
 			icmphdr.icmp_code = xgetint8(optarg);
 			got_code          = 1;
 			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
@@ -318,29 +328,35 @@ static void icmp_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'D': /* destination IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				icmp_exit(1);
 			}
 			break;
+
 		case 'e': /* ICMP ID */
 			icmphdr.hun.echo.id = xgetint16(optarg);
 			break;
+
 		case 'f': /* ICMP original datagram IP fragmentation offset */
 			if (parsefragoptions(&ipunreach, optarg) < 0)
 				icmp_exit(1);
 			break;
+
 		case 'F': /* IP fragmentation options */
 			if (parsefragoptions(&iphdr, optarg) < 0)
 				icmp_exit(1);
 			break;
+
 		case 'G': /* ICMP redirect preferred gateway IP address */
 			if ((nemesis_name_resolve(optarg, &icmphdr.hun.gateway)) < 0) {
 				fprintf(stderr, "ERROR: Invalid preferred gateway IP address: %s.\n", optarg);
 				icmp_exit(1);
 			}
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -348,19 +364,24 @@ static void icmp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'i': /* ICMP type */
 			icmphdr.icmp_type = xgetint8(optarg);
 			got_type          = 1;
 			break;
+
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
 			break;
+
 		case 'j': /* ICMP original datagram IP type of service */
 			ipunreach.ip_tos = xgetint8(optarg);
 			break;
+
 		case 'J': /* ICMP original datagram IP time to live */
 			ipunreach.ip_ttl = xgetint8(optarg);
 			break;
+
 		case 'l': /* ICMP unrechable original IP options file */
 			if (strlen(optarg) < 256) {
 				if (unroptionsfile)
@@ -372,9 +393,11 @@ static void icmp_cmdline(int argc, char **argv)
 				icmp_exit(1);
 			}
 			break;
+
 		case 'm': /* mask for IP address mask messages */
 			icmphdr.dun.mask = xgetint32(optarg);
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -382,9 +405,11 @@ static void icmp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'o': /* ICMP timestamp originate time (epoch) */
 			icmphdr.dun.ts.its_otime = xgetint32(optarg);
 			break;
+
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				if (ipoptionsfile)
@@ -396,9 +421,11 @@ static void icmp_cmdline(int argc, char **argv)
 				icmp_exit(1);
 			}
 			break;
+
 		case 'p': /* original IP protocol */
 			ipunreach.ip_p = xgetint8(optarg);
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (payloadfile)
@@ -410,6 +437,7 @@ static void icmp_cmdline(int argc, char **argv)
 				icmp_exit(1);
 			}
 			break;
+
 		case 'q': /* ICMP injection mode */
 			if (strlen(optarg) == 1) {
 				cmd_mode = *optarg;
@@ -422,26 +450,32 @@ static void icmp_cmdline(int argc, char **argv)
 				mode = ICMP_ECHO;
 				got_mode++;
 				break;
+
 			case 'M': /* ICMP mask injection */
 				mode = ICMP_MASKREQ;
 				got_mode++;
 				break;
+
 			case 'U': /* ICMP unreach injection */
 				mode = ICMP_UNREACH;
 				got_mode++;
 				break;
+
 			case 'X': /* ICMP time exceeded injection */
 				mode = ICMP_TIMXCEED;
 				got_mode++;
 				break;
+
 			case 'R': /* ICMP redirect injection */
 				mode = ICMP_REDIRECT;
 				got_mode++;
 				break;
+
 			case 'T': /* ICMP timestamp injection */
 				mode = ICMP_TSTAMP;
 				got_mode++;
 				break;
+
 			case '?': /* FALLTHROUGH */
 			default:
 				fprintf(stderr, "ERROR: Invalid ICMP injection mode: %c.\n", cmd_mode);
@@ -450,24 +484,30 @@ static void icmp_cmdline(int argc, char **argv)
 				break;
 			}
 			break;
+
 		case 'r': /* ICMP timestamp receive time (epoch) */
 			icmphdr.dun.ts.its_rtime = xgetint32(optarg);
 			break;
+
 		case 's': /* ICMP sequence number */
 			icmphdr.hun.echo.seq = xgetint16(optarg);
 			break;
+
 		case 'S': /* source IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				icmp_exit(1);
 			}
 			break;
+
 		case 't': /* IP type of service */
 			iphdr.ip_tos = xgetint8(optarg);
 			break;
+
 		case 'T': /* IP time to live */
 			iphdr.ip_ttl = xgetint8(optarg);
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)

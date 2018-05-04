@@ -44,24 +44,31 @@ int buildether(ETHERhdr *eth, struct file *pd, libnet_t *l)
 	case ETHERTYPE_PUP:
 		ethertype = "PUP";
 		break;
+
 	case ETHERTYPE_IP:
 		ethertype = "IP";
 		break;
+
 	case ETHERTYPE_ARP:
 		ethertype = "ARP";
 		break;
+
 	case ETHERTYPE_REVARP:
 		ethertype = "REVARP";
 		break;
+
 	case ETHERTYPE_8021Q:
 		ethertype = "802.1q";
 		break;
+
 	case ETHERTYPE_IPV6:
 		ethertype = "IPV6";
 		break;
+
 	case ETHERTYPE_PPPOEDISC:
 		ethertype = "PPOEDISC";
 		break;
+
 	case ETHERTYPE_PPPOE:
 		ethertype = "PPOE";
 		break;

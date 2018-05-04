@@ -139,6 +139,7 @@ static void rip_validatedata(void)
 			tmp                 = libnet_get_prand(PRu32);
 			iphdr.ip_dst.s_addr = (htonl(tmp) | 0xFF000000);
 			break;
+
 		case 2:
 			/* The multicast address for RIP2 is RIP2-ROUTERS.MCAST.NET */
 			inet_aton("224.0.0.9", &iphdr.ip_dst);
@@ -218,9 +219,11 @@ static void rip_cmdline(int argc, char **argv)
 		case 'a': /* RIP address family */
 			riphdr.rip_af = xgetint16(optarg);
 			break;
+
 		case 'c': /* RIP command */
 			riphdr.rip_cmd = xgetint8(optarg);
 			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
@@ -239,22 +242,26 @@ static void rip_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'D': /* destination IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				rip_exit(1);
 			}
 			break;
+
 		case 'F': /* IP fragmentation options */
 			if (parsefragoptions(&iphdr, optarg) < 0)
 				rip_exit(1);
 			break;
+
 		case 'h': /* RIP next hop address */
 			if ((nemesis_name_resolve(optarg, &riphdr.rip_next_hop)) < 0) {
 				fprintf(stderr, "ERROR: Invalid next hop IP address: \"%s\".\n", optarg);
 				rip_exit(1);
 			}
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -262,24 +269,29 @@ static void rip_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'i': /* RIP route address */
 			if ((nemesis_name_resolve(optarg, &riphdr.rip_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				rip_exit(1);
 			}
 			break;
+
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
 			break;
+
 		case 'k': /* RIP netmask address */
 			if ((nemesis_name_resolve(optarg, &riphdr.rip_mask)) < 0) {
 				fprintf(stderr, "ERROR: Invalid RIP mask IP address: \"%s\".\n", optarg);
 				rip_exit(1);
 			}
 			break;
+
 		case 'm': /* RIP metric */
 			riphdr.rip_metric = xgetint32(optarg);
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -287,6 +299,7 @@ static void rip_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				if (ipoptionsfile)
@@ -298,6 +311,7 @@ static void rip_cmdline(int argc, char **argv)
 				rip_exit(1);
 			}
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (payloadfile)
@@ -309,36 +323,45 @@ static void rip_cmdline(int argc, char **argv)
 				rip_exit(1);
 			}
 			break;
+
 		case 'r': /* RIP routing domain */
 			riphdr.rip_rd = xgetint16(optarg);
 			got_domain    = 1;
 			break;
+
 		case 'R': /* RIP route tag */
 			riphdr.rip_rt = xgetint16(optarg);
 			break;
+
 		case 'S': /* source IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				rip_exit(1);
 			}
 			break;
+
 		case 't': /* IP type of service */
 			iphdr.ip_tos = xgetint8(optarg);
 			break;
+
 		case 'T': /* IP time to live */
 			iphdr.ip_ttl = xgetint8(optarg);
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)
 				nemesis_printtitle(title);
 			break;
+
 		case 'V': /* RIP version */
 			riphdr.rip_ver = xgetint8(optarg);
 			break;
+
 		case 'x': /* UDP source port */
 			udphdr.uh_sport = xgetint16(optarg);
 			break;
+
 		case 'y': /* UDP destination port */
 			udphdr.uh_dport = xgetint16(optarg);
 			break;

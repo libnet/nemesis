@@ -321,34 +321,42 @@ int buildospf(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libn
 		ospf_packetlen += LIBNET_OSPF_HELLO_H;
 		build_hello(pd, l);
 		break;
+
 	case 1: /* dbd */
 		ospf_packetlen += LIBNET_OSPF_DBD_H;
 		build_dbd(pd, l);
 		break;
+
 	case 2: /* lsr */
 		ospf_packetlen += LIBNET_OSPF_LSR_H;
 		build_lsr(pd, l);
 		break;
+
 	case 3: /* lsu */
 		ospf_packetlen += LIBNET_OSPF_LSU_H;
 		build_lsu(pd, l);
 		break;
+
 	case 4: /* lsu: lsa net */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_NET_H;
 		build_lsanet(pd, l);
 		break;
+
 	case 5: /* lsu: lsa as_e */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_AS_EXT_H;
 		build_lsaas(pd, l);
 		break;
+
 	case 6: /* lsu: lsa router */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_RTR_H;
 		build_lsartr(pd, l);
 		break;
+
 	case 7: /* lsu: lsa sum */
 		ospf_packetlen += LIBNET_OSPF_LSA_H + LIBNET_OSPF_LS_SUM_H;
 		build_lsasum(pd, l);
 		break;
+
 	case 8: /* lsack */
 		ospf_packetlen += LIBNET_OSPF_LSA_H;
 		build_lsack(pd, l);

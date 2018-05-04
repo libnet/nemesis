@@ -307,51 +307,67 @@ char *nemesis_lookup_linktype(int linktype)
 	case 0:
 		dlt = "DLT_NULL";
 		break;
+
 	case 1:
 		dlt = "DLT_EN10MB";
 		break;
+
 	case 2:
 		dlt = "DLT_EN3MB";
 		break;
+
 	case 3:
 		dlt = "DLT_AX25";
 		break;
+
 	case 4:
 		dlt = "DLT_PRONET";
 		break;
+
 	case 5:
 		dlt = "DLT_CHAOS";
 		break;
+
 	case 6:
 		dlt = "DLT_IEEE802";
 		break;
+
 	case 7:
 		dlt = "DLT_ARCNET";
 		break;
+
 	case 8:
 		dlt = "DLT_SLIP";
 		break;
+
 	case 9:
 		dlt = "DLT_PPP";
 		break;
+
 	case 10:
 		dlt = "DLT_FDDI";
 		break;
+
 	case 11:
 		dlt = "DLT_ATM_RFC1483";
 		break;
+
 	case 12:
 		dlt = "DLT_LOOP";
 		break;
+
 	case 13:
 		dlt = "DLT_ENC";
 		break;
+
 	case 14:
 		dlt = "DLT_RAW";
 		break;
+
 	case 15:
 		dlt = "DLT_SLIP_BSDOS";
 		break;
+
 	case 16:
 		dlt = "DLT_PPP_BSDOS";
 		break;

@@ -35,14 +35,17 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 	case ICMP_ECHO:
 		icmp_packetlen += LIBNET_ICMPV4_ECHO_H;
 		break;
+
 	case ICMP_UNREACH:
 	case ICMP_REDIRECT:
 	case ICMP_TIMXCEED:
 		icmp_packetlen += LIBNET_ICMPV4_ECHO_H + LIBNET_IPV4_H + origod->file_len;
 		break;
+
 	case ICMP_TSTAMP:
 		icmp_packetlen += LIBNET_ICMPV4_TS_H;
 		break;
+
 	case ICMP_MASKREQ:
 		icmp_packetlen += LIBNET_ICMPV4_MASK_H;
 		break;
@@ -68,6 +71,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 					 pd->file_len,
 					 l, 0);
 		break;
+
 	case ICMP_MASKREQ:
 		libnet_build_icmpv4_mask(icmp->icmp_type,
 					 icmp->icmp_code,
@@ -79,6 +83,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 					 pd->file_len,
 					 l, 0);
 		break;
+
 	case ICMP_TSTAMP:
 		libnet_build_icmpv4_timestamp(icmp->icmp_type,
 					      icmp->icmp_code,
@@ -106,6 +111,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 					    pd->file_len,
 					    l, 0);
 		break;
+
 	case ICMP_REDIRECT:
 		libnet_build_icmpv4_redirect(icmp->icmp_type,
 					     icmp->icmp_code,

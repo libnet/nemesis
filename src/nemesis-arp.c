@@ -204,12 +204,14 @@ static void arp_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'D': /* ARP target IP address */
 			if (nemesis_name_resolve(optarg, (uint32_t *)arphdr.ar_tpa) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				arp_exit(1);
 			}
 			break;
+
 		case 'h': /* ARP sender hardware address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			arp_src = 1;
@@ -218,6 +220,7 @@ static void arp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				arphdr.ar_sha[i] = addr_tmp[i];
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -225,6 +228,7 @@ static void arp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'm': /* ARP target hardware address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			arp_dst = 1;
@@ -233,6 +237,7 @@ static void arp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				arphdr.ar_tha[i] = addr_tmp[i];
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -240,6 +245,7 @@ static void arp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (file)
@@ -251,23 +257,28 @@ static void arp_cmdline(int argc, char **argv)
 				arp_exit(1);
 			}
 			break;
+
 		case 'r': /* ARP/RARP reply */
 			reply = 1;
 			break;
+
 		case 'R': /* RARP */
 			etherhdr.ether_type = ETHERTYPE_REVARP;
 			rarp                = 1;
 			break;
+
 		case 's':
 			solarismode = 1;
 			memset(arphdr.ar_tha, 0xff, 6);
 			break;
+
 		case 'S': /* ARP sender IP address */
 			if (nemesis_name_resolve(optarg, (uint32_t *)arphdr.ar_spa) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				arp_exit(1);
 			}
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)

@@ -167,16 +167,19 @@ static void ip_cmdline(int argc, char **argv)
 			}
 #endif
 			break;
+
 		case 'D': /* destination IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				ip_exit(1);
 			}
 			break;
+
 		case 'F': /* IP fragmentation options */
 			if (parsefragoptions(&iphdr, optarg) < 0)
 				ip_exit(1);
 			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -184,9 +187,11 @@ static void ip_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
 			break;
+
 		case 'I': /* IP ID */
 			iphdr.ip_id = xgetint16(optarg);
 			break;
+
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
@@ -194,6 +199,7 @@ static void ip_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			break;
+
 		case 'O': /* IP options file */
 			if (strlen(optarg) < 256) {
 				if (ipoptionsfile)
@@ -205,9 +211,11 @@ static void ip_cmdline(int argc, char **argv)
 				ip_exit(1);
 			}
 			break;
+
 		case 'p': /* IP protocol */
 			iphdr.ip_p = xgetint8(optarg);
 			break;
+
 		case 'P': /* payload file */
 			if (strlen(optarg) < 256) {
 				if (payloadfile)
@@ -219,18 +227,22 @@ static void ip_cmdline(int argc, char **argv)
 				ip_exit(1);
 			}
 			break;
+
 		case 'S': /* source IP address */
 			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				ip_exit(1);
 			}
 			break;
+
 		case 't': /* IP type of service */
 			iphdr.ip_tos = xgetint8(optarg);
 			break;
+
 		case 'T': /* IP time to live */
 			iphdr.ip_ttl = xgetint8(optarg);
 			break;
+
 		case 'v':
 			verbose++;
 			if (verbose == 1)
