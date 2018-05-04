@@ -132,7 +132,8 @@ static void igmp_usage(char *arg)
 	nemesis_printtitle(title);
 
 	printf("Usage:\n"
-	       "  %s [-v (verbose)] [options]\n\n", arg);
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
 	printf("IGMP options:\n"
 	       "  -p <TYPE>    IGMP type:\n"
 	       "                    0x11:  Query, length determines version\n"
@@ -162,7 +163,7 @@ static void igmp_usage(char *arg)
 	       "\n");
 	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <IFNUM>   Network interface number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
 	       "  -d <IFNAME>  Network interface name\n"
 #endif
