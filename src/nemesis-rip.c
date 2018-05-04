@@ -91,16 +91,16 @@ static void rip_initdata(void)
 	memset(etherhdr.ether_shost, 0, 6);    /* Ethernet source address */
 	memset(etherhdr.ether_dhost, 0xff, 6); /* Ethernet destination address */
 
-	memset(&iphdr.ip_src.s_addr, 0, 4);     /* IP source address */
-	memset(&iphdr.ip_dst.s_addr, 0, 4);     /* IP destination address */
-	iphdr.ip_tos = IPTOS_RELIABILITY;       /* IP type of service */
-	iphdr.ip_id  = libnet_get_prand(PRu16); /* IP ID */
-	iphdr.ip_p   = IPPROTO_UDP;             /* IP protocol UDP */
-	iphdr.ip_off = 0;                       /* IP fragmentation offset */
-	iphdr.ip_ttl = 255;                     /* IP TTL */
+	iphdr.ip_src.s_addr = libnet_get_prand(PRu32);
+	iphdr.ip_dst.s_addr = inet_addr("224.0.0.9");  /* All RIPv2-aware routers */
+	iphdr.ip_tos        = IPTOS_LOWDELAY;          /* IP type of service */
+	iphdr.ip_id         = libnet_get_prand(PRu16); /* IP ID */
+	iphdr.ip_p          = IPPROTO_UDP;             /* IP protocol UDP */
+	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
+	iphdr.ip_ttl        = 1;                       /* IP TTL, default 1 because link-local multicast ip_dst */
 
-	udphdr.uh_sport = 520; /* UDP source port */
-	udphdr.uh_dport = 520; /* UDP destination port */
+	udphdr.uh_sport     = 520;                    /* UDP source port */
+	udphdr.uh_dport     = 520;                    /* UDP destination port */
 
 	riphdr.rip_cmd      = RIPCMD_REQUEST;          /* RIP command */
 	riphdr.rip_ver      = 2;                       /* RIP version */
