@@ -143,29 +143,32 @@ static void arp_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("ARP/RARP Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("ARP/RARP Options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -h <Sender MAC address within ARP frame>\n"
-	       "  -m <Target MAC address within ARP frame>\n"
-	       "  -s <Solaris style ARP requests with target hardware addess set to broadcast>\n"
-	       "  -r ({ARP,RARP} REPLY enable)\n"
-	       "  -R (RARP enable)\n"
-	       "  -P <Payload file>\n\n");
-	printf("Data Link Options: \n"
+	printf("ARP/RARP Usage:\n"
+	       "  %s [-v (verbose)] [options] -S <ADDR> -D <ADDR>\n"
+	       "\n", arg);
+	printf("ARP/RARP Options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -h <MAC>     Sender MAC address within ARP frame\n"
+	       "  -m <MAC>     Target MAC address within ARP frame\n"
+	       "  -s           Solaris style ARP requests, target MAC address set to broadcast\n"
+	       "  -r           REPLY {ARP,RARP} enable\n"
+	       "  -R           RARP enable\n"
+	       "  -P <FILE>    Raw ARP payload file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
-	printf("You must define a Source and Destination IP address.\n");
+	printf("NOTE: Source and Destination IP address are mandatory arguments.\n");
 	arp_exit(1);
 }
 
