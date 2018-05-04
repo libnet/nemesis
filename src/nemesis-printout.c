@@ -153,6 +153,7 @@ void nemesis_printarp(ARPhdr *arp)
 {
 	char *src = NULL, *dst = NULL;
 	char *opcode = "Unknown";
+	struct in_addr s, d;
 
 	switch (arp->ar_op) {
 	case ARPOP_REQUEST:
@@ -169,8 +170,10 @@ void nemesis_printarp(ARPhdr *arp)
 		break;
 	}
 
-	src = strdup(inet_ntoa(*(struct in_addr *)&arp->ar_spa));
-	dst = strdup(inet_ntoa(*(struct in_addr *)&arp->ar_tpa));
+	s.s_addr = *(uint32_t *)arp->ar_spa;
+	d.s_addr = *(uint32_t *)arp->ar_tpa;
+	src = strdup(inet_ntoa(s));
+	dst = strdup(inet_ntoa(d));
 
 	printf("  [Protocol addr:IP] %s > %s\n", src, dst);
 	printf(" [Hardware addr:MAC] %02x:%02x:%02x:%02x:%02x:%02x > "
