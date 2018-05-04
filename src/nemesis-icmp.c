@@ -206,7 +206,8 @@ static void icmp_usage(char *arg)
 	nemesis_printtitle(title);
 
 	printf("Usage:\n"
-	       "  %s [-v (verbose)] [options]\n\n", arg);
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
 	printf("ICMP options:\n"
 	       "  -i <TYPE>    ICMP type\n"
 	       "  -c <CODE>    ICMP code\n"
