@@ -125,38 +125,41 @@ static void tcp_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("TCP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("TCP options: \n"
-	       "  -x <Source port>\n"
-	       "  -y <Destination port>\n"
-	       "  -f <TCP flags>\n"
-	       "     -fS (SYN), -fA (ACK), -fR (RST), -fP (PSH), -fF (FIN)\n"
-	       "     -fU (URG), -fE (ECE), -fC (CWR)\n"
-	       "  -w <Window size>\n"
-	       "  -s <SEQ number>\n"
-	       "  -a <ACK number>\n"
-	       "  -u <Urgent pointer offset>\n"
-	       "  -o <TCP options file>\n"
-	       "  -P <Payload file>\n\n");
-	printf("IP options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	printf("TCP usage:\n"
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
+	printf("TCP options:\n"
+	       "  -x <PORT>    Source port\n"
+	       "  -y <PORT>    Destination port\n"
+	       "  -f <FLAG>    TCP flags:\n"
+	       "                   -fS (SYN), -fA (ACK), -fR (RST), -fP (PSH)\n"
+	       "                   -fF (FIN), -fU (URG), -fE (ECE), -fC (CWR)\n"
+	       "  -w <SIZE>    Window size, bytes\n"
+	       "  -s <NUM>     SEQ number\n"
+	       "  -a <NUM>     ACK number\n"
+	       "  -u <OFFSET>  Urgent pointer offset, remember -fU\n"
+	       "  -o <FILE>    Raw TCP options file\n"
+	       "  -P <FILE>    Raw TCP payload file\n"
+	       "\n");
+	printf("IP options:\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	tcp_exit(1);
