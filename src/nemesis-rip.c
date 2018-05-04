@@ -157,40 +157,44 @@ static void rip_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("RIP usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("RIP options: \n"
-	       "  -c <RIP command>\n"
-	       "  -V <RIP version>\n"
-	       "  -r <RIP routing domain>\n"
-	       "  -a <RIP address family>\n"
-	       "  -R <RIP route tag>\n"
-	       "  -i <RIP route address>\n"
-	       "  -k <RIP network address mask>\n"
-	       "  -h <RIP next hop address>\n"
-	       "  -m <RIP metric>\n"
-	       "  -P <Payload file>\n\n");
+	printf("RIP usage:\n"
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
+	printf("RIP options:\n"
+	       "  -c <CMD>     RIP command: 1: request (default), 2: response\n"
+	       "  -V <VER>     RIP version: 1 or 2 (default)\n"
+	       "  -r <DOMAIN>  RIP routing domain\n"
+	       "  -a <AF>      RIP address family\n"
+	       "  -R <TAG>     RIP route tag\n"
+	       "  -i <ADDR>    RIP route address\n"
+	       "  -k <MASK>    RIP network address mask\n"
+	       "  -h <ADDR>    RIP next hop address\n"
+	       "  -m <METRIC>  RIP metric\n"
+	       "  -P <FILE>    Raw RIP payload file\n"
+	       "\n");
 	printf("UDP options:\n"
-	       "  -x <Source port>\n"
-	       "  -y <Destination port>\n\n");
-	printf("IP options: \n"
-	       "  -S <Source IP address>\n"
-	       "  -D <Destination IP address>\n"
-	       "  -I <IP ID>\n"
-	       "  -T <IP TTL>\n"
-	       "  -t <IP TOS>\n"
-	       "  -F <IP fragmentation options>\n"
-	       "     -F[D],[M],[R],[offset]\n"
-	       "  -O <IP options file>\n\n");
-	printf("Data Link Options: \n"
+	       "  -x <PORT>    Source port, 520 default\n"
+	       "  -y <PORT>    Destination port, 520 default\n"
+	       "\n");
+	printf("IP options\n"
+	       "  -S <ADDR>    Source IP address\n"
+	       "  -D <ADDR>    Destination IP address, default 224.0.0.9 (v2)\n"
+	       "  -I <ID>      IP ID\n"
+	       "  -T <TTL>     IP TTL, default: 1\n"
+	       "  -t <TOS>     IP TOS\n"
+	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
+	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	rip_exit(1);
