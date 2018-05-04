@@ -78,19 +78,21 @@ static void ethernet_usage(char *arg)
 {
 	nemesis_printtitle(title);
 
-	printf("Ethernet Usage:\n  %s [-v (verbose)] [options]\n\n", arg);
-	printf("Ethernet Options: \n"
+	printf("Ethernet Usage:\n"
+	       "  %s [-v (verbose)] [options]\n"
+	       "\n", arg);
+	printf("Ethernet Options:\n"
 #if defined(WIN32)
-	       "  -d <Ethernet device number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
-	       "  -d <Ethernet device name>\n"
+	       "  -d <IFNAME>  Network interface name\n"
 #endif
-	       "  -H <Source MAC address>\n"
-	       "  -M <Destination MAC address>\n"
-	       "  -P <Payload file>\n"
-	       "  -T <Ethernet frame type (defaults to IP)>\n");
+	       "  -H <MAC>     Source MAC address\n"
+	       "  -M <MAC>     Destination MAC address\n"
+	       "  -P <FILE>    Raw Ethernet payload file\n"
+	       "  -T <TYPE>    Ethernet frame type, defaults to IP (0x0800)\n");
 #if defined(WIN32)
-	printf("  -Z (List available network interfaces by number)\n");
+	printf("  -Z           List available network interfaces by number\n");
 #endif
 	putchar('\n');
 	ethernet_exit(1);
