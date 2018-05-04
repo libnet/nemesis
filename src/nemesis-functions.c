@@ -48,8 +48,8 @@
 char *prognm = PACKAGE_NAME;
 const char *version = " -=- The NEMESIS Project v" PACKAGE_VERSION;
 
-char zero[ETHER_ADDR_LEN];
-char one[ETHER_ADDR_LEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+uint8_t zero[ETHER_ADDR_LEN];
+uint8_t one[ETHER_ADDR_LEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 char  title[TITLEBUFFSIZE];
 char  errbuf[ERRBUFFSIZE];         /* all-purpose error buffer */

@@ -144,8 +144,8 @@ typedef struct libnet_tcp_hdr        TCPhdr;
 typedef struct libnet_udp_hdr        UDPhdr;
 typedef struct libnet_vrrp_hdr       VRRPhdr;
 
-extern char        zero[ETHER_ADDR_LEN];
-extern char        one[ETHER_ADDR_LEN];
+extern uint8_t     zero[ETHER_ADDR_LEN];
+extern uint8_t     one[ETHER_ADDR_LEN];
 extern char        title[TITLEBUFFSIZE];
 extern char        errbuf[ERRBUFFSIZE];
 extern char       *pcap_outfile;
