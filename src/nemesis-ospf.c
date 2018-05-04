@@ -105,7 +105,7 @@ static void ospf_initdata(void)
 	iphdr.ip_tos        = IPTOS_LOWDELAY;          /* IP type of service */
 	iphdr.ip_id         = libnet_get_prand(PRu16); /* IP ID */
 	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
-	iphdr.ip_ttl        = 1;                       /* IP TTL, default 1 because of IP dst default */
+	iphdr.ip_ttl        = 1;                       /* IP TTL, default 1 because link-local multicast ip_dst */
 	iphdr.ip_p          = IPPROTO_OSPF;
 	pd.file_buf         = NULL;
 	pd.file_len         = 0;
@@ -267,7 +267,7 @@ static void ospf_usage(char *arg)
 	       "\n");
 	printf("Data Link Options:\n"
 #if defined(WIN32)
-	       "  -d <IFNUM>   Network interface number>\n"
+	       "  -d <IFNUM>   Network interface number\n"
 #else
 	       "  -d <IFNAME>  Network interface name\n"
 #endif
