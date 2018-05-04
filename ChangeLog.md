@@ -3,6 +3,7 @@ Change Log
 
 All notable changes to the project are documented in this file.
 
+- Versions >= v1.5, by Joachim Nilsson <mailto:troglobit at gmail dot com>
 - Versions <= v1.4, by Jeff Nathan <mailto:jeff at snort dot org>
 - Versions <= 1.31, by Mark Grimes <mailto:mark at stateful dot net>
 
@@ -12,34 +13,39 @@ All notable changes to the project are documented in this file.
 
 ### Changes
 - Merged Nemesis libnet1 port, from stale CVS branch
-  - Fix libnet1 porting regression in `nemesis-proto_icmp.c`
-  - Finish port of `nemesis-printout.c` to libnet1
-  - Finish port of `nemesis_proto_ospf.c`, new HELLO API.  
-    Add workaround for missing "Active Neighbor" in libnet1
-  - Remove lots of unused local variables, remnants from port
-  - Update configure script to check for libnet1.  
-    **Note:** still hard-coded version, needs to be improved!
-  - Re-KNF entire source tree in libnet1 port merge.  New file in root
-	of tree: `.clang-format` for auto-indenting
+  - Fixed libnet1 porting regression in `nemesis-proto_icmp.c`
+  - Finished port of `nemesis-printout.c` to libnet1
+  - Finished port of `nemesis_proto_ospf.c`, new HELLO API.
+    Added workaround for missing "Active Neighbor" in libnet1
+  - Removed lots of unused local variables, remnants from port
+  - Updated configure script to check for libnet1
+  - Re-KNF:ed entire source tree in libnet1 port merge.  New file in
+	root of tree: `.clang-format` for auto-indenting (exprimental)
+- Finished OSPF injector implementation, drop beta status
+- Changed default values for RIP injector, use v2 and 224.0.0.9
 - Minor license refactor to be auto-detected as 3-clause BSD
 - Removed build number from version string
-- Replace hard-coded version number with `PACKAGE_VERSION`
-- Change README and ChangeLog to Markdown format, reorder the ChangeLog
+- Simplified usage/help texts for all injectors, more readable format
+- Replaced hard-coded version number with `PACKAGE_VERSION`
+- Changed README and ChangeLog to Markdown format, reorder the ChangeLog
   in reverse chronological order, latest first
-- Add some examples (!) to the README, everybody likes examples :)
-- Remove all generated autoconf/automake files from GIT.  Use the
+- Added some examples (!) to the README, everybody likes examples :)
+- Removed all generated autoconf/automake files from GIT.  Use the
   `./autogen.sh` script when building from GIT.
-- Rename `configure.in --> configure.ac` and clean up the build
+- Renamed `configure.in --> configure.ac` and clean up the build
   system a bit, for readability and simplicity
 - Merged Debian `.deb` package build support, incl. modernize
 
 ### Fixes
-- Allow group address 0.0.0.0 when sending an IGMP general query.
-  Thanks to Randy Robertson <mailto:rmrobert@vmware.com>
-- Fix long-standing OSPF non-functioning bug.  Caused by static
+- Merged mailing list fix to allow IGMP group 0.0.0.0 when sending a
+  general query.  Thanks to Randy Robertson <mailto:rmrobert@vmware.com>
+- Fixed long-standing OSPF non-functioning bug.  Caused by static
   declaration of OSPF variables in header file
-- Fix needless byte-swapping in OSPF plugin, libnet1 does this for us
-  already.  Could possibly have been another bug in earlier versions
+- Fixed needless byte-swapping in the following injectors, libnet1 does
+  this for us already.  Possible bug in earlier versions:
+  - OSPF
+  - RIP
+  - ICMP
 
 
 [v1.4][] - 2004-10-07
