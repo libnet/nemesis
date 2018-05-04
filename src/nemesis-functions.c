@@ -61,7 +61,7 @@ int   got_tcpoptions;
 
 /**
  * Convert user supplied string to a uint32_t or exit on invalid data.
- *          
+ *
  * @param str string to be converted
  *
  * @returns uint32_t conversion of input string
@@ -82,7 +82,7 @@ uint32_t xgetint32(const char *str)
 
 /**
  * Convert user supplied string to a uint16_t or exit on invalid data.
- *          
+ *
  * @param str string to be converted
  *
  * @return uint16_t conversion of input string
@@ -103,7 +103,7 @@ uint16_t xgetint16(const char *str)
 
 /**
  * Convert user supplied string to a uint8_t or exit on invalid data.
- *          
+ *
  * @param str string to be converted
  *
  * @return uint8_t conversion of input string
@@ -267,7 +267,7 @@ int nemesis_name_resolve(char *hostname, uint32_t *address)
 }
 
 /**
- * Determine if a source Ethernet address has been specified and fill in the 
+ * Determine if a source Ethernet address has been specified and fill in the
  * ETHERhdr structure if necessary.
  *
  * @param eth ETHERhdr pointer containing the source Ethernet address
