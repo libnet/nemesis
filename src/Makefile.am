@@ -3,7 +3,7 @@ DISTCLEANFILES   = *~
 
 AM_CFLAGS        = -W -Wall -Wextra -Wno-unused-parameter -Wno-empty-body
 AM_CFLAGS       += -std=gnu99
-AM_CPPFLAGS      = -D_DEFAULT_SOURCE
+AM_CPPFLAGS      = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D__BSD_SOURCE -D__FAVOR_BSD
 
 bin_PROGRAMS     = nemesis
 nemesis_SOURCES  = nemesis-arp.c      nemesis-arp.h       nemesis-proto_arp.c		\

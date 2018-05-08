@@ -65,8 +65,9 @@ AC_CHECK_LIB([net], [libnet_init], ,[AC_MSG_ERROR([libnet 1.1.x not found])])
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_CHECK_HEADERS([unistd.h errno.h strings.h netdb.h limits.h libnet.h	\
-	machine/endian.h sys/time.h sys/param.h arpa/inet.h netinet/in.h])
+AC_CHECK_HEADERS([unistd.h errno.h strings.h netdb.h limits.h libnet.h	 \
+	machine/endian.h sys/time.h sys/param.h arpa/inet.h netinet/in.h \
+	net/ethernet.h])
 
 # Checks for library functions.
 AC_CHECK_FUNCS([gethostbyname gettimeofday inet_ntoa isascii memset	\
