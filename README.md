@@ -75,6 +75,13 @@ On Debian and Ubuntu derived GNU/Linux systems:
 
     sudo apt install libnet1-dev
 
+This installs the libnet headers and library in a standard location
+which the `configure` script easily can find.  Should your libnet1
+installation be in a non-standard location you can provide the paths
+like this:
+
+    configure LDFLAGS=-L/path/to/lib CPPFLAGS=-I/path/to/header
+
 The [GNU Configure & Build][buildsystem] system use `/usr/local` as the
 default install prefix.  Usually this is sufficient, the below example
 installs to `/usr` instead:
