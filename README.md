@@ -68,7 +68,10 @@ Build & Install
 ---------------
 
 Nemesis is built around [libnet][].  Windows platform builds require
-[libpcap][] as well.  On Debian and Ubuntu derived GNU/Linux systems:
+[libpcap][] as well.  Nemesis <= 1.4 was built around libnet 1.0 and
+Nemesis >= 1.5 require libnet 1.1, or later.
+
+On Debian and Ubuntu derived GNU/Linux systems:
 
     sudo apt install libnet1-dev
 
