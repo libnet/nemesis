@@ -92,6 +92,13 @@ installs to `/usr` instead:
     make -j5
     sudo make install-strip
 
+### Installing on Windows
+
+nemesis.exe can be installed anywhere on a Windows system.  The caveat is 
+that LibnetNT.dll must exist either in the same directory as nemesis.exe or
+in any of the directories listed in the `%PATH%` variable.  On Windows 2000
+this would be `%SystemRoot%\System32`
+
 
 Building from GIT
 -----------------

@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 
 SUBDIRS          = src man
 doc_DATA         = ChangeLog.md README.md CREDITS LICENSE
-EXTRA_DIST       = ChangeLog.md README.md CREDITS LICENSE INSTALL makefile.win
+EXTRA_DIST       = ChangeLog.md README.md CREDITS LICENSE makefile.win
 DISTCLEANFILES   = *~ DEADJOE semantic.cache *.gdb *.elf core core.* *.d
 
 MD5 = md5sum
