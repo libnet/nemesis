@@ -6,10 +6,16 @@ doc_DATA         = ChangeLog.md README.md docs/CREDITS LICENSE
 EXTRA_DIST       = ChangeLog.md README.md docs/CREDITS LICENSE makefile.win
 DISTCLEANFILES   = *~ DEADJOE semantic.cache *.gdb *.elf core core.* *.d
 
+## Generate .deb package
+package:
+	@dpkg-buildpackage -uc -us -B
+
+## Generate MD5 checksum file
 MD5 = md5sum
 md5-dist:
 	@for file in $(DIST_ARCHIVES); do	\
-		$(MD5) $$file > $$file.md5;	\
+		$(MD5) $$file > ../$$file.md5;	\
+		mv $$file ../;			\
 	done
 
 ## Check if tagged in git
@@ -30,8 +36,7 @@ release-hook:
 		echo;									\
 	fi
 
-## Target to run when building a release
-## distcheck <-- does not work atm., wrong search path for source/header files
+# Target to run when building a release
 release: distcheck release-hook md5-dist
 	@echo
 	@echo "Resulting release files:"
@@ -39,5 +44,4 @@ release: distcheck release-hook md5-dist
 	@for file in $(DIST_ARCHIVES); do						\
 		printf "$$file    \tDistribution tarball\n";				\
 		printf "$$file.md5\t"; cat ../$$file.md5 | cut -f1 -d' ';		\
-		mv $$file $$file.md5 ../;						\
 	done
