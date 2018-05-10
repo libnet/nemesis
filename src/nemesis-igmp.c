@@ -357,8 +357,8 @@ static void igmp_verbose(void)
 			nemesis_printeth(&etherhdr);
 
 		nemesis_printip(&iphdr);
-		printf("         [IGMP Type] %hu\n", igmphdr.igmp_type);
-		printf("         [IGMP Code] %hu\n", igmphdr.igmp_code);
+		printf("         [IGMP Type] %hhu\n", igmphdr.igmp_type);
+		printf("         [IGMP Code] %hhu\n", igmphdr.igmp_code);
 		printf("[IGMP group address] %s\n", inet_ntoa(igmphdr.igmp_group));
 	}
 }

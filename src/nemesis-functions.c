@@ -94,7 +94,7 @@ uint16_t xgetint16(const char *str)
 
 	val = strtoul(str, &endp, 0);
 	if (val > USHRT_MAX || str == endp || *endp) {
-		fprintf(stderr, "ERROR: Argument %s must be a positive integer between 0 and %hu.\n", str, USHRT_MAX);
+		fprintf(stderr, "ERROR: Argument %s must be a positive integer between 0 and %d.\n", str, USHRT_MAX);
 		exit(1);
 	}
 

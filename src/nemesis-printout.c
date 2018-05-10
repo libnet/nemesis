@@ -645,7 +645,7 @@ void nemesis_printip(IPhdr *ip)
 		protoname = "Reserved";
 		break;
 	}
-	printf("          [IP Proto] %s (%hu)\n", protoname, ip->ip_p);
+	printf("          [IP Proto] %s (%hhu)\n", protoname, ip->ip_p);
 	printf("            [IP TTL] %u\n", ip->ip_ttl);
 	printf("            [IP TOS] 0x%.2x\n", ip->ip_tos);
 	printf("    [IP Frag offset] 0x%.4x\n", ip->ip_off & IP_OFFMASK);
