@@ -7,6 +7,9 @@ human IP stack for UNIX-like and Windows systems.  The suite is broken
 down by protocol, and should allow for useful scripting of injected
 packets from simple shell scripts.
 
+The latest release is always available from GitHub at  
+> https://github.com/troglobit/nemesis/releases
+
 
 Key Features
 ------------
