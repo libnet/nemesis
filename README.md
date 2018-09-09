@@ -120,8 +120,8 @@ To build from GIT you first need to clone the repository and run the
 `autogen.sh` script.  This requires `automake` and `autoconf` to be
 installed on your system.
 
-    git clone https://github.com/troglobit/inadyn.git
-    cd inadyn/
+    git clone https://github.com/troglobit/nemesis.git
+    cd nemesis/
     ./autogen.sh
     ./configure && make
 
