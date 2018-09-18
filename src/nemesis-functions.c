@@ -259,9 +259,6 @@ int nemesis_name_resolve(char *hostname, uint32_t *address)
 		return 0;
 	}
 
-	if (!memcmp(&saddr.s_addr, zero, 4))
-		return -1;
-
 	memcpy(address, &saddr.s_addr, 4);
 	return 0;
 }
