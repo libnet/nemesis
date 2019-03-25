@@ -51,7 +51,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 		break;
 	}
 
-	icmp_meta_packetlen = icmp_packetlen - (link_offset + LIBNET_IPV4_H);
+	icmp_meta_packetlen = icmp_packetlen - link_offset;
 
 #ifdef DEBUG
 	printf("DEBUG: ICMP packet length %u.\n", icmp_packetlen);
