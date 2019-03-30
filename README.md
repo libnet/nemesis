@@ -1,5 +1,5 @@
-N E M E S I S  -  TCP/IP Packet Injection
-=========================================
+N E M E S I S  -  Crafting & Injection
+======================================
 [![License Badge][]][License]  [![Travis Status][]][Travis] [![Coverity Status]][Coverity Scan] <img align="right" src="docs/logo.png">
 
 The Nemesis Project is designed to be a command line based, portable
