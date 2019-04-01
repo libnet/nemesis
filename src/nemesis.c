@@ -25,6 +25,7 @@ static int usage(char *arg)
 	       "NEMESIS modes:\n"
 	       "  arp\n"
 	       "  dns\n"
+	       "  dhcp\n"
 	       "  ethernet\n"
 	       "  icmp\n"
 	       "  igmp\n"
@@ -64,6 +65,7 @@ int main(int argc, char **argv)
 	} mod[] = {
 		{ "arp", "nemesis-arp", nemesis_arp },
 		{ "dns", "nemesis-dns", nemesis_dns },
+		{ "dhcp", "nemesis-dhcp", nemesis_dhcp },
 		{ "ethernet", "nemesis-ethernet", nemesis_ethernet },
 		{ "icmp", "nemesis-icmp", nemesis_icmp },
 		{ "igmp", "nemesis-igmp", nemesis_igmp },

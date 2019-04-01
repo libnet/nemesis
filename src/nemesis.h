@@ -53,6 +53,9 @@
 #define DNSUDP_RAWBUFFSIZE  65455 /* plan for IP options */
 #define DNSUDP_LINKBUFFSIZE 1420  /* link-layer version of above */
 
+#define DHCP_RAWBUFFSIZE    65227
+#define DHCP_LINKBUFFSIZE   1192
+
 #define ETHERBUFFSIZE       1500  /* max frame size */
 
 #define ICMP_RAWBUFFSIZE    65399 /* plan for IP options & max ICMP header len */
@@ -142,6 +145,7 @@ typedef struct {
 } SUMLSAhdr;
 typedef struct libnet_tcp_hdr        TCPhdr;
 typedef struct libnet_udp_hdr        UDPhdr;
+typedef struct libnet_dhcpv4_hdr     DHCPhdr;
 typedef struct libnet_vrrp_hdr       VRRPhdr;
 
 extern uint8_t     zero[ETHER_ADDR_LEN];
@@ -217,6 +221,7 @@ void nemesis_printtitle(const char *);
 /* injection functions */
 void nemesis_arp(int, char **);
 void nemesis_dns(int, char **);
+void nemesis_dhcp(int, char **);
 void nemesis_ethernet(int, char **);
 void nemesis_icmp(int, char **);
 void nemesis_igmp(int, char **);
