@@ -19,8 +19,8 @@ static UDPhdr   udphdr;
 static DNShdr   dnshdr;
 static struct file pd, ipod, tcpod;
 static char    *payloadfile    = NULL; /* payload file name */
-static char    *ipoptionsfile  = NULL; /* TCP options file name */
-static char    *tcpoptionsfile = NULL; /* IP options file name */
+static char    *ipoptionsfile  = NULL; /* IP options file name */
+static char    *tcpoptionsfile = NULL; /* TCP options file name */
 static char    *device         = NULL; /* Ethernet device */
 
 #if defined(WIN32)
