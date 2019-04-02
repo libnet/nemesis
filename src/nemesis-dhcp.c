@@ -88,6 +88,14 @@ void nemesis_dhcp(int argc, char **argv)
 
 static void dhcp_initdata(void)
 {
+	static uint8_t opts[] = {
+		53, 1, 1,	                                 /* Option 53: DHCP Disco   */
+		12, 7, 0x6e, 0x65, 0x6d, 0x65, 0x73, 0x69, 0x73, /* Option 12: Host name    */
+		60, 7, 0x6e, 0x65, 0x6d, 0x65, 0x73, 0x69, 0x73, /* Option 60: Vendor ID    */
+		61, 7, 0x01, 0xde, 0xc0, 0xde, 0xc0, 0xff, 0xee, /* Option 61: Client ID    */
+		55, 5, 1, 3, 6, 15, 33,				 /* Option 55: Param req.   */
+		255,						 /* EOF */
+	};
 	uint8_t chaddr[6] = { 0xde, 0xc0, 0xde, 0xc0, 0xff, 0xee};
 
 	etherhdr.ether_type = ETHERTYPE_IP;    /* Ethernet type IP */
@@ -97,10 +105,10 @@ static void dhcp_initdata(void)
 	iphdr.ip_src.s_addr = 0;
 	iphdr.ip_dst.s_addr = 0xffffffff;
 	iphdr.ip_tos        = IPTOS_LOWDELAY;          /* IP type of service */
-	iphdr.ip_id         = libnet_get_prand(PRu16); /* IP ID */
+	iphdr.ip_id         = 0;
 	iphdr.ip_p          = IPPROTO_UDP;
 	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
-	iphdr.ip_ttl        = 255;                     /* IP TTL */
+	iphdr.ip_ttl        = 128;                     /* IP TTL */
 
 	udphdr.uh_sport     = 68;                      /* UDP source port */
 	udphdr.uh_dport     = 67;                      /* UDP destination port */
@@ -108,19 +116,18 @@ static void dhcp_initdata(void)
 	dhcphdr.dhcp_opcode = LIBNET_DHCP_REQUEST;     /* Request or reply */
 	dhcphdr.dhcp_htype  = 1;		       /* HW type: Ethernet */
 	dhcphdr.dhcp_hlen   = 6;		       /* Length of MAC address */
-	dhcphdr.dhcp_hopcount = 1;		       /* Used by proxy/relay agent */
+	dhcphdr.dhcp_hopcount = 0;		       /* Used by proxy/relay agent */
 	dhcphdr.dhcp_xid    = libnet_get_prand(PRu32); /* Transaction ID */
 	dhcphdr.dhcp_secs   = 0;		       /* Seconds since bootstrap */
-	dhcphdr.dhcp_flags  = 0;		       /* DHCP flags, unused for BOOTP */
+	dhcphdr.dhcp_flags  = 0x8000;		       /* DHCP flags, unused for BOOTP */
 	dhcphdr.dhcp_cip    = 0;		       /* Client's (current) IP */
 	dhcphdr.dhcp_yip    = 0;		       /* Your IP (from server) */
 	dhcphdr.dhcp_sip    = 0;		       /* Server's IP */
 	dhcphdr.dhcp_gip    = 0;		       /* Gateway IP (relay?) */
 	memcpy(dhcphdr.dhcp_chaddr, chaddr, sizeof(dhcphdr.dhcp_chaddr));
-	strlcpy(dhcphdr.dhcp_sname, "nemesis", sizeof(dhcphdr.dhcp_sname));
 
-	pd.file_buf    = NULL;
-	pd.file_len    = 0;
+	pd.file_buf    = opts;
+	pd.file_len    = NELEMS(opts);
 	ipod.file_buf  = NULL;
 	ipod.file_len  = 0;
 }
