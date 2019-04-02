@@ -37,6 +37,10 @@ Examples
 
         sudo nemesis icmp -S 10.10.10.3 -D 10.10.10.1 -G 10.10.10.3 -i 5
 
+* DHCP Discover (must use sudo and `-d` to send with source IP 0.0.0.0):
+
+        sudo nemesis dhcp -d eth0
+
 * IGMP v2 join for group 239.186.39.5
 
         sudo nemesis igmp -v -p 22 -S 192.168.1.20 -i 239.186.39.5 -D 239.186.39.5
@@ -64,7 +68,7 @@ Examples
         sudo nemesis tcp -v -S 192.168.1.1 -D 192.168.2.2 -fSA -y 22 -P foo
         sudo nemesis udp -v -S 10.11.12.13 -D 10.1.1.2 -x 11111 -y 53 -P bindpkt
         sudo nemesis icmp redirect -S 10.10.10.3 -D 10.10.10.1 -G 10.10.10.3 -qR
-        sudo nemesis arp -v -d ne0 -H 0:1:2:3:4:5 -S 10.11.30.5 -D 10.10.15.1
+        sudo nemesis arp -v -d eth0 -H 0:1:2:3:4:5 -S 10.11.30.5 -D 10.10.15.1
 
 
 Build & Install
