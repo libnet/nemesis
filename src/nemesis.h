@@ -46,6 +46,11 @@
 			STPUTC(*(p++)); \
 	}
 
+/* From The Practice of Programming, by Kernighan and Pike */
+#ifndef NELEMS
+#define NELEMS(array) (sizeof(array) / sizeof(array[0]))
+#endif
+
 #define ARPBUFFSIZE         1472
 
 #define DNSTCP_RAWBUFFSIZE  65403 /* plan for IP and TCP options */
