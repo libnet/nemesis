@@ -146,6 +146,10 @@ static void arp_usage(char *arg)
 	printf("ARP/RARP Usage:\n"
 	       "  %s [-v (verbose)] [options] -S <ADDR> -D <ADDR>\n"
 	       "\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("ARP/RARP Options:\n"
 	       "  -S <ADDR>    Source IP address\n"
 	       "  -D <ADDR>    Destination IP address\n"
@@ -181,12 +185,32 @@ static void arp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	arp_options = "d:D:h:H:L:m:M:P:S:rRsvZ?";
+	arp_options = "c:d:D:h:H:i:L:m:M:P:S:rRsvZ?";
 #else
-	arp_options = "d:D:h:H:L:m:M:P:S:rRsv?";
+	arp_options = "c:d:D:h:H:i:L:m:M:P:S:rRsv?";
 #endif
 	while ((opt = getopt(argc, argv, arp_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+		{
+			double mult = 1000000.0;
+			double sec;
+
+			if (optarg[0] == 'u') {
+				optarg++;
+				mult = 1.0;
+			}
+
+			sec = strtod(optarg, NULL);
+			interval = (int)(mult * sec);
+			printf("Got interval %d usec\n", interval);
+			break;
+		}
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
