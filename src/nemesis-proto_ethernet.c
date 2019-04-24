@@ -10,16 +10,15 @@
 
 int buildether(ETHERhdr *eth, struct file *pd, libnet_t *l)
 {
-	static uint8_t *pkt;
-	uint32_t        eth_packetlen;
-	char           *ethertype;
-	int             n;
+	uint32_t  len;
+	char     *ethertype;
+	int       n;
 
 	/* sanity checks */
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
 
-	eth_packetlen = LIBNET_ETH_H + pd->file_len;
+	len = LIBNET_ETH_H + pd->file_len;
 
 	libnet_build_ethernet(eth->ether_dhost,
 	                      eth->ether_shost,
@@ -29,16 +28,7 @@ int buildether(ETHERhdr *eth, struct file *pd, libnet_t *l)
 	                      l,
 	                      0);
 
-	n = libnet_write(l);
-
-#ifdef DEBUG
-	printf("DEBUG: eth_packetlen is %u.\n", eth_packetlen);
-#endif
-	libnet_pblock_coalesce(l, &pkt, &eth_packetlen);
-	if (verbose == 2)
-		nemesis_hexdump(pkt, eth_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, eth_packetlen, HEX_RAW_DECODE);
+	n = nemesis_send_frame(l, &len);
 
 	switch (eth->ether_type) {
 	case ETHERTYPE_PUP:
@@ -87,6 +77,8 @@ int buildether(ETHERhdr *eth, struct file *pd, libnet_t *l)
 			       "%s.\n",
 			       n, eth->ether_type, nemesis_lookup_linktype(l->link_type));
 	}
+
 	libnet_destroy(l);
-	return (n);
+
+	return n;
 }

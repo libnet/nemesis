@@ -107,12 +107,20 @@ static void ethernet_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	ethernet_options = "d:H:M:P:T:vZ?";
+	ethernet_options = "c:d:H:i:M:P:T:vZ?";
 #else
-	ethernet_options = "d:H:M:P:T:v?";
+	ethernet_options = "c:d:H:i:M:P:T:v?";
 #endif
 	while ((opt = getopt(argc, argv, ethernet_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
