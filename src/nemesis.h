@@ -178,6 +178,7 @@ struct file {
 uint32_t xgetint32(const char *);
 uint16_t xgetint16(const char *);
 uint8_t  xgetint8(const char *);
+int      xgetusec(const char *);
 //int gmt2local(time_t);
 int   nemesis_name_resolve(char *, uint32_t *);
 int   nemesis_check_link(ETHERhdr *, libnet_t *);

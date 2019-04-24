@@ -125,6 +125,39 @@ uint8_t xgetint8(const char *str)
 }
 
 /**
+ * Convert user supplied interval argument
+ * @param arg interval string
+ *
+ * The interval can be given in seconds, which converted to microseconds
+ * in integer form and returned.  It can also be given on the form uUSEC
+ * which means the user wants microsecond precision, in this case the
+ * leading 'u' is dropped the the reminder is converted to and returned
+ * as an integer.
+ *
+ * @return The interval in microseconds, or -1 on failure
+ */
+int xgetusec(const char *arg)
+{
+	double mult = 1000000.0;
+	double sec;
+
+	if (!arg)
+		return -1;
+
+	if (arg[0] == 'u') {
+		arg++;
+		mult = 1.0;
+	}
+
+	errno = 0;
+	sec = strtod(arg, NULL);
+	if (errno)
+		return -1;
+
+	return (int)(mult * sec);
+}
+
+/**
  * Parses a string to set the fragmentation options in an IP header
  *
  * @param iph pointer to an IPhdr structure

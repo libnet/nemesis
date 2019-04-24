@@ -196,20 +196,8 @@ static void arp_cmdline(int argc, char **argv)
 			break;
 
 		case 'i':
-		{
-			double mult = 1000000.0;
-			double sec;
-
-			if (optarg[0] == 'u') {
-				optarg++;
-				mult = 1.0;
-			}
-
-			sec = strtod(optarg, NULL);
-			interval = (int)(mult * sec);
-			printf("Got interval %d usec\n", interval);
+			interval = xgetusec(optarg);
 			break;
-		}
 
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
