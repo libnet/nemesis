@@ -55,6 +55,8 @@ char  title[TITLEBUFFSIZE];
 char  errbuf[ERRBUFFSIZE];         /* all-purpose error buffer */
 char *validtcpflags = "FSRPAUEC-"; /* TCP flag index */
 int   verbose;                     /* verbosity */
+int   interval = -1;               /* Time in usec between packets */
+int   count = 0;                   /* Number of packets to send */
 int   got_link;
 int   got_ipoptions;
 int   got_tcpoptions;
@@ -286,6 +288,35 @@ int nemesis_check_link(ETHERhdr *eth, libnet_t *l)
 	}
 
 	return 0;
+}
+
+/**
+ * Send frame, with optional repeat and interval handling
+ *
+ * @param l packet to send
+ *
+ * @return Number of bytes sent
+ */
+int nemesis_send_frame(libnet_t *l, uint32_t *len)
+{
+	uint8_t *pkt;
+	int num;
+
+	libnet_pblock_coalesce(l, &pkt, len);
+	do {
+		num = libnet_write(l);
+
+
+		if (count != 0 && interval >= 0)
+			usleep(interval);
+	} while (--count);
+
+	if (verbose == 2)
+		nemesis_hexdump(pkt, *len, HEX_ASCII_DECODE);
+	if (verbose == 3)
+		nemesis_hexdump(pkt, *len, HEX_RAW_DECODE);
+
+	return num;
 }
 
 /**
