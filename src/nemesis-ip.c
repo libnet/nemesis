@@ -108,6 +108,10 @@ static void ip_usage(char *arg)
 
 	printf("Usage:\n"
 	       "  %s [-v (verbose)] [options]\n\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("IP Options:\n"
 	       "  -S <ADDR>    Source IP address\n"
 	       "  -D <ADDR>    Destination IP address\n"
@@ -143,12 +147,20 @@ static void ip_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:vZ?";
+	ip_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vZ?";
 #else
-	ip_options = "d:D:F:H:I:M:O:p:P:S:t:T:v?";
+	ip_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:v?";
 #endif
 	while ((opt = getopt(argc, argv, ip_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {

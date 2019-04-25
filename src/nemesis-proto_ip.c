@@ -11,10 +11,8 @@
 
 int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet_t *l)
 {
-	int             n;
-	uint32_t        ip_packetlen = 0, ip_meta_packetlen = 0;
-	static uint8_t *pkt;
-	uint8_t         link_offset = 0;
+	uint32_t len = 0, ip_len = 0, link_offset = 0;
+	int      n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
@@ -24,11 +22,11 @@ int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet
 	if (got_link) /* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 
-	ip_packetlen      = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
-	ip_meta_packetlen = ip_packetlen - link_offset;
+	len    = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
+	ip_len = len - link_offset;
 
 #ifdef DEBUG
-	printf("DEBUG: IP packet length %u.\n", ip_packetlen);
+	printf("DEBUG: IP packet length %u.\n", len);
 	printf("DEBUG: IP options size  %zd.\n", ipod->file_len);
 	printf("DEBUG: IP payload size  %zd.\n", pd->file_len);
 #endif
@@ -37,7 +35,7 @@ int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet
 		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1)
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
-	libnet_build_ipv4(ip_meta_packetlen,
+	libnet_build_ipv4(ip_len,
 			  ip->ip_tos,
 			  ip->ip_id,
 			  ip->ip_off,
@@ -54,15 +52,8 @@ int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet
 	if (got_link)
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	libnet_pblock_coalesce(l, &pkt, &ip_packetlen);
-	n = libnet_write(l);
-
-	if (verbose == 2)
-		nemesis_hexdump(pkt, ip_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, ip_packetlen, HEX_RAW_DECODE);
-
-	if (n != (int)ip_packetlen) {
+	n = nemesis_send_frame(l, &len);
+	if (n != (int)len) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
@@ -73,6 +64,8 @@ int buildip(ETHERhdr *eth, IPhdr *ip, struct file *pd, struct file *ipod, libnet
 				printf("Wrote %d byte IP packet\n", n);
 		}
 	}
+
 	libnet_destroy(l);
+
 	return n;
 }
