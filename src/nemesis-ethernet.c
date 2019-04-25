@@ -81,6 +81,10 @@ static void ethernet_usage(char *arg)
 	printf("Ethernet Usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("Ethernet Options:\n"
 #if defined(WIN32)
 	       "  -d <IFNUM>   Network interface number\n"
