@@ -12,10 +12,8 @@
 int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
              struct file *ipod, struct file *tcpod, libnet_t *l)
 {
-	int             n;
-	uint32_t        tcp_packetlen = 0, tcp_meta_packetlen = 0;
-	static uint8_t *pkt;
-	uint8_t         link_offset = 0;
+	uint32_t len = 0, tcp_len = 0, link_offset = 0;
+	int      n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
@@ -28,12 +26,11 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
 		link_offset = LIBNET_ETH_H;
 	}
 
-	tcp_packetlen = link_offset + LIBNET_IPV4_H + LIBNET_TCP_H + pd->file_len + ipod->file_len + tcpod->file_len;
-
-	tcp_meta_packetlen = tcp_packetlen - link_offset;
+	len     = link_offset + LIBNET_IPV4_H + LIBNET_TCP_H + pd->file_len + ipod->file_len + tcpod->file_len;
+	tcp_len = len - link_offset;
 
 #ifdef DEBUG
-	printf("DEBUG: TCP packet length %u.\n", tcp_packetlen);
+	printf("DEBUG: TCP packet length %u.\n", len);
 	printf("DEBUG: IP  options size  %zd.\n", ipod->file_len);
 	printf("DEBUG: TCP options size  %zd.\n", tcpod->file_len);
 	printf("DEBUG: TCP payload size  %zd.\n", pd->file_len);
@@ -63,7 +60,7 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
 		}
 	}
 
-	libnet_build_ipv4(tcp_meta_packetlen,
+	libnet_build_ipv4(tcp_len,
 	                  ip->ip_tos,
 	                  ip->ip_id,
 	                  ip->ip_off,
@@ -80,15 +77,8 @@ int buildtcp(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, struct file *pd,
 	if (got_link)
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	libnet_pblock_coalesce(l, &pkt, &tcp_packetlen);
-	n = libnet_write(l);
-
-	if (verbose == 2)
-		nemesis_hexdump(pkt, tcp_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, tcp_packetlen, HEX_RAW_DECODE);
-
-	if (n != (int)tcp_packetlen) {
+	n = nemesis_send_frame(l, &len);
+	if (n != (int)len) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

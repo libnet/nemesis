@@ -128,6 +128,10 @@ static void tcp_usage(char *arg)
 	printf("TCP usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("TCP options:\n"
 	       "  -x <PORT>    Source port\n"
 	       "  -y <PORT>    Destination port\n"
@@ -175,14 +179,22 @@ static void tcp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:vZ?";
+	tcp_options = "a:c:d:D:f:F:H:i:I:M:o:O:P:s:S:t:T:u:w:x:y:vZ?";
 #else
-	tcp_options = "a:d:D:f:F:H:I:M:o:O:P:s:S:t:T:u:w:x:y:v?";
+	tcp_options = "a:c:d:D:f:F:H:i:I:M:o:O:P:s:S:t:T:u:w:x:y:v?";
 #endif
 	while ((opt = getopt(argc, argv, tcp_options)) != -1) {
 		switch (opt) {
 		case 'a': /* ACK window */
 			tcphdr.th_ack = xgetint32(optarg);
+			break;
+
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
 			break;
 
 		case 'd': /* Ethernet device */
