@@ -111,6 +111,10 @@ static void udp_usage(char *arg)
 	printf("UDP usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("UDP options:\n"
 	       "  -x <PORT>    Source port\n"
 	       "  -y <PORT>    Destination port\n"
@@ -149,12 +153,20 @@ static void udp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:vZ?";
+	udp_options = "c:d:D:F:H:i:I:M:O:P:S:t:T:x:y:vZ?";
 #else
-	udp_options = "d:D:F:H:I:M:O:P:S:t:T:x:y:v?";
+	udp_options = "c:d:D:F:H:i:I:M:O:P:S:t:T:x:y:v?";
 #endif
 	while ((opt = getopt(argc, argv, udp_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {

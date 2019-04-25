@@ -12,10 +12,8 @@
 int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
              struct file *ipod, libnet_t *l)
 {
-	int             n;
-	uint32_t        udp_packetlen = 0, udp_meta_packetlen = 0;
-	static uint8_t *pkt;
-	uint8_t         link_offset = 0;
+	uint32_t len = 0, udp_len = 0, link_offset = 0;
+	int      n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
@@ -26,11 +24,11 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 		link_offset = LIBNET_ETH_H;
 	}
 
-	udp_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
-	udp_meta_packetlen = udp_packetlen - link_offset;
+	len     = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
+	udp_len = len - link_offset;
 
 #ifdef DEBUG
-	printf("DEBUG: UDP packet length %u.\n", udp_packetlen);
+	printf("DEBUG: UDP packet length %u.\n", len);
 	printf("DEBUG:  IP options size  %zd.\n", ipod->file_len);
 	printf("DEBUG: UDP payload size  %zd.\n", pd->file_len);
 #endif
@@ -44,7 +42,7 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 		}
 	}
 
-	libnet_build_ipv4(udp_meta_packetlen,
+	libnet_build_ipv4(udp_len,
 			  ip->ip_tos,
 			  ip->ip_id,
 			  ip->ip_off,
@@ -61,15 +59,8 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 	if (got_link)
 		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
 
-	libnet_pblock_coalesce(l, &pkt, &udp_packetlen);
-	n = libnet_write(l);
-
-	if (verbose == 2)
-		nemesis_hexdump(pkt, udp_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, udp_packetlen, HEX_RAW_DECODE);
-
-	if (n != (int)udp_packetlen) {
+	n = nemesis_send_frame(l, &len);
+	if (n != (int)len) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
