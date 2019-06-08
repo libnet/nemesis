@@ -12,11 +12,9 @@
 int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 	      struct file *ipod, libnet_t *l)
 {
-	static uint8_t *pkt;
-	uint32_t        igmp_packetlen = 0;
-	uint32_t	igmp_meta_packetlen = 0;
-	uint8_t         link_offset = 0;
-	int             n;
+	uint32_t igmp_len, len;
+	uint8_t  link_offset = 0;
+	int      n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
@@ -26,11 +24,11 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 	if (got_link)
 		link_offset = LIBNET_ETH_H;
 
-	igmp_packetlen      = link_offset + LIBNET_IPV4_H + LIBNET_IGMP_H + pd->file_len + ipod->file_len;
-	igmp_meta_packetlen = igmp_packetlen - (link_offset + LIBNET_IPV4_H);
+	len      = link_offset + LIBNET_IPV4_H + LIBNET_IGMP_H + pd->file_len + ipod->file_len;
+	igmp_len = len - (link_offset + LIBNET_IPV4_H);
 
 #ifdef DEBUG
-	printf("DEBUG: IGMP packet length %u.\n", igmp_packetlen);
+	printf("DEBUG: IGMP packet length %u.\n", len);
 	printf("DEBUG: IP   options size  %zd.\n", ipod->file_len);
 	printf("DEBUG: IGMP payload size  %zd.\n", pd->file_len);
 #endif
@@ -48,7 +46,7 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 
-	libnet_build_ipv4(igmp_meta_packetlen + LIBNET_IPV4_H,
+	libnet_build_ipv4(igmp_len + LIBNET_IPV4_H,
 			  ip->ip_tos,
 			  ip->ip_id,
 			  ip->ip_off,
@@ -65,15 +63,8 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 				      ETHERTYPE_IP,
 				      NULL, 0, l, 0);
 
-	libnet_pblock_coalesce(l, &pkt, &igmp_packetlen);
-	n = libnet_write(l);
-
-	if (verbose == 2)
-		nemesis_hexdump(pkt, igmp_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, igmp_packetlen, HEX_RAW_DECODE);
-
-	if (n != (int)igmp_packetlen) {
+	n = nemesis_send_frame(l, &len);
+	if (n != (int)len) {
 		fprintf(stderr, "ERROR: Incomplete packet injection. Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {

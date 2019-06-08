@@ -134,6 +134,10 @@ static void igmp_usage(char *arg)
 	printf("Usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", arg);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("IGMP options:\n"
 	       "  -p <TYPE>    IGMP protocol type:\n"
 	       "                    0x11:  Query, length determines version\n"
@@ -185,12 +189,20 @@ static void igmp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	igmp_options = "d:D:F:g:H:I:M:O:p:P:r:S:t:T:vZ?";
+	igmp_options = "c:d:D:F:g:H:i:I:M:O:p:P:r:S:t:T:vZ?";
 #else
-	igmp_options = "d:D:F:g:H:I:M:O:p:P:r:S:t:T:v?";
+	igmp_options = "c:d:D:F:g:H:i:I:M:O:p:P:r:S:t:T:v?";
 #endif
 	while ((opt = getopt(argc, argv, igmp_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
