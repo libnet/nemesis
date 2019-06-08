@@ -124,7 +124,7 @@ static void dhcp_initdata(void)
 	dhcphdr.dhcp_yip    = 0;		       /* Your IP (from server) */
 	dhcphdr.dhcp_sip    = 0;		       /* Server's IP */
 	dhcphdr.dhcp_gip    = 0;		       /* Gateway IP (relay?) */
-	memcpy(dhcphdr.dhcp_chaddr, chaddr, sizeof(dhcphdr.dhcp_chaddr));
+	memcpy(dhcphdr.dhcp_chaddr, chaddr, NELEMS(chaddr));
 
 	pd.file_buf    = opts;
 	pd.file_len    = NELEMS(opts);
