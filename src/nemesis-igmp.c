@@ -135,7 +135,7 @@ static void igmp_usage(char *arg)
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", arg);
 	printf("IGMP options:\n"
-	       "  -p <TYPE>    IGMP type:\n"
+	       "  -p <TYPE>    IGMP protocol type:\n"
 	       "                    0x11:  Query, length determines version\n"
 	       "                    0x12:  Join, v1\n"
 	       "                    0x13:  DVMRP\n"
@@ -148,8 +148,8 @@ static void igmp_usage(char *arg)
 	       "                    0x30:  Multicast router advertisement\n"
 	       "                    0x31:  Multicast router solicitation\n"
 	       "                    0x31:  Multicast router termination\n"
-	       "  -c <CODE>    v1: unused, v2: query response time\n"
-	       "  -i <GROUP>   Multicast group for join/leave, or group spec. query\n"
+	       "  -r <CODE>    Max resp. code. v1: unused, v2: query response time\n"
+	       "  -g <GROUP>   Multicast group for join/leave, or group spec. query\n"
 	       "  -P <FILE>    Raw IGMP payload file\n"
 	       "\n");
 	printf("IP options:\n"
@@ -185,17 +185,12 @@ static void igmp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vZ?";
+	igmp_options = "d:D:F:g:H:I:M:O:p:P:r:S:t:T:vZ?";
 #else
-	igmp_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:v?";
+	igmp_options = "d:D:F:g:H:I:M:O:p:P:r:S:t:T:v?";
 #endif
 	while ((opt = getopt(argc, argv, igmp_options)) != -1) {
 		switch (opt) {
-		case 'c': /* IGMP code */
-			igmphdr.igmp_code = xgetint8(optarg);
-			got_code          = 1;
-			break;
-
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {
@@ -227,20 +222,20 @@ static void igmp_cmdline(int argc, char **argv)
 				igmp_exit(1);
 			break;
 
+		case 'g': /* IGMP group address */
+			if ((nemesis_name_resolve(optarg, &igmphdr.igmp_group.s_addr)) < 0) {
+				fprintf(stderr, "ERROR: Invalid IGMP group address: \"%s\".\n", optarg);
+				igmp_exit(1);
+			}
+			got_group = 1;
+			break;
+
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
-			break;
-
-		case 'i': /* IGMP group address */
-			if ((nemesis_name_resolve(optarg, &igmphdr.igmp_group.s_addr)) < 0) {
-				fprintf(stderr, "ERROR: Invalid IGMP group address: \"%s\".\n", optarg);
-				igmp_exit(1);
-			}
-			got_group = 1;
 			break;
 
 		case 'I': /* IP ID */
@@ -282,6 +277,11 @@ static void igmp_cmdline(int argc, char **argv)
 				fprintf(stderr, "ERROR: payload file %s > 256 characters.\n", optarg);
 				igmp_exit(1);
 			}
+			break;
+
+		case 'r': /* IGMP max resp. code */
+			igmphdr.igmp_code = xgetint8(optarg);
+			got_code          = 1;
 			break;
 
 		case 'S': /* source IP address */
