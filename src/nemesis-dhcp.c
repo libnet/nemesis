@@ -146,6 +146,10 @@ static void dhcp_usage(char *prognm)
 	printf("DHCP usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
 	       "\n", prognm);
+	printf("General Options:\n"
+	       "  -c <COUNT>   Send count number of packets\n"
+	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "\n");
 	printf("DHCP options:\n"
 	       "  -i <ID>      DHCP ID\n"
 	       "  -g <FLAGS>   DHCP flags\n"
@@ -188,12 +192,20 @@ static void dhcp_cmdline(int argc, char **argv)
 	extern int   optind;
 
 #if defined(WIN32)
-	dhcp_options = "d:D:F:H:I:M:O:P:t:T:x:y:vZ?";
+	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:vZ?";
 #else
-	dhcp_options = "d:D:F:H:I:M:O:P:t:T:x:y:v?";
+	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:v?";
 #endif
 	while ((opt = getopt(argc, argv, dhcp_options)) != -1) {
 		switch (opt) {
+		case 'c':
+			count = atoi(optarg);
+			break;
+
+		case 'i':
+			interval = xgetusec(optarg);
+			break;
+
 		case 'd': /* Ethernet device */
 #if defined(WIN32)
 			if (nemesis_getdev(atoi(optarg), &device) < 0) {

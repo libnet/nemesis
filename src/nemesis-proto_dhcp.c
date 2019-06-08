@@ -13,11 +13,9 @@
 int builddhcp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, DHCPhdr *dhcp,
              struct file *pd, struct file *ipod, libnet_t *l)
 {
-	static uint8_t *pkt;
-	uint32_t        dhcp_meta_packetlen = 0;
-	uint32_t        dhcp_packetlen = 0;
-	uint8_t         link_offset = 0;
-	int             n;
+	uint32_t len = 0;
+	uint8_t  link_offset = 0;
+	int      n;
 
 	if (pd->file_buf == NULL)
 		pd->file_len = 0;
@@ -27,13 +25,11 @@ int builddhcp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, DHCPhdr *dhcp,
 	if (got_link)		/* data link layer transport */
 		link_offset = LIBNET_ETH_H;
 
-	dhcp_packetlen = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
-	dhcp_packetlen += LIBNET_UDP_H + LIBNET_DHCPV4_H;
-
-	dhcp_meta_packetlen = dhcp_packetlen - link_offset;
+	len  = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
+	len += LIBNET_UDP_H + LIBNET_DHCPV4_H;
 
 #ifdef DEBUG
-	printf("DEBUG: DHCP packet length %u.\n", dhcp_packetlen);
+	printf("DEBUG: DHCP packet length %u.\n", len);
 	printf("DEBUG: IP  options size  %zd.\n", ipod->file_len);
 	printf("DEBUG: DHCP payload size  %zd.\n", pd->file_len);
 #endif
@@ -64,7 +60,7 @@ int builddhcp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, DHCPhdr *dhcp,
 			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 	}
 
-	libnet_build_ipv4(dhcp_meta_packetlen,
+	libnet_build_ipv4(len - link_offset,
 			  ip->ip_tos,
 			  ip->ip_id,
 			  ip->ip_off,
@@ -81,15 +77,8 @@ int builddhcp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, DHCPhdr *dhcp,
 				      eth->ether_type,
 				      NULL, 0, l, 0);
 
-	libnet_pblock_coalesce(l, &pkt, &dhcp_packetlen);
-	n = libnet_write(l);
-
-	if (verbose == 2)
-		nemesis_hexdump(pkt, dhcp_packetlen, HEX_ASCII_DECODE);
-	if (verbose == 3)
-		nemesis_hexdump(pkt, dhcp_packetlen, HEX_RAW_DECODE);
-
-	if (n != (int)dhcp_packetlen) {
+	n = nemesis_send_frame(l, &len);
+	if (n != (int)len) {
 		fprintf(stderr, "ERROR: Incomplete packet injection.  Only wrote %d bytes.\n", n);
 	} else {
 		if (verbose) {
