@@ -139,20 +139,16 @@ static void dhcp_validatedata(void)
 {
 }
 
-static void dhcp_usage(char *arg)
+static void dhcp_usage(char *prognm)
 {
 	nemesis_printtitle(title);
 
 	printf("DHCP usage:\n"
 	       "  %s [-v (verbose)] [options]\n"
-	       "\n", arg);
+	       "\n", prognm);
 	printf("DHCP options:\n"
 	       "  -i <ID>      DHCP ID\n"
 	       "  -g <FLAGS>   DHCP flags\n"
-	       "  -q <NUM>     Number of Questions\n"
-	       "  -b <NUM>     Number of Answer     RRs (resource records)\n"
-	       "  -A <NUM>     Number of Authority  RRs\n"
-	       "  -r <NUM>     Number of Additional RRs\n"
 	       "  -P <FILE>    Raw DHCP payload file\n"
 	       "\n");
 	printf("UDP options (without -k):\n"
@@ -308,9 +304,10 @@ static void dhcp_cmdline(int argc, char **argv)
 				perror(errbuf);
 
 			PrintDeviceList(ifacetmp);
-			dns_exit(1); /* FALLTHROUGH */
+			dns_exit(1);
+			/* fallthrough */
 #endif
-		case '?': /* FALLTHROUGH */
+		case '?':
 		default:
 			dhcp_usage(argv[0]);
 			break;
