@@ -86,6 +86,9 @@ void nemesis_dhcp(int argc, char **argv)
 	dhcp_exit(0);
 }
 
+/*
+ * Default values set to generate a DHCP Discover client message
+ */
 static void dhcp_initdata(void)
 {
 	static uint8_t opts[] = {
