@@ -181,8 +181,6 @@ static void arp_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *arp_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	arp_options = "c:d:D:h:H:i:L:m:M:P:S:rRsvZ?";

@@ -143,8 +143,6 @@ static void ip_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *ip_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	ip_options = "c:d:D:F:H:i:I:M:O:p:P:S:t:T:vZ?";

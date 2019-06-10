@@ -206,8 +206,6 @@ static void rip_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *rip_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	rip_options = "a:c:d:D:F:h:H:i:I:k:m:M:O:P:r:R:S:t:T:V:x:y:vZ?";

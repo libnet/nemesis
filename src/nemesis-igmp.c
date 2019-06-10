@@ -185,8 +185,6 @@ static void igmp_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *igmp_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	igmp_options = "c:d:D:F:g:H:i:I:M:O:p:P:r:S:t:T:vZ?";

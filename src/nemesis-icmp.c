@@ -273,8 +273,6 @@ static void icmp_cmdline(int argc, char **argv)
 	uint32_t     addr_tmp[6];
 	char        *icmp_options;
 	char         cmd_mode = 0;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	icmp_options = "a:A:b:B:c:d:D:e:f:F:G:H:i:I:j:J:l:m:M:o:O:p:P:q:r:s:S:t:T:vZ?";

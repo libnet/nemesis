@@ -296,8 +296,6 @@ static void ospf_cmdline(int argc, char **argv)
 	uint32_t     addr_tmp[6];
 	char        *ospf_options;
 	char         cmd_mode = 0;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	ospf_options = "a:A:B:c:d:D:f:F:g:G:h:H:i:I:j:k:l:L:m:M:n:N:o:O:p:P:r:R:s:S:t:T:u:vw:x:y:z:Z?";

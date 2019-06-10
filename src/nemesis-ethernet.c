@@ -107,8 +107,6 @@ static void ethernet_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *ethernet_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	ethernet_options = "c:d:H:i:M:P:T:vZ?";

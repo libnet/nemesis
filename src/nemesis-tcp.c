@@ -175,8 +175,6 @@ static void tcp_cmdline(int argc, char **argv)
 	uint32_t     addr_tmp[6];
 	char        *tcp_options;
 	char        *p, c;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	tcp_options = "a:c:d:D:f:F:H:i:I:M:o:O:P:s:S:t:T:u:w:x:y:vZ?";

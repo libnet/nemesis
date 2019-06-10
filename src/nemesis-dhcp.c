@@ -188,8 +188,6 @@ static void dhcp_cmdline(int argc, char **argv)
 	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *dhcp_options;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:vZ?";

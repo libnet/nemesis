@@ -174,6 +174,10 @@ struct file {
 	ssize_t  file_len; /* file size */
 };
 
+/* For getopt() */
+extern char *optarg;
+extern int   optind;
+
 /* support functions */
 uint32_t xgetint32(const char *);
 uint16_t xgetint16(const char *);

@@ -212,8 +212,6 @@ static void dns_cmdline(int argc, char **argv)
 	uint32_t     addr_tmp[6];
 	char        *dns_options;
 	char        *p, c;
-	extern char *optarg;
-	extern int   optind;
 
 #if defined(WIN32)
 	dns_options = "a:A:b:d:D:f:F:g:H:i:I:M:o:O:P:q:r:s:S:t:T:u:w:x:y:kvZ?";
