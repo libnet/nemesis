@@ -94,7 +94,7 @@ default install prefix.  Usually this is sufficient, the below example
 installs to `/usr` instead:
 
     tar xf nemesis-1.5.tar.xz
-	cd nemesis-1.5/
+    cd nemesis-1.5/
     ./configure --prefix=/usr
     make -j5
     sudo make install-strip
@@ -105,6 +105,8 @@ nemesis.exe can be installed anywhere on a Windows system.  The caveat is
 that LibnetNT.dll must exist either in the same directory as nemesis.exe or
 in any of the directories listed in the `%PATH%` variable.  On Windows 2000
 this would be `%SystemRoot%\System32`
+
+**Note:** the windows build has not been tried or tested in over a decade. YYMV
 
 
 Building from GIT
