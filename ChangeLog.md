@@ -7,6 +7,21 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.4, Jeff Nathan <mailto:jeff at snort dot org>
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
+[v1.6][UNRELEASED]
+---------------------
+
+Nemesis the Destroyer
+
+### Changes
+- Support for DHCP protocol crafting, defaults to DHCP Discover with
+  option 53, 12, 60, 61, and 55
+- Support for repeated send in many protocol injectors.  Can be
+  used to, e.g., flood networks with ARP requests or test DHCP.
+- Incompatible command line option changes to IGMP protocol module
+
+### Fixes
+- Fix #4: invalid IP header length in ICMP packets, by Samy Kamkar
+
 
 [v1.5][] - 2018-05-10
 ---------------------
@@ -267,6 +282,7 @@ v0.666a - initial public release
 
 
 [UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.5...HEAD
+[v1.6]:  https://github.com/troglobit/nemesis/compare/v1.5...v1.6
 [v1.5]:  https://github.com/troglobit/nemesis/compare/v1.4...v1.5
 [v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
 [v1.32]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.32.tar.gz
