@@ -185,9 +185,9 @@ static void dhcp_usage(char *prognm)
 
 static void dhcp_cmdline(int argc, char **argv)
 {
-	int          opt, i;
 	uint32_t     addr_tmp[6];
 	char        *dhcp_options;
+	int          opt;
 
 #if defined(WIN32)
 	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:vZ?";
@@ -239,8 +239,7 @@ static void dhcp_cmdline(int argc, char **argv)
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
-			for (i = 0; i < 6; i++)
-				etherhdr.ether_shost[i] = addr_tmp[i];
+			memcpy(etherhdr.ether_shost, addr_tmp, NELEMS(addr_tmp));
 			break;
 
 		case 'I': /* IP ID */
@@ -251,8 +250,7 @@ static void dhcp_cmdline(int argc, char **argv)
 			memset(addr_tmp, 0, sizeof(addr_tmp));
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
-			for (i = 0; i < 6; i++)
-				etherhdr.ether_dhost[i] = addr_tmp[i];
+			memcpy(etherhdr.ether_dhost, addr_tmp, NELEMS(addr_tmp));
 			break;
 
 		case 'O': /* IP options file */
