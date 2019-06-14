@@ -155,7 +155,7 @@ static void dhcp_usage(char *prognm)
 	       "  -g <FLAGS>   DHCP flags\n"
 	       "  -P <FILE>    Raw DHCP payload file\n"
 	       "\n");
-	printf("UDP options (without -k):\n"
+	printf("UDP options:\n"
 	       "  -x <PORT>    Source port\n"
 	       "  -y <PORT>    Destination port\n"
 	       "\n");
@@ -175,7 +175,7 @@ static void dhcp_usage(char *prognm)
 	       "  -d <IFNAME>  Network interface name\n"
 #endif
 	       "  -H <MAC>     Source MAC address\n"
-	       "  -M <MAC>     Destination MAC address\n");
+	       "  -M <MAC>     Destination MAC address, default: ff:ff:ff:ff:ff:ff\n");
 #if defined(WIN32)
 	printf("  -Z           List available network interfaces by number\n");
 #endif
