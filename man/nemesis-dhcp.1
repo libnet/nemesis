@@ -6,30 +6,40 @@
 .SH NAME
 nemesis-dhcp \- DHCP Protocol (The Nemesis Project)
 .SH SYNOPSIS
-.B nemesis-dhcp [-vZ?] [-d
+.B nemesis-dhcp [-vZ?] [-c
+.I COUNT
+.B ] [-i
+.I INTERVAL
+.B ] [-d
 .I Ethernet-device
+.B ] [-C
+.I DHCP-client-address
 .B ] [-D
 .I destination-IP-address
 .B ] [-f
 .I TCP-flags
 .B ] [-F
 .I fragmentation-options
-.B ] [-g
+.B ] [-f
 .I DHCP-flags
+.B ] [-g
+.I DHCP-gateway-address
+.B ] [-h
+.I DHCP-client-MAC-address
 .B ] [-H
 .I source-MAC-address
-.B ] [-i
-.I DHCP-ID
 .B ] [-I
 .I IP-ID
 .B ] [-M
 .I destination-MAC-address
 .B ] [-o
-.I TCP-options-file
+.I DHCP-opcode
 .B ] [-O
 .I IP-options-file
 .B ] [-P
-.I payload-file
+.I DHCP-payload-file
+.B ] [-s
+.I DHCP-server-address
 .B ] [-S
 .I source-IP-address
 .B ] [-t
@@ -37,9 +47,11 @@ nemesis-dhcp \- DHCP Protocol (The Nemesis Project)
 .B ] [-T
 .I IP-TTL
 .B ] [-x
-.I TCP/UDP-source-port
+.I UDP-source-port
 .B ] [-y
-.I TCP/UDP-destination-port
+.I UDP-destination-port
+.B ] [-Y
+.I DHCP-your-address
 .B ]
 .SH DESCRIPTION
 .B The Nemesis Project
@@ -54,15 +66,32 @@ packet information.
 
 By default a DHCP Discover (client) message is created.  To successfully
 send it out a network interface you must be root.
+.SH GENERAL OPTIONS
+.IP "-c COUNT"
+Number of packets to send, default: 1.
+.IP "-i INTERVAL"
+Seconds between repeatedly sent packets, only available if '\-c' is given.
+.IP "-v verbose-mode"
+Display the injected packet in human readable form.  Use twice to see a hexdump
+of the injected packet with printable ASCII characters on the right.  Use three
+times for a hexdump without decoded ASCII.
 .SH DHCP OPTIONS
-.IP "-g DHCP-flags"
+.IP "-o DHCP-opcode"
+BOOTP/DHCP opcode to send, default: 1 (request).
+.IP "-f DHCP-flags"
 Specify the
 .I DHCP flags
-within the DHCP header.
-.IP "-i DHCP-ID"
-Specify the
-.I DHCP ID
-within the DHCP header.
+within the DHCP header, default: 0x8000.
+.IP "-g DHCP-gateway-address"
+DHCP Gateway (relay agent) IP address.
+.IP "-s DHCP-server-address"
+DHCP server IP address.
+.IP "-C DHCP-client-address"
+DHCP client's IP address.
+.IP "-Y DHCP-your-address"
+Your IP address, the lease from the DHCP server.
+.IP "-h DHCP-client-MAC-address"
+Client's HW address, MAC.
 .IP "-P payload-file"
 This will cause nemesis-dhcp to use the specified
 .I payload-file
@@ -78,10 +107,6 @@ Windows systems are limited to a maximum payload size of 1420 bytes.
 The payload file can consist of any arbitrary data though it will be
 most useful to create a payload resembling the structure of the DHCP
 packet specified using the command-line options.
-.IP "-v verbose-mode"
-Display the injected packet in human readable form.  Use twice to see a hexdump
-of the injected packet with printable ASCII characters on the right.  Use three
-times for a hexdump without decoded ASCII.
 .SH UDP OPTIONS
 .IP "-x UDP-source-port"
 Source Port of injected packet.
