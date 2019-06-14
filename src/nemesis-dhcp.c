@@ -150,10 +150,19 @@ static void dhcp_usage(char *prognm)
 	       "  -c <COUNT>   Send count number of packets\n"
 	       "  -i <WAIT>    Interval to wait between packets\n"
 	       "\n");
-	printf("DHCP options:\n"
-	       "  -i <ID>      DHCP ID\n"
-	       "  -g <FLAGS>   DHCP flags\n"
-	       "  -P <FILE>    Raw DHCP payload file\n"
+	printf("BOOTP/DHCP options:\n"
+	       "  -o <CODE>    BOOTP/DHCP message op code:\n"
+	       "                    0x1:  DHCP request (default)\n"
+	       "                    0x2:  DHCP reply\n"
+	       "  -f <FLAGS>   DHCP flags, default: 0x8000\n"
+	       "  -h <MAC>     Client's HW address, MAC"
+	       "  -g <ADDR>    Gateway IP address, GIP (relay agent)\n"
+	       "  -s <ADDR>    Server IP address, SIP\n"
+	       "  -C <ADDR>    Client's IP address, CIP\n"
+	       "  -Y <ADDR>    Your IP address, YIP from server\n"
+	       "  -P <FILE>    Raw DHCP payload file, for DHCP Options.  Default:\n"
+	       "               Option 53 (Discover), 12 (Hostname), 60 (Vendor ID)\n"
+	       "               Option 61 (Client ID), and 55 (Param req)\n"
 	       "\n");
 	printf("UDP options:\n"
 	       "  -x <PORT>    Source port\n"
@@ -186,18 +195,26 @@ static void dhcp_usage(char *prognm)
 static void dhcp_cmdline(int argc, char **argv)
 {
 	uint32_t     addr_tmp[6];
+	uint8_t      opcode = 0;
 	char        *dhcp_options;
 	int          opt;
 
 #if defined(WIN32)
-	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:vZ?";
+	dhcp_options = "c:C:d:D:f:F:g:h:H:i:I:M:o:O:P:s:t:T:x:y:Y:vZ?";
 #else
-	dhcp_options = "c:d:D:F:H:i:I:M:O:P:t:T:x:y:v?";
+	dhcp_options = "c:c:d:D:f:F:g:h:H:i:I:M:o:O:P:s:t:T:x:y:Y:v?";
 #endif
 	while ((opt = getopt(argc, argv, dhcp_options)) != -1) {
 		switch (opt) {
 		case 'c':
 			count = atoi(optarg);
+			break;
+
+		case 'C': /* Client's IP address, sent on renew by client */
+			if ((nemesis_name_resolve(optarg, &dhcphdr.dhcp_cip)) < 0) {
+				fprintf(stderr, "ERROR: Invalid DHCP client IP address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
 			break;
 
 		case 'i':
@@ -230,9 +247,27 @@ static void dhcp_cmdline(int argc, char **argv)
 			}
 			break;
 
+		case 'f':
+			dhcphdr.dhcp_flags = xgetint16(optarg);
+			break;
+
 		case 'F': /* IP fragmentation options */
 			if (parsefragoptions(&iphdr, optarg) < 0)
 				dhcp_exit(1);
+			break;
+
+		case 'g': /* Gateway IP address, GIP (relay agent) */
+			if ((nemesis_name_resolve(optarg, &dhcphdr.dhcp_gip)) < 0) {
+				fprintf(stderr, "ERROR: Invalid DHCP gateway IP address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
+			break;
+
+		case 'h': /* Client's MAC address */
+			memset(addr_tmp, 0, sizeof(addr_tmp));
+			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
+			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			memcpy(dhcphdr.dhcp_chaddr, addr_tmp, NELEMS(addr_tmp));
 			break;
 
 		case 'H': /* Ethernet source address */
@@ -251,6 +286,10 @@ static void dhcp_cmdline(int argc, char **argv)
 			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			memcpy(etherhdr.ether_dhost, addr_tmp, NELEMS(addr_tmp));
+			break;
+
+		case 'o': /* DHCP op code */
+			opcode = xgetint8(optarg);
 			break;
 
 		case 'O': /* IP options file */
@@ -273,6 +312,13 @@ static void dhcp_cmdline(int argc, char **argv)
 				got_payload = 1;
 			} else {
 				fprintf(stderr, "ERROR: payload file %s > 256 characters.\n", optarg);
+				dhcp_exit(1);
+			}
+			break;
+
+		case 's': /* Server IP address, SIP */
+			if ((nemesis_name_resolve(optarg, &dhcphdr.dhcp_sip)) < 0) {
+				fprintf(stderr, "ERROR: Invalid DHCP server IP address: \"%s\".\n", optarg);
 				dhcp_exit(1);
 			}
 			break;
@@ -306,6 +352,13 @@ static void dhcp_cmdline(int argc, char **argv)
 			udphdr.uh_dport = xgetint16(optarg);
 			break;
 
+		case 'Y': /* Your IP address, sent from server (the actual lease) */
+			if ((nemesis_name_resolve(optarg, &dhcphdr.dhcp_yip)) < 0) {
+				fprintf(stderr, "ERROR: Invalid DHCP your IP address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
+			break;
+
 #if defined(WIN32)
 		case 'Z':
 			if ((ifacetmp = pcap_lookupdev(errbuf)) == NULL)
@@ -321,6 +374,13 @@ static void dhcp_cmdline(int argc, char **argv)
 			break;
 		}
 	}
+
+	if (opcode) {
+		dhcphdr.dhcp_opcode = opcode;
+		pd.file_buf = NULL;
+		pd.file_len = 0;
+	}
+
 	argc -= optind;
 	argv += optind;
 }
