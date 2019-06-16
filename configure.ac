@@ -5,7 +5,7 @@
 AC_PREREQ(2.61)
 AC_INIT(nemesis, 1.6-dev, https://github.com/troglobit/nemesis/issues,,
 	http://troglobit.com/projects/nemesis/)
-AM_INIT_AUTOMAKE([1.11 foreign no-dist-gzip dist-xz])
+AM_INIT_AUTOMAKE([1.11 foreign])
 AM_SILENT_RULES([yes])
 
 AC_CONFIG_SRCDIR([src/nemesis.c])
