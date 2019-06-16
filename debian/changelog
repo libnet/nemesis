@@ -1,3 +1,11 @@
+nemesis (1.6) unstable; urgency=medium
+
+  * New upstream release:
+    - Support for DHCP protocol crafting
+    - Fix invalid IP header length in ICMP packets
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 16 Jun 2019 15:33:06 +0200
+
 nemesis (1.5) unstable; urgency=medium
 
   * New maintainer, new upstream.

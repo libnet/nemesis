@@ -7,7 +7,7 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.4, Jeff Nathan <mailto:jeff at snort dot org>
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
-[v1.6][UNRELEASED]
+[v1.6][] - 2019-05-16
 ---------------------
 
 Nemesis the Destroyer
@@ -281,7 +281,7 @@ v0.666a - initial public release
 - ARP, ICMP, OSPF (unfinished), TCP, UDP implemented
 
 
-[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.5...HEAD
+[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.6...HEAD
 [v1.6]:  https://github.com/troglobit/nemesis/compare/v1.5...v1.6
 [v1.5]:  https://github.com/troglobit/nemesis/compare/v1.4...v1.5
 [v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
