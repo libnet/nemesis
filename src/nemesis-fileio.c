@@ -83,7 +83,7 @@ static int nemesis_readfile(const char *file, const uint32_t mode, uint8_t *buf,
 #endif
 	}
 
-	if (strncmp(file, "-", 1))
+	if (strncmp(file, "-", 1) && fd != -1)
 		close(fd);
 
 	return num;
