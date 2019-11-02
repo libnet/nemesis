@@ -341,7 +341,7 @@ int nemesis_send_frame(libnet_t *l, uint32_t *len)
 		if (bytes != (int)*len)
 			break;
 
-		if (count != 0 && interval >= 0)
+		if (count > 1 && interval >= 0)
 			usleep(interval);
 	} while (--count > 0);
 
