@@ -1,101 +1,109 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000, 2001 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS-ARP 1 "16 May 2003" 
-.SH NAME
-nemesis-arp \- ARP/RARP Protocol (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis-arp [-rsTRvZ?] [-d
-.I Ethernet-device
-.B ] [-D
-.I destination-IP-address
-.B ] [-h
-.I sender-hardware-address
-.B ] [-H
-.I source-MAC-address
-.B ] [-m
-.I target-hardware-address
-.B ] [-M
-.I destination-MAC-address
-.B ] [-P
-.I payload-file
-.B ] [-S
-.I source IP address
-.B ]
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Nov 21, 2019
+.Dt nemesis-arp 1
+.Sh NAME
+.Nm nemesis-arp
+.Nd ARP/RARP Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl rsTRvZ?
+.Op Fl d Ar Ethernet-device
+.Op Fl D Ar destination-IP-address
+.Op Fl h Ar sender-hardware-address
+.Op Fl H Ar source-MAC-address
+.Op Fl m Ar target-hardware-address
+.Op Fl M Ar destination-MAC-address
+.Op Fl P Ar payload-file
+.Op Fl S Ar source-IP-address
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
 and Windows systems.  The suite is broken down by protocol, and should allow 
 for useful scripting of injected packets from simple shell scripts. 
-.PP
-.B nemesis-arp
+.Pp
+.Nm
 provides an interface to craft and inject ARP frames allowing the user to 
 specify any portion of an ARP frame. 
-.SH ARP/RARP OPTIONS
-.IP "-D destination-IP-address"
+.Sh ARP/RARP OPTIONS
+.Bl -tag -width Ds
+.It Fl D Ar destination-IP-address
 Specify the
-.I destination-IP-address
+.Ar destination-IP-address
 of the injected ARP frame.
-.IP "-h sender-hardware-address"
+.It Fl h Ar sender-hardware-address
 Specify the
-.I sender-hardware-address
+.Ar sender-hardware-address
 within the ARP frame only.
-.IP "-m sender-hardware-address"
+.It Fl m Ar target-hardware-address
 Specify the
-.I target-hardware-address
+.Ar target-hardware-address
 within the ARP frame only.
-.IP "-P payload-file"
+.It Fl P Ar payload-file
 This will cause nemesis-arp to use the specified
-.I payload-file
+.Ar payload-file
 as the payload when injecting ARP/RARP frames.  The maximum payload size is 
 1472 bytes in order to account for the maximum Ethernet frame size.  Payloads
-can also be read from stdin by specifying '\-P \-'
+can also be read from stdin by specifying
+.Fl P Ar -
 instead of a payload-file.
-.IP "-r reply-enable"
+.It Fl r Ar reply-enable
 Enables ARP/RARP replies.
-.IP "-R RARP-Enable"
+.It Fl R Ar RARP-Enable
 Enables RARP mode.
-.IP "-s Solaris-mode-enable"
+.It Fl s Ar Solaris-mode-enable
 When performing ARP requests, rather than zero out the 6 byte target hardware 
 address field within the ARP frame, Solaris systems copy the target hardware 
 address from the Ethernet header into this field.  This option emulates Solaris
 systems by setting the target hardware address within ARP frame to 
 ff:ff:ff:ff:ff:ff rather than the standard 00:00:00:00:00:00.
-.IP "-S source-IP-address"
+.It Fl S Ar source-IP-address
 Specify the
-.I source-IP-address
+.Ar source-IP-address
 of the injected ARP frame.
-.IP "-v verbose-mode"
+.It Fl v
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected packet with printable ASCII characters on the right.  Use three 
 times for a hexdump without decoded ASCII.
-.SH DATA LINK OPTIONS
-.IP "-d Ethernet-device"
+.El
+.Sh DATA LINK OPTIONS
+.Bl -tag -width Ds
+.It Fl d Ar Ethernet-device
 Specify the name (for UNIX-like systems) or the number (for Windows systems) 
 of the
-.I Ethernet-device
+.Ar Ethernet-device
 to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
+.It Fl H Ar source-MAC-address
 Specify the
-.I source-MAC-address
+.Ar source-MAC-address
 (XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
+.It Fl M Ar destination-MAC-address
 Specify the
-.I destintion-MAC-address
+.Ar destintion-MAC-address
 (XX:XX:XX:XX:XX:XX).
-.IP "-Z list-network-interfaces"
+.It Fl Z
 Lists the available network interfaces by number for use in link-layer 
 injection.
-
+.Pp
 NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
+.El
+.Sh DIAGNOSTICS
 Nemesis-arp returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
+.Sh BUGS
 Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
+.Sh AUTHOR
 Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-dhcp(1), nemesis-dns(1), nemesis-ethernet(1), nemesis-icmp(1), "
-.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), "
-.BR "nemesis-tcp(1), nemesis-udp(1)"
+.Sh SEE ALSO
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
