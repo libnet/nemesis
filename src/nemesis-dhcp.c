@@ -365,7 +365,7 @@ static void dhcp_cmdline(int argc, char **argv)
 				perror(errbuf);
 
 			PrintDeviceList(ifacetmp);
-			dns_exit(1);
+			dhcp_exit(1);
 			/* fallthrough */
 #endif
 		case '?':
