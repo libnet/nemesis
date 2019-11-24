@@ -3,7 +3,7 @@
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
 .\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.Dd Nov 21, 2019
+.Dd Nov 24, 2019
 .Dt nemesis-arp 1
 .Sh NAME
 .Nm nemesis-arp
@@ -11,14 +11,14 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl rsTRvZ?
-.Op Fl d Ar Ethernet-device
-.Op Fl D Ar destination-IP-address
-.Op Fl h Ar sender-hardware-address
-.Op Fl H Ar source-MAC-address
-.Op Fl m Ar target-hardware-address
-.Op Fl M Ar destination-MAC-address
-.Op Fl P Ar payload-file
-.Op Fl S Ar source-IP-address
+.Op Fl d Ar IFNAME
+.Op Fl D Ar ADDR
+.Op Fl h Ar MAC
+.Op Fl H Ar MAC
+.Op Fl m Ar MAC
+.Op Fl M Ar MAC
+.Op Fl P Ar FILE
+.Op Fl S Ar ADDR
 .Sh DESCRIPTION
 .Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
@@ -30,40 +30,34 @@ provides an interface to craft and inject ARP frames allowing the user to
 specify any portion of an ARP frame. 
 .Sh ARP/RARP OPTIONS
 .Bl -tag -width Ds
-.It Fl D Ar destination-IP-address
-Specify the
-.Ar destination-IP-address
-of the injected ARP frame.
-.It Fl h Ar sender-hardware-address
-Specify the
-.Ar sender-hardware-address
-within the ARP frame only.
-.It Fl m Ar target-hardware-address
-Specify the
-.Ar target-hardware-address
-within the ARP frame only.
-.It Fl P Ar payload-file
-This will cause nemesis-arp to use the specified
-.Ar payload-file
+.It Fl D Ar ADDR
+Specify the destination IP address of the injected ARP frame.
+.It Fl h Ar MAC
+Specify the sender hardware address within the ARP frame only.
+.It Fl m Ar MAC
+Specify the target hardware address within the ARP frame only.
+.It Fl P Ar FILE
+This will cause
+.Nm
+to use the specified payload
+.Ar FILE
 as the payload when injecting ARP/RARP frames.  The maximum payload size is 
 1472 bytes in order to account for the maximum Ethernet frame size.  Payloads
 can also be read from stdin by specifying
-.Fl P Ar -
-instead of a payload-file.
-.It Fl r Ar reply-enable
+.Fl P-
+instead.
+.It Fl r
 Enables ARP/RARP replies.
-.It Fl R Ar RARP-Enable
+.It Fl R
 Enables RARP mode.
-.It Fl s Ar Solaris-mode-enable
+.It Fl s
 When performing ARP requests, rather than zero out the 6 byte target hardware 
 address field within the ARP frame, Solaris systems copy the target hardware 
 address from the Ethernet header into this field.  This option emulates Solaris
 systems by setting the target hardware address within ARP frame to 
 ff:ff:ff:ff:ff:ff rather than the standard 00:00:00:00:00:00.
-.It Fl S Ar source-IP-address
-Specify the
-.Ar source-IP-address
-of the injected ARP frame.
+.It Fl S Ar ADDR
+Specify the source IP address of the injected ARP frame.
 .It Fl v
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected packet with printable ASCII characters on the right.  Use three 
@@ -71,31 +65,27 @@ times for a hexdump without decoded ASCII.
 .El
 .Sh DATA LINK OPTIONS
 .Bl -tag -width Ds
-.It Fl d Ar Ethernet-device
+.It Fl d Ar IFNAME
 Specify the name (for UNIX-like systems) or the number (for Windows systems) 
 of the
-.Ar Ethernet-device
+.Ar IFNAME
 to use (eg. fxp0, eth0, hme0, 1).
-.It Fl H Ar source-MAC-address
-Specify the
-.Ar source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.It Fl M Ar destination-MAC-address
-Specify the
-.Ar destintion-MAC-address
-(XX:XX:XX:XX:XX:XX).
+.It Fl H Ar MAC
+Specify the source MAC address
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl M Ar MAC
+Specify the destintion MAC address
+.Ar ( XX:XX:XX:XX:XX:XX ) .
 .It Fl Z
 Lists the available network interfaces by number for use in link-layer 
 injection.
 .Pp
-NOTE: This feature is only relevant to Windows systems.
+.Sy NOTE:
+This feature is only relevant to Windows systems.
 .El
 .Sh DIAGNOSTICS
-Nemesis-arp returns 0 on a successful exit, 1 if it exits on an error.
-.Sh BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.Sh AUTHOR
-Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
 .Sh SEE ALSO
 .Xr nemesis-dhcp 1 ,
 .Xr nemesis-dns 1 ,
@@ -107,3 +97,10 @@ Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
 .Xr nemesis-rip 1 ,
 .Xr nemesis-tcp 1 ,
 .Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Mark Grimes Aq Mt mark@stateful.net
+and
+.An Jeff Nathan Aq Mt jeff@snort.org .
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
