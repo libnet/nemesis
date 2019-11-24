@@ -1,205 +1,216 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000 , 2001 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS-DHCP 1 "8 June 2019" 
-.SH NAME
-nemesis-dhcp \- DHCP Protocol (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis-dhcp [-vZ?] [-c
-.I COUNT
-.B ] [-i
-.I INTERVAL
-.B ] [-d
-.I Ethernet-device
-.B ] [-C
-.I DHCP-client-address
-.B ] [-D
-.I destination-IP-address
-.B ] [-f
-.I TCP-flags
-.B ] [-F
-.I fragmentation-options
-.B ] [-f
-.I DHCP-flags
-.B ] [-g
-.I DHCP-gateway-address
-.B ] [-h
-.I DHCP-client-MAC-address
-.B ] [-H
-.I source-MAC-address
-.B ] [-I
-.I IP-ID
-.B ] [-M
-.I destination-MAC-address
-.B ] [-o
-.I DHCP-opcode
-.B ] [-O
-.I IP-options-file
-.B ] [-P
-.I DHCP-payload-file
-.B ] [-s
-.I DHCP-server-address
-.B ] [-S
-.I source-IP-address
-.B ] [-t
-.I IP-TOS
-.B ] [-T
-.I IP-TTL
-.B ] [-x
-.I UDP-source-port
-.B ] [-y
-.I UDP-destination-port
-.B ] [-Y
-.I DHCP-your-address
-.B ]
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Nov 21, 2019
+.Dt nemesis-dhcp 1 USM
+.Sh NAME
+.Nm nemesis-dhcp
+.Nd DHCP Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl vZ?
+.Op Fl c Ar COUNT
+.Op Fl i Ar INTERVAL
+.Op Fl d Ar IFNAME
+.Op Fl C Ar ADDR
+.Op Fl D Ar ADDR
+.Op Fl F Ar OPT
+.Op Fl f Ar FLAGS
+.Op Fl g Ar ADDR
+.Op Fl h Ar MAC
+.Op Fl H Ar MAC
+.Op Fl I Ar ID
+.Op Fl M Ar MAC
+.Op Fl o Ar CODE
+.Op Fl O Ar FILE
+.Op Fl P Ar FILE
+.Op Fl s Ar ADDR
+.Op Fl S Ar ADDR
+.Op Fl t Ar IP-TOS
+.Op Fl T Ar TTL
+.Op Fl x Ar PORT
+.Op Fl y Ar PORT
+.Op Fl Y Ar ADDR
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
 and Windows systems.  The suite is broken down by protocol, and should allow 
 for useful scripting of injected packets from simple shell scripts. 
-.PP
-.B nemesis-dhcp
+.Pp
+.Nm
 provides an interface to craft and inject DHCP packets allowing the user to 
 specify any portion of a DHCP packet as well as lower-level IP and TCP/UDP 
 packet information.
-
+.Pp
 By default a DHCP Discover (client) message is created.  To successfully
 send it out a network interface you must be root.
-.SH GENERAL OPTIONS
-.IP "-c COUNT"
+.Sh GENERAL OPTIONS
+.Bl -tag -width Ds
+.It Fl c Ar COUNT
 Number of packets to send, default: 1.
-.IP "-i INTERVAL"
-Seconds between repeatedly sent packets, only available if '\-c' is given.
-.IP "-v verbose-mode"
+.It Fl i Ar INTERVAL
+Seconds between repeatedly sent packets, only available if
+.Fl c
+is given.
+.It Fl v
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected packet with printable ASCII characters on the right.  Use three
 times for a hexdump without decoded ASCII.
-.SH DHCP OPTIONS
-.IP "-o DHCP-opcode"
+.El
+.Sh DHCP OPTIONS
+.Bl -tag -width Ds
+.It Fl o Ar CODE
 BOOTP/DHCP opcode to send, default: 1 (request).
-.IP "-f DHCP-flags"
+.It Fl f Ar FLAGS
 Specify the
-.I DHCP flags
+.Ar FLAGS
 within the DHCP header, default: 0x8000.
-.IP "-g DHCP-gateway-address"
+.It Fl g Ar ADDR
 DHCP Gateway (relay agent) IP address.
-.IP "-s DHCP-server-address"
+.It Fl s Ar ADDR
 DHCP server IP address.
-.IP "-C DHCP-client-address"
+.It Fl C Ar ADDR
 DHCP client's IP address.
-.IP "-Y DHCP-your-address"
+.It Fl Y Ar ADDR
 Your IP address, the lease from the DHCP server.
-.IP "-h DHCP-client-MAC-address"
+.It Fl h Ar MAC
 Client's HW address, MAC.
-.IP "-P payload-file"
+.It Fl P Ar FILE
 This will cause nemesis-dhcp to use the specified
-.I payload-file
+.Ar FILE
 as the payload when injecting DHCP packets.  For packets injected using
-the raw interface (where \-d is not used), the maximum payload size is
-65455 for DHCP packets.  For packets injected using the link layer
-interface (where \-d IS used), the maximum payload size is 1420 bytes.
-Payloads can also be read from stdin by specifying '\-P \-' instead of a
-payload-file.
-
+the raw interface (where
+.Fl d
+is not used), the maximum payload size is 65455 for DHCP packets.  For
+packets injected using the link layer interface (where
+.Fl d
+IS used), the maximum payload size is 1420 bytes.  Payloads can also be
+read from stdin by specifying
+.Fl P-
+instead.
+.Pp
+.Sy NOTE:
 Windows systems are limited to a maximum payload size of 1420 bytes.
-
+.Pp
 The payload file can consist of any arbitrary data though it will be
 most useful to create a payload resembling the structure of the DHCP
 packet specified using the command-line options.
-.SH UDP OPTIONS
-.IP "-x UDP-source-port"
-Source Port of injected packet.
-.IP "-y UDP-Destination-Port"
-Target Port of injected packet.
-.SH IP OPTIONS
-.IP "-D destination-IP-address"
+.El
+.Sh UDP OPTIONS
+.Bl -tag -width Ds
+.It Fl x Ar PORT
+UDP source port of injected packet.
+.It Fl y Ar PORT
+UDP target port of injected packet.
+.El
+.Sh IP OPTIONS
+.Bl -tag -width Ds
+.It Fl D Ar ADDR
 Specify the
-.I destination-IP-address
+.Ar ADDR
 within the IP header.
-.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
+.It Fl F Ar OPT
 Specify the
-.I fragmentation options:
-
-.in +.51
-.nf
-.I -FD (don't fragment)
-.I -FM (more fragments)
-.I -FR (reserved flag)
-.I -F <offset>
-.fi
-.in -.51
-
-within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the \-F command line switch by separating 
-the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
-fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
-Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
-are 1-bit fields.  
-
-NOTE: Under normal conditions, the reserved flag is unset.
-.IP "-I IP-ID"
-Specify the
-.I IP-ID
-within the IP header.
-.IP "-O IP-options-file"
-This will cause nemesis-dhcp to use the specified
-.I IP-options-file
-as the options when building the IP header for the injected packet.  IP 
-options can be up to 40 bytes in length.  The IP options file must be created
-manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '\-O \-' instead of an IP\-options\-file.
-.IP "-S source-IP-address"
-Specify the
-.I source-IP-address
-within the IP header.
-.IP "-t IP-TOS"
-Specify the
-.I IP-type-of-service (TOS)
-within the IP header.  Valid type of service values:
-
-.in +.51
-.nf
-2  (Minimize monetary cost)
-4  (Maximize reliability)
-8  (Maximize throughput)
-24 (Minimize delay)
-.fi
-.in -.51
-
-NOTE: Under normal conditions, only one type of service is set within a 
-packet.  To specify multiple types, specify the sum of the desired values as
-the type of service.
-.IP "-T IP-TTL"
-Specify the
-.I IP-time-to-live (TTL)
-within the IP header.
+.Ar OPT
+within the IP header:
+.Pp
+.Bl -tag -width "-F offset" -compact -offset indent
+.It Fl FD
+don't fragment
+.It Fl FM
+more fragments
+.It Fl FR
+reserved flag
+.It Fl F Ar offset
+.El
+.Pp
+IP fragmentation options can be specified individually or combined into
+a single argument to the
+.F F
+command line switch by separating the options with commas (eg.
+.Fl FD,M )
+or spaces (eg.
+.Fl FM Ar 223 ) .
+The IP fragmentation offset is a 13-bit field with valid values from 0
+to 8189.  Don't fragment (DF), more fragments (MF) and the reserved flag
+(RESERVED or RB) are 1-bit fields.
+.Pp
+.Sy NOTE:
+Under normal conditions, the reserved flag is unset.
+.It Fl I Ar ID
+Specify the IP ID within the IP header.
+.It Fl O Ar FILE
+This will cause nemesis-dhcp to use the specified IP options file,
+.Ar FILE ,
+as the options when building the IP header for the injected packet.  IP
+options can be up to 40 bytes in length.  The IP options file must be
+created manually based upon the desired options.  IP options can also be
+read from stdin by specifying
+.Fl O-
+instead of an IP options file.
+.It Fl S Ar ADDR
+Specify the source IP address within the IP header.
+.It Fl t Ar TOS
+Specify the IP type-of-service (TOS) within the IP header.  Valid type
+of service values:
+.Pp
+.Bl -tag -width 24 -offset indent -compact
+.It 2
+Minimize monetary cost
+.It 4
+Maximize reliability
+.It 8
+Maximize throughput
+.It 24
+Minimize delay
+.El
+.Pp
+.Sy NOTE:
+Under normal conditions, only one type of service is set within a
+packet.  To specify multiple types, specify the sum of the desired
+values as the type of service.
+.It Fl T Ar TTL
+Specify the IP time-to-live (TTL) within the IP header.
 .SH DATA LINK OPTIONS
-.IP "-d Ethernet-device"
+.It Fl d Ar IFNAME
 Specify the name (for UNIX-like systems) or the number (for Windows systems) 
 of the
-.I Ethernet-device
+.Ar IFNAME
 to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
-Specify the
-.I source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
-Specify the
-.I defination-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-Z list-network-interfaces"
+.It Fl H Ar MAC
+Specify the source
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl M Ar MAC
+Specify the destination
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl Z
 Lists the available network interfaces by number for use in link-layer 
 injection.
-
-NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
-Nemesis-dhcp returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Joachim Nilsson <troglobit@gmail.com>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-ethernet(1), nemesis-icmp(1), nemesis-igmp(1), "
-.BR "nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), nemesis-tcp(1), "
-.BR "nemesis-udp(1), nemesis-dns(1)"
+.Pp
+.Sy NOTE:
+This feature is only relevant to Windows systems.
+.Sh DIAGNOSTICS
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Joachim Nilsson Aq Mt troglobit@gmail.com
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
