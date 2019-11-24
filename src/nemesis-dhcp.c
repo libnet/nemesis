@@ -155,7 +155,7 @@ static void dhcp_usage(char *prognm)
 	       "                    0x1:  DHCP request (default)\n"
 	       "                    0x2:  DHCP reply\n"
 	       "  -f <FLAGS>   DHCP flags, default: 0x8000\n"
-	       "  -h <MAC>     Client's HW address, MAC"
+	       "  -h <MAC>     Client's HW address, MAC\n"
 	       "  -g <ADDR>    Gateway IP address, GIP (relay agent)\n"
 	       "  -s <ADDR>    Server IP address, SIP\n"
 	       "  -C <ADDR>    Client's IP address, CIP\n"
