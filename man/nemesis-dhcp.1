@@ -91,12 +91,12 @@ read from stdin by specifying
 .Fl P-
 instead.
 .Pp
-.Sy NOTE:
-Windows systems are limited to a maximum payload size of 1420 bytes.
-.Pp
 The payload file can consist of any arbitrary data though it will be
 most useful to create a payload resembling the structure of the DHCP
 packet specified using the command-line options.
+.Pp
+.Sy NOTE:
+Windows systems are limited to a maximum payload size of 1420 bytes.
 .El
 .Sh UDP OPTIONS
 .Bl -tag -width Ds
@@ -173,7 +173,9 @@ packet.  To specify multiple types, specify the sum of the desired
 values as the type of service.
 .It Fl T Ar TTL
 Specify the IP time-to-live (TTL) within the IP header.
-.SH DATA LINK OPTIONS
+.El
+.Sh DATA LINK OPTIONS
+.Bl -tag -width 24 -offset indent -compact
 .It Fl d Ar IFNAME
 Specify the name (for UNIX-like systems) or the number (for Windows systems) 
 of the
