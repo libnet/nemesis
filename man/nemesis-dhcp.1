@@ -78,7 +78,9 @@ Your IP address, the lease from the DHCP server.
 .It Fl h Ar MAC
 Client's HW address, MAC.
 .It Fl P Ar FILE
-This will cause nemesis-dhcp to use the specified
+This will cause
+.Nm
+to use the specified
 .Ar FILE
 as the payload when injecting DHCP packets.  For packets injected using
 the raw interface (where
@@ -108,13 +110,9 @@ UDP target port of injected packet.
 .Sh IP OPTIONS
 .Bl -tag -width Ds
 .It Fl D Ar ADDR
-Specify the
-.Ar ADDR
-within the IP header.
+Specify the destination IP address in the IP header.
 .It Fl F Ar OPT
-Specify the
-.Ar OPT
-within the IP header:
+Specify the fragmentation options in the IP header:
 .Pp
 .Bl -tag -width "-F offset" -compact -offset indent
 .It Fl FD
@@ -140,9 +138,11 @@ to 8189.  Don't fragment (DF), more fragments (MF) and the reserved flag
 .Sy NOTE:
 Under normal conditions, the reserved flag is unset.
 .It Fl I Ar ID
-Specify the IP ID within the IP header.
+Specify the IP ID in the IP header.
 .It Fl O Ar FILE
-This will cause nemesis-dhcp to use the specified IP options file,
+This will cause
+.Nm
+to use the specified IP options file,
 .Ar FILE ,
 as the options when building the IP header for the injected packet.  IP
 options can be up to 40 bytes in length.  The IP options file must be
@@ -151,9 +151,9 @@ read from stdin by specifying
 .Fl O-
 instead of an IP options file.
 .It Fl S Ar ADDR
-Specify the source IP address within the IP header.
+Specify the source IP address in the IP header.
 .It Fl t Ar TOS
-Specify the IP type-of-service (TOS) within the IP header.  Valid type
+Specify the IP type-of-service (TOS) in the IP header.  Valid type
 of service values:
 .Pp
 .Bl -tag -width 24 -offset indent -compact
@@ -172,10 +172,10 @@ Under normal conditions, only one type of service is set within a
 packet.  To specify multiple types, specify the sum of the desired
 values as the type of service.
 .It Fl T Ar TTL
-Specify the IP time-to-live (TTL) within the IP header.
+Specify the IP time-to-live (TTL) in the IP header.
 .El
 .Sh DATA LINK OPTIONS
-.Bl -tag -width 24 -offset indent -compact
+.Bl -tag -width Ds
 .It Fl d Ar IFNAME
 Specify the name (for UNIX-like systems) or the number (for Windows systems) 
 of the
@@ -197,6 +197,7 @@ injection.
 .Pp
 .Sy NOTE:
 This feature is only relevant to Windows systems.
+.El
 .Sh DIAGNOSTICS
 .Nm
 returns 0 on a successful exit, 1 if it exits on an error.
