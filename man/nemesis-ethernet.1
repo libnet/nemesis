@@ -1,88 +1,101 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS-ETHERNET 1 "16 May 2003" 
-.SH NAME
-nemesis-ethernet \- Ethernet Protocol (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis-ethernet [-vZ?] [-d
-.I Ethernet-device
-.B ] [-H
-.I source-MAC-address
-.B ] [-M
-.I destination-MAC-address
-.B ] [-P
-.I payload-file
-.B ] [-T
-.I Ethernet-type
-.B ]
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Dec 4, 2019
+.Dt nemesis-ethernet 1 USM
+.Sh NAME
+.Nm nemesis-ethernet
+.Nd Ethernet Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl vZ?
+.Op Fl d Ar IFNAME
+.Op Fl H Ar MAC
+.Op Fl M Ar MAC
+.Op Fl P Ar FILE
+.Op Fl T Ar TYPE
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
 and Windows systems.  The suite is broken down by protocol, and should allow 
 for useful scripting of injected packets from simple shell scripts. 
-.PP
-.B nemesis-ethernet
+.Pp
+.Nm
 provides an interface to craft and inject Ethernet frames allowing the user to 
 inject an entirely arbitrary Ethernet frame.
-.SH ETHERNET OPTIONS
-.IP "-d Ethernet-device"
-Specify the name (for UNIX-like systems) or the number (for Windows systems) 
+.Sh ETHERNET OPTIONS
+.Bl -tag -width Ds
+.It Fl d Ar IFNAME
+Specify the name, for UNIX-like systems, or number, for Windows systems,
 of the
-.I Ethernet-device
+.Ar IFNAME
 to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
-Specify the
-.I source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
-Specify the
-.I destintion-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-P payload-file"
-This will cause nemesis-ethernet to use the specified
-.I payload-file
-as the payload when injecting Ethernet frames.  The maximum payload size is 
-1500 bytes in order to account for the maximum Ethernet frame size.  Payloads
-can also be read from stdin by specifying '\-P \-'
-instead of a payload-file.
-
+.It Fl H Ar MAC
+Specify the source MAC address (XX:XX:XX:XX:XX:XX).
+.It Fl M Ar MAC
+Specify the destintion MAC address (XX:XX:XX:XX:XX:XX).
+.It Fl P Ar FILE
+This will cause nemesis-ethernet to use the specified payload
+.Ar FILE
+as the payload when injecting Ethernet frames.  The maximum payload size
+is 1500 bytes in order to account for the maximum Ethernet frame size.
+Payloads can also be read from stdin by specifying
+.Fl P-
+instead.
+.Pp
 The payload file can consist of any arbitrary data though it will be most useful
 to create a payload resembling the structure of a packet type not supported by
 nemesis.  Used in this manner, virtually any link layer frame can be injected. 
-.IP "-T Ethernet-type"
-Specify the
-.I Ethernet-type
-as an integer.  Valid Ethernet types include:
-
-.in +.51
-.nf
-512   (PUP)
-2048  (IP)
-2054  (ARP)
-32821 (RARP)
-33024 (802.1q)
-34525 (IPv6)
-34915 (PPPOE discovery)
-34916 (PPPOE session)
-.fi
-.in -.51
-.IP "-v verbose-mode"
+.It Fl T Ar TYPE
+Specify the Ethernet type/length field, as an integer.  Valid Ethernet
+types include:
+.Pp
+.Bl -tag -width 12345 -offset indent -compact
+.It 512
+PUP
+.It 2048
+IP
+.It 2054
+ARP
+.It 32821
+RARP
+.It 33024
+802.1Q
+.It 34525
+IPv6
+.It 34915
+PPPOE discovery
+.It 34916
+PPPOE session
+.El
+.It Fl v
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected packet with printable ASCII characters on the right.  Use three 
 times for a hexdump without decoded ASCII.
-.IP "-Z list-network-interfaces"
-Lists the available network interfaces by number for use in link-layer 
+.It Fl Z
+Lists available network interfaces by number for use in link-layer
 injection.
-
-NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
-Nemesis-ethernet returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-dhcp(1), nemesis-dns(1), nemesis-icmp(1), "
-.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), "
-.BR "nemesis-tcp(1), nemesis-udp(1)"
+.Pp
+.Sy NOTE:
+This feature is only relevant to Windows systems.
+.El
+.Sh DIAGNOSTICS
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Jeff Nathan Aq Mt jeff@snort.org
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
