@@ -200,9 +200,9 @@ static void dhcp_cmdline(int argc, char **argv)
 	int          opt;
 
 #if defined(WIN32)
-	dhcp_options = "c:C:d:D:f:F:g:h:H:i:I:M:o:O:P:s:t:T:x:y:Y:vZ?";
+	dhcp_options = "c:C:d:D:f:F:g:h:H:i:I:M:o:O:P:s:S:t:T:x:y:Y:vZ?";
 #else
-	dhcp_options = "c:c:d:D:f:F:g:h:H:i:I:M:o:O:P:s:t:T:x:y:Y:v?";
+	dhcp_options = "c:c:d:D:f:F:g:h:H:i:I:M:o:O:P:s:S:t:T:x:y:Y:v?";
 #endif
 	while ((opt = getopt(argc, argv, dhcp_options)) != -1) {
 		switch (opt) {
