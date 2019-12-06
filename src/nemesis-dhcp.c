@@ -194,10 +194,10 @@ static void dhcp_usage(char *prognm)
 
 static void dhcp_cmdline(int argc, char **argv)
 {
-	uint32_t     addr_tmp[6];
+	uint8_t      addr_tmp[6];
 	uint8_t      opcode = 0;
 	char        *dhcp_options;
-	int          opt;
+	int          opt, rc;
 
 #if defined(WIN32)
 	dhcp_options = "c:C:d:D:f:F:g:h:H:i:I:M:o:O:P:s:S:t:T:x:y:Y:vZ?";
@@ -265,15 +265,24 @@ static void dhcp_cmdline(int argc, char **argv)
 
 		case 'h': /* Client's MAC address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
-			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
-			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
-			memcpy(dhcphdr.dhcp_chaddr, addr_tmp, NELEMS(addr_tmp));
+			rc = sscanf(optarg, "%02hhX:%02hhX:%02hhX:%02hhX:%02hhX:%02hhX",
+				    &addr_tmp[0], &addr_tmp[1], &addr_tmp[2],
+				    &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			if (rc != 6) {
+				fprintf(stderr, "ERROR: Invalid DHCP client MAC HW address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
+			memcpy(dhcphdr.dhcp_chaddr, addr_tmp, sizeof(addr_tmp));
 			break;
 
 		case 'H': /* Ethernet source address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
-			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
-			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			rc = sscanf(optarg, "%02hhX:%02hhX:%02hhX:%02hhX:%02hhX:%02hhX", &addr_tmp[0],
+				    &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			if (rc != 6) {
+				fprintf(stderr, "ERROR: Invalid Ethernet destination MAC address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
 			memcpy(etherhdr.ether_shost, addr_tmp, NELEMS(addr_tmp));
 			break;
 
@@ -283,8 +292,12 @@ static void dhcp_cmdline(int argc, char **argv)
 
 		case 'M': /* Ethernet destination address */
 			memset(addr_tmp, 0, sizeof(addr_tmp));
-			sscanf(optarg, "%02X:%02X:%02X:%02X:%02X:%02X", &addr_tmp[0],
-			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			rc = sscanf(optarg, "%02hhX:%02hhX:%02hhX:%02hhX:%02hhX:%02hhX", &addr_tmp[0],
+				    &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
+			if (rc != 6) {
+				fprintf(stderr, "ERROR: Invalid Ethernet destination MAC address: \"%s\".\n", optarg);
+				dhcp_exit(1);
+			}
 			memcpy(etherhdr.ether_dhost, addr_tmp, NELEMS(addr_tmp));
 			break;
 
