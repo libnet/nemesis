@@ -1,271 +1,263 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS-ICMP 1 "16 May 2003" 
-.SH NAME
-nemesis-icmp \- ICMP Protocol (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis-icmp [-vZ?] [-a 
-.I ICMP-timestamp-request-reply-transmit-time
-.B ] [-b
-.I original-destination-IP-address
-.B ] [-B
-.I original-source-IP-address
-.B ] [-c
-.I ICMP-code
-.B ] [-d
-.I Ethernet-device
-.B ] [-D
-.I destination-IP-address
-.B ] [-e
-.I ICMP-ID
-.B ] [-f
-.I original-IP-fragmentation
-.B ] [-F
-.I fragmentation-options
-.B ] [-G
-.I preferred-gateway
-.B ] [-H
-.I source-MAC-address
-.B ] [-i
-.I ICMP-type
-.B ] [-I
-.I IP-ID
-.B ] [-j
-.I original-IP-TOS
-.B ] [-J
-.I original-IP-TTL
-.B ] [-l
-.I original-IP-options-file
-.B ] [-m
-.I ICMP-mask
-.B ] [-M
-.I destination-MAC-address
-.B ] [-o
-.I ICMP-timestamp-request-transmit-time
-.B ] [-O
-.I IP-options-file
-.B ] [-p
-.I original-IP-protocol
-.B ] [-P
-.I payload-file
-.B ] [-q
-.I ICMP-injection-mode
-.B ] [-r
-.I ICMP-timestamp-request-reply-received-time
-.B ] [-S
-.I source-IP-address
-.B ] [-t
-.I IP-TOS
-.B ] [-T
-.I IP-TTL
-.B ]
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Dec 6, 2019
+.Dt nemesis-icmp 1 USM
+.Sh NAME
+.Nm nemesis-icmp
+.Nd ICMP Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl vZ?
+.Op Fl a Ar TIME
+.Op Fl b Ar ADDR
+.Op Fl B Ar ADDR
+.Op Fl c Ar CODE
+.Op Fl d Ar IFNAME
+.Op Fl D Ar ADDR
+.Op Fl e Ar ID
+.Op Fl f Ar OFFSET
+.Op Fl F Ar OPT
+.Op Fl G Ar ADDR
+.Op Fl H Ar MAC
+.Op Fl i Ar TYPE
+.Op Fl I Ar ID
+.Op Fl j Ar TOS
+.Op Fl J Ar TTL
+.Op Fl l Ar FILE
+.Op Fl m Ar MASK
+.Op Fl M Ar MAC
+.Op Fl o Ar TIME
+.Op Fl O Ar FILE
+.Op Fl p Ar PROTO
+.Op Fl P Ar FILE
+.Op Fl q Ar MODE
+.Op Fl r Ar TIME
+.Op Fl s Ar NUM
+.Op Fl S Ar ADDR
+.Op Fl t Ar TOS
+.Op Fl T Ar TTL
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
 and Windows systems.  The suite is broken down by protocol, and should allow 
 for useful scripting of injected packets from simple shell scripts.
-.PP
-.B nemesis-icmp
+.Pp
+.Nm
 provides an interface to craft and inject ICMP packets allowing the user to
 specify any portion of an ICMP packet as well as lower-level IP packet
 information.
-.SH ICMP Options
-.IP "-c ICMP-type"
-Specify the
-.I ICMP-code
-within the ICMP header.
-.IP "-e ICMP-ID"
-Specify the
-.I ICMP-ID
-within the ICMP header.
-.IP "-G preferred-gateway"
-Specify the
-.I preferred-gateway-IP-address
-for ICMP redirect injection.
-.IP "-i ICMP-type"
-Specify the
-.I ICMP-type
-within the ICMP header.
-.IP "-m address-mask"
-Specify the
-.I IP-address-mask 
-for ICMP address mask packets.
-.IP "-P payload-file"
-This will case nemesis-icmp to use the specified
-.I payload-file
-as the payload when injecting ICMP packets.  For packets injected using the
-raw interface (where \-d is not used), the maximum payload size is
-65387 bytes.  For packets injected using the link layer interface
-(where \-d IS used), the maximum payload size is 1352 bytes.  Payloads can also
-be read from stdin by specifying '\-P \-' instead of a payload file.
-
+.Sh ICMP OPTIONS
+.Bl -tag -width Ds
+.It Fl c Ar CODE
+Specify the ICMP code within the ICMP header.
+.It Fl e Ar ID
+Specify the ICMP ID within the ICMP header.
+.It Fl G Ar ADDR
+Specify the preferred gateway IP address for ICMP redirect injection.
+.It Fl i Ar TYPE
+Specify the ICMP type within the ICMP header.
+.It Fl m Ar MASK
+Specify the IP address mask for ICMP address mask packets.
+.It Fl P Ar FILE
+This will cause
+.Nm
+to use the specified payload file as the payload when injecting ICMP
+packets.  For packets injected using the raw interface (where
+.Fl d
+is not used), the maximum payload size is 65387 bytes.  For packets
+injected using the link layer interface (where
+.Fl d
+IS used), the maximum payload size is 1352 bytes.  Payloads can also be
+read from stdin by specifying
+.Fl P-
+instead.
+.Pp
 Windows systems are limited to a maximum payload size of 1352 bytes for ICMP 
 packets.
-.IP "-q ICMP-injection-mode"
-Specify the
-.I ICMP-injection-mode 
-to use when injecting.  Valid modes are:
-
-.in +.51
-.nf
-.I -qE (ICMP echo)
-.I -qM (ICMP address mask)
-.I -qU (ICMP unreachable)
-.I -qX (ICMP time exceeded)
-.I -qR (ICMP redirect)
-.I -qT (ICMP timestamp)
-.fi
-.in -.51
-
+.It Fl q Ar MODE
+Specify the ICMP injection mode to use when injecting.  Valid modes are:
+.Pp
+.Bl -tag -width -qT -offset indent -compact
+.It Fl qE
+ICMP echo
+.It Fl qM
+ICMP address mask
+.It Fl qU
+ICMP unreachable
+.It Fl qX
+ICMP time exceeded
+.It Fl qR
+ICMP redirect
+.It Fl qT
+ICMP timestamp
+.El
+.Pp
 Only one mode may be specified at a time.
-.IP "-s ICMP-sequence-number"
-Specify the
-.I ICMP-sequence-number
-within the ICMP header.
-.IP "-v verbose-mode"
+.It Fl s Ar NUM
+Specify the ICMP sequence number within the ICMP header.
+.It Fl v
 Display the injected packet in human readable form.  Use twice to see a hexdump
 of the injected packet with printable ASCII characters on the right.  Use three 
 times for a hexdump without decoded ASCII.
-.SH ICMP TIMESTAMP OPTIONS
-.IP "-a ICMP-timestamp-request-reply-transmit-time"
-Specify the
-.I ICMP-timestamp-request-reply-transmit-time
-(the time a reply to an ICMP timestamp request was transmitted)
-within the ICMP timestamp header.
-.IP "-o ICMP-timestamp-request-transmit-time"
-Specify the
-.I ICMP-timestamp-request-transmit-time
-(the time an ICMP timestamp request was transmitted)
-within the ICMP timestamp header.
-.IP "-r ICMP-timestamp-request-reply-received-time"
-Specify the
-.I ICMP-timestamp-request-reply-received-time
-(the time a reply to an ICMP timestamp request was received)
-within the ICMP timestamp header.
+.El
+.Sh ICMP TIMESTAMP OPTIONS
+.Bl -tag -width Ds
+.It Fl a Ar TIME
+Specify the ICMP timestamp request reply transmit time (the time a reply
+to an ICMP timestamp request was transmitted) within the ICMP timestamp
+header.
+.It Fl o Ar TIME
+Specify the ICMP timestamp request transmit time (the time an ICMP
+timestamp request was transmitted) within the ICMP timestamp header.
+.It Fl r Ar TIME
+Specify the ICMP timestamp request reply received time (the time a reply
+to an ICMP timestamp request was received) within the ICMP timestamp
+header.
+.El
 .SH ICMP ORIGINAL DATAGRAM OPTIONS
-.IP "-b original-destination-IP-address"
-Specify the
-.I original-destination-IP-address
-within an ICMP unreachable, redirect or time exceeded packet.
-.IP "-B original-source-IP-address"
-Specify the
-.I original-source-IP-address
-within an ICMP unreachable, redirect or time exceeded packet.
-.IP "-f original-fragmentation-options"
-Specify the
-.I original-IP-fragmentation-options
-within an ICMP unreachable, redirect or time exceeded packet.  For more 
-information reference the '\-F' command line switch.
-.IP "-j original-IP-TOS"
-Specify the
-.I original-IP-type-of-service (TOS)
-within an ICMP unreachable, redirect or time exceeded packet.
-.IP "-J original-IP-TTL"
-Specify the
-.I original-IP-time-to-live (TTL)
-within an ICMP unreachable, redirect or time exceeded packet.
-.IP "-l original-IP-options-file"
-This will cause nemesis-icmp to use the specified
-.I original-IP-options-file
-as the options when building the original IP header for the injected ICMP 
-unreachable, redirect or time exceeded packet.  IP options can be up to 40 
-bytes in length.  The IP options file must be created manually based upon the 
-desired options.  IP options can also be read from stdin by specifying '\-O \-' 
-instead of an IP-options-file.
-.IP "-p original-IP-protocol"
-Specify the
-.I original-IP-protocol
-within an ICMP unrechable, redirect or time exceeded packet.
+.Bl -tag -width Ds
+.It Fl b Ar ADDR
+Specify the original destination IP address within an ICMP unreachable,
+redirect or time exceeded packet.
+.It Fl B Ar ADDR
+Specify the original source IP address within an ICMP unreachable,
+redirect or time exceeded packet.
+.It Fl f Ar OPT
+Specify the original IP fragmentation options within an ICMP
+unreachable, redirect or time exceeded packet.  For more information,
+see the
+.Fl F
+command line switch.
+.It Fl j Ar TOS
+Specify the original IP type of service (TOS) within an ICMP
+unreachable, redirect or time exceeded packet.
+.It Fl J Ar TTL
+Specify the original IP time to live (TTL) within an ICMP unreachable,
+redirect or time exceeded packet.
+.It Fl l Ar FILE
+This will cause
+.Nm
+to use the specified IP options file as the options when building the
+original IP header for the injected ICMP unreachable, redirect or time
+exceeded packet.  IP options can be up to 40 bytes in length.  The IP
+options file must be created manually based upon the desired options.
+IP options can also be read from stdin by specifying
+.Fl O-
+instead.
+.It Fl p Ar PROTO
+Specify the IP protocol within an ICMP unrechable, redirect or time
+exceeded packet.
+.El
 .SH IP OPTIONS
-.IP "-D destination-IP-address"
-Specify the
-.I destination-IP-address
-within the IP header.
-.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
-Specify the
-.I fragmentation options:
-
-.in +.51
-.nf
-.I -FD (don't fragment)
-.I -FM (more fragments)
-.I -FR (reserved flag)
-.I -F <offset>
-.fi
-.in -.51
-
-
-within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the \-F command line switch by separating 
-the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
-fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
-Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
-are 1-bit fields.
-
-NOTE: Under normal conditions, the reserved flag is unset.
-.IP "-I IP-ID"
-Specify the
-.I IP-ID
-within the IP header.
-.IP "-O IP-options-file"
-This will cause nemesis-icmp to use the specified
-.I IP-options-file
-as the options when building the IP header for the injected packet.  IP 
-options can be up to 40 bytes in length.  The IP options file must be created
-manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '\-O \-' instead of an IP\-options\-file.
-.IP "-S source-IP-address"
-Specify the
-.I source-IP-address
-within the IP header.
-.IP "-t IP-TOS"
-Specify the
-.I IP-type-of-service (TOS)
-within the IP header.  Valid type of service values:
-
-.in +.51
-.nf
-2  (Minimize monetary cost)
-4  (Maximize reliability)
-8  (Maximize throughput)
-24 (Minimize delay)
-.fi
-.in -.51
-
-NOTE: Under normal conditions, only one type of service is set within a 
-packet.  To specify multiple types, specify the sum of the desired values as
-the type of service.
-.IP "-T IP-TTL"
-.I IP-time-to-live (TTL)
-within the IP header.
-.SH DATA LINK OPTIONS
-.IP "-d Ethernet-device"
-Specify the name (for UNIX-like systems) or the number (for Windows systems) 
-of the
-.I Ethernet-device
+.Bl -tag -width Ds
+.It Fl D Ar ADDR
+Specify the destination IP address within the IP header.
+.It Fl F Ar OPT
+Specify the fragmentation options in the IP header:
+.Pp
+.Bl -tag -width "-F offset" -compact -offset indent
+.It Fl FD
+don't fragment
+.It Fl FM
+more fragments
+.It Fl FR
+reserved flag
+.It Fl F Ar offset
+.El
+.Pp
+IP fragmentation options can be specified individually or combined into
+a single argument to the
+.F F
+command line switch by separating the options with commas (eg.
+.Fl FD,M )
+or spaces (eg.
+.Fl FM Ar 223 ) .
+The IP fragmentation offset is a 13-bit field with valid values from 0
+to 8189.  Don't fragment (DF), more fragments (MF) and the reserved flag
+(RESERVED or RB) are 1-bit fields.
+.Pp
+.Sy NOTE:
+Under normal conditions, the reserved flag is unset.
+.It Fl I Ar ID
+Specify the IP ID within the IP header.
+.It Fl O Ar FILE
+This will cause
+.Nm
+to use the specified IP options file as the options when building the IP
+header for the injected packet.  IP options can be up to 40 bytes in
+length.  The IP options file must be created manually based upon the
+desired options.  IP options can also be read from stdin by specifying
+.Fl O-
+instead.
+.It Fl S Ar ADDR
+Specify the source IP address within the IP header.
+.It Fl t Ar TOS
+Specify the IP type of service (TOS) within the IP header.  Valid type
+of service values:
+.Pp
+.Bl -tag -width 24 -offset indent -compact
+.It 2
+Minimize monetary cost
+.It 4
+Maximize reliability
+.It 8
+Maximize throughput
+.It 24
+Minimize delay
+.El
+.Pp
+.Sy NOTE:
+Under normal conditions, only one type of service is set within a
+packet.  To specify multiple types, specify the sum of the desired
+values as the type of service.
+.It Fl T Ar TTL
+Specify the IP time-to-live (TTL) in the IP header.
+.El
+.Sh DATA LINK OPTIONS
+.Bl -tag -width Ds
+.It Fl d Ar IFNAME
+Specify the name (for UNIX-like systems) or the number (for Windows
+systems) of the
+.Ar IFNAME
 to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
-Specify the
-.I source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
-Specify the
-.I destintion-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-Z list-network-interfaces"
-Lists the available network interfaces by number for use in link-layer 
+.It Fl H Ar MAC
+Specify the source
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl M Ar MAC
+Specify the destination
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl Z
+Lists the available network interfaces by number for use in link-layer
 injection.
-
-NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
-Nemesis-icmp returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-dhcp(1), nemesis-dns(1), nemesis-ethernet(1), "
-.BR "nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), "
-.BR "nemesis-tcp(1), nemesis-udp(1)"
+.Pp
+.Sy NOTE:
+This feature is only relevant to Windows systems.
+.El
+.Sh DIAGNOSTICS
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Mark Grimes Aq Mt mark@stateful.net
+and
+.An Jeff Nathan Aq Mt jeff@snort.org
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
