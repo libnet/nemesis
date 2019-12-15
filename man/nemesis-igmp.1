@@ -1,177 +1,221 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS-IGMP 1 "16 May 2003" 
-.SH NAME
-nemesis-igmp \- IGMP Protocol (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis-igmp [-vZ?] [-c
-.I IGMP-code
-.B ] [-d
-.I Ethernet-device
-.B ] [-D
-.I destination-IP-address
-.B ] [-F
-.I fragmentation-options
-.B ] [-H
-.I source-MAC-address
-.B ] [-i
-.I IGMP-group-IP-address
-.B ] [-I
-.I IP-ID
-.B ] [-M
-.I destination-MAC-address
-.B ] [-O
-.I IP-options-file
-.B ] [-p
-.I IGMP-type
-.B ] [-P
-.I payload-file
-.B ] [-S
-.I source-IP-address
-.B ] [-t
-.I IP-tos
-.B ] [-T
-.I IP-TTL
-.B ]
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Dec 13, 2019
+.Dt nemesis-igmp 1 USM
+.Sh NAME
+.Nm nemesis-igmp
+.Nd IGMP Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl vZ?
+.Op Fl c Ar COUNT
+.Op Fl d Ar IFNAME
+.Op Fl D Ar ADDR
+.Op Fl F Ar OPT
+.Op Fl g Ar GROUP
+.Op Fl H Ar MAC
+.Op Fl I Ar ID
+.Op Fl i Ar INTERVAL
+.Op Fl M Ar MAC
+.Op Fl O Ar FILE
+.Op Fl p Ar TYPE
+.Op Fl P Ar FILE
+.Op Fl S Ar ADDR
+.Op Fl t Ar TOS
+.Op Fl T Ar TTL
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like 
 and Windows systems.  The suite is broken down by protocol, and should allow 
 for useful scripting of injected packets from simple shell scripts.
-.PP
-.B nemesis-igmp
+.Pp
+.Nm
 provides an interface to craft and inject IGMP packets allowing the user to
 specify any portion of an IGMP packet as well as lower-level IP packet
 information.
-.SH IGMP Options
-.IP "-c IGMP-code (unused field)"
-Specify the
-.I IGMP-code
-or the value for the one-byte field following the IGMP type field.  This value
-is normally unused.
-.IP "-i IGMP-group-IP-address"
-Specify the
-.I IGMP-group-IP-address
-within the IGMP header.
-.IP "-p IGMP-type"
-Specify the
-.I IGMP-type
-within the IGMP header.  Valid IGMP-type values:
-
-.in +.51
-.nf
-17 (IGMP membership query)
-18 (IGMP V1 membership report)
-22 (IGMP V2 membership report)
-23 (IGMP leave group)
-.fi
-.in -.51
-
+.Sh GENERAL OPTIONS
+.Bl -tag -width Ds
+.It Fl c Ar COUNT
+Number of packets to send, default: 1.
+.It Fl i Ar INTERVAL
+Seconds between repeatedly sent packets, only available if
+.Fl c
+is given.
+.It Fl v
+Display the injected packet in human readable form.  Use twice to see a
+hexdump of the injected packet with printable ASCII characters on the
+right.  Use three times for a hexdump without decoded ASCII.
+.El
+.Sh IGMP Options
+.Bl -tag -width Ds
+.It Fl r Ar CODE
+Specify the IGMP response code, the value for the one-byte field
+following the IGMP type field.  Unused in IGMP v1, query response
+time in IGMP v2.
+.It Fl g Ar GROUP
+Specify the IGMP group address within the IGMP header.  It is used for
+IGMP v1/v2 join/leave (v1 does not have leave), and group specific IGMP
+queries.
+.It Fl p Ar TYPE
+Specify the IGMP type within the IGMP header.  Example values include:
+.Pp
+.Bl -tag -width 0x31: -offset indent -compact
+.It 0x11:
+Query, length determines version
+.It 0x12:
+Join, v1
+.It 0x13:
+DVMRP
+.It 0x14:
+PIM, v1
+.It 0x16:
+Join, v2
+.It 0x17:
+Leave, v2
+.It 0x1e:
+Multicast traceroute, response
+.It 0x1f:
+Multicast traceroute
+.It 0x22:
+Membership report, v3 join/leave
+.It 0x30:
+Multicast router advertisement
+.It 0x31:
+Multicast router solicitation
+.It 0x32:
+Multicast router termination
+.El
+.Pp
 Only one type may be specified at a time.
-.IP "-P payload-file"
-This will case nemesis-igmp to use the specified
-.I payload-file
-as the payload when injecting IGMP packets.  For packets injected using the
-raw interface (where \-d is not used), the maximum payload size is
-65467 bytes.  For packets injected using the link layer interface
-(where \-d IS used), the maximum payload size is 1432 bytes.  Payloads can also
-be read from stdin by specifying '\-P \-' instead of a payload file.
-
-Windows systems are limited to a maximum payload size of 1432 bytes for IGMP
-packets.
-.IP "-v verbose-mode"
-Display the injected packet in human readable form.  Use twice to see a hexdump
-of the injected packet with printable ASCII characters on the right.  Use three
-times for a hexdump without decoded ASCII.
-.SH IP OPTIONS
-.IP "-D destination-IP-address"
-Specify the
-.I destination-IP-address
-within the IP header.
-.IP "-F fragmentation-options (-F[D],[M],[R],[offset])"
-Specify the
-.I fragmentation options:
-
-.in +.51
-.nf
-.I -FD (don't fragment)
-.I -FM (more fragments)
-.I -FR (reserved flag)
-.I -F <offset>
-.fi
-.in -.51
-
-within the IP header.  IP fragmentation options can be specified individually 
-or combined into a single argument to the \-F command line switch by separating 
-the options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP 
-fragmentation offset is a 13-bit field with valid values from 0 to 8189.  
-Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED or RB) 
-are 1-bit fields.
-
-NOTE: Under normal conditions, the reserved flag is unset.
-.IP "-I IP-ID"
-Specify the
-.I IP-ID
-within the IP header.
-.IP "-O IP-options-file"
-This will cause nemesis-igmp to use the specified
-.I IP-options-file
-as the options when building the IP header for the injected packet.  IP 
-options can be up to 40 bytes in length.  The IP options file must be created
-manually based upon the desired options.  IP options can also be read from 
-stdin by specifying '\-O \-' instead of an IP-options\-file.
-.IP "-S source-IP-address"
-Specify the
-.I source-IP-address
-within the IP header.
-.IP "-t IP-TOS"
-Specify the
-.I IP-type-of-service (TOS)
-within the IP header.  Valid type of service values:
-
-.in +.51
-.nf
-2  (Minimize monetary cost)
-4  (Maximize reliability)
-8  (Maximize throughput)
-24 (Minimize delay)
-.fi
-.in -.51
-
-NOTE: Under normal conditions, only one type of service is set within a 
-packet.  To specify multiple types, specify the sum of the desired values as
-the type of service.
-.IP "-T IP-TTL"
-.I IP-time-to-live (TTL)
-within the IP header.
-.SH DATA LINK OPTIONS
-.IP "-d Ethernet-device"
-Specify the name (for UNIX-like systems) or the number (for Windows systems) 
-of the
-.I Ethernet-device
+.It Fl P Ar FILE
+This will cause
+.Nm
+to use the specified payload file as the raw payload when injecting IGMP
+packets.  For packets injected using the interface (where
+.Fl d
+is not used), the maximum payload size is 65467 bytes.  For packets
+injected using the link layer interface (where
+.Fl d
+IS used), the maximum payload size is 1432 bytes.  Payloads can also be
+read from stdin by specifying
+.Fl P-
+instead.
+.Pp
+Windows systems are limited to a maximum payload size of 1432 bytes for
+IGMP packets.
+.El
+.Sh IP OPTIONS
+.Sh IP OPTIONS
+.Bl -tag -width Ds
+.It Fl D Ar ADDR
+Specify the destination IP address within the IP header.
+.It Fl F Ar OPT
+Specify the fragmentation options in the IP header:
+.Pp
+.Bl -tag -width "-F offset" -compact -offset indent
+.It Fl FD
+don't fragment
+.It Fl FM
+more fragments
+.It Fl FR
+reserved flag
+.It Fl F Ar offset
+.El
+.Pp
+IP fragmentation options can be specified individually or combined into
+a single argument to the
+.Fl F
+command line switch by separating the options with commas (eg.
+.Fl FD,M )
+or spaces (eg.
+.Fl FM Ar 223 ) .
+The IP fragmentation offset is a 13-bit field with valid values from 0
+to 8189.  Don't fragment (DF), more fragments (MF) and the reserved flag
+(RESERVED or RB) are 1-bit fields.
+.Pp
+.Sy NOTE:
+Under normal conditions, the reserved flag is unset.
+.It Fl I Ar ID
+Specify the IP ID within the IP header.
+.It Fl O Ar FILE
+This will cause
+.Nm
+to use the specified IP options file as the options when building the IP
+header for the injected packet.  IP options can be up to 40 bytes in
+length.  The IP options file must be created manually based upon the
+desired options.  IP options can also be read from stdin by specifying
+.Fl O-
+instead.
+.It Fl S Ar ADDR
+Specify the source IP address within the IP header.
+.It Fl t Ar TOS
+Specify the IP type of service (TOS) within the IP header.  Valid type
+of service values:
+.Pp
+.Bl -tag -width 24 -offset indent -compact
+.It 2
+Minimize monetary cost
+.It 4
+Maximize reliability
+.It 8
+Maximize throughput
+.It 24
+Minimize delay
+.El
+.Pp
+.Sy NOTE:
+Under normal conditions, only one type of service is set within a
+packet.  To specify multiple types, specify the sum of the desired
+values as the type of service.
+.It Fl T Ar TTL
+Specify the IP time-to-live (TTL) in the IP header.
+.El
+.Sh DATA LINK OPTIONS
+.Bl -tag -width Ds
+.It Fl d Ar IFNAME
+Specify the name (for UNIX-like systems) or the number (for Windows
+systems) of the
+.Ar IFNAME
 to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H source-MAC-address"
-Specify the
-.I source-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-M destination-MAC-address"
-Specify the
-.I destintion-MAC-address
-(XX:XX:XX:XX:XX:XX).
-.IP "-Z list-network-interfaces"
-Lists the available network interfaces by number for use in link-layer 
+.It Fl H Ar MAC
+Specify the source
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl M Ar MAC
+Specify the destination
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl Z
+Lists the available network interfaces by number for use in link-layer
 injection.
-
-NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
-Nemesis-igmp returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-dhcp(1), nemesis-dns(1), nemesis-ethernet(1), "
-.BR "nemesis-icmp(1), nemesis-ip(1), nemesis-ospf(1), nemesis-rip(1), "
-.BR "nemesis-tcp(1), nemesis-udp(1)"
+.Pp
+.Sy NOTE:
+This feature is only relevant to Windows systems.
+.El
+.Sh DIAGNOSTICS
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Mark Grimes Aq Mt mark@stateful.net ,
+.An Jeff Nathan Aq Mt jeff@snort.org
+and
+.An Joachim Nilsson Aq Mt troglobit@gmail.com
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
