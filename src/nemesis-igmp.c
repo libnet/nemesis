@@ -151,7 +151,7 @@ static void igmp_usage(char *arg)
 	       "                    0x22:  Membership report, v3 join/leave\n"
 	       "                    0x30:  Multicast router advertisement\n"
 	       "                    0x31:  Multicast router solicitation\n"
-	       "                    0x31:  Multicast router termination\n"
+	       "                    0x32:  Multicast router termination\n"
 	       "  -r <CODE>    Max resp. code. v1: unused, v2: query response time\n"
 	       "  -g <GROUP>   Multicast group for join/leave, or group spec. query\n"
 	       "  -P <FILE>    Raw IGMP payload file\n"
