@@ -1,217 +1,287 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 1999, 2000 Mark Grimes <mark@stateful.net>
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\" 
-.TH NEMESIS-OSPF 1 "2 May 2018" 
-.SH NAME
-nemesis-ospf \- OSPF Protocol (The Nemesis Project)
-.SH SYNOPSIS
-\fBnemesis\-ospf\fP [\-vZ] [\fIoptlist\fP] 
-.SH DESCRIPTION
-.B The Nemesis Project
+.Dd Dec 15, 2019
+.Dt nemesis-ospf 1 USM
+.Sh NAME
+.Nm nemesis-ospf
+.Nd OSPF Protocol (The Nemesis Project)
+.Sh SYNOPSIS
+.Nm
+.Op Fl vZ?
+.Op Fl p Ar TYPE
+.Op Fl N Ar ADDR
+.Op Fl i Ar SEC
+.Op Fl l Ar SEC
+.Op Fl z Ar LEN
+.Op Fl x Ar TYPE
+.Op Fl B Ar NUM
+.Op Fl P Ar FILE
+.Op Fl L Ar ADDR
+.Op Fl u Ar NUM
+.Op Fl j Ar ADDR
+.Op Fl k Ar DATA
+.Op Fl y Ar TYPE
+.Op Fl w Ar TOS
+.Op Fl m Ar METRIC
+.Op Fl f Ar ADDR
+.Op Fl g Ar TAG
+.Op Fl L Ar ADDR
+.Op Fl n Ar MASK
+.Op Fl h Ar ADDR
+.Sh DESCRIPTION
+.Nm nemesis
 is designed to be a command line-based, portable human IP stack for UNIX-like
 and Windows systems.  The suite is broken down by protocol, and should allow
 for useful scripting of injected packets from simple shell scripts.
-.SS OSPF Packet Types
-.TP
-\fB\-p\fP \fITYPE (\-pH, \-pD, \-pR, \-pU, \-pA)\fR
-Hello (\-pH), Database Description (\-pD), 
-Link State Request (\-pR),
-Link State Update (\-pU),
-Router Links Advertisement (\-pUR),
-Network Links Advertisement (\-pUN),
-IP Summary Links Advertisement (\-pUS),
-AS External Link Advertisement (\-pUE),
-.SS OSPF HELLO options
-.TP
-\fB-N\fP \fIADDR\fR
-Neighbor Router Address
-.TP
-\fB-i\fP \fISEC\fR
-Dead Router Interval, seconds
-.TP
-\fB-l\fP \fISEC\fR
-OSPF Interval, seconds
-.SS OSPF Database Description (DBD) options
-.TP
-\fB-z\fP \fILEN\fR
-OSPF Maximum Datagram Length
-.TP
-\fB-x\fP \fITYPE\fR
-OSPF DBD Exchange Type
-.SS OSPF Link State Update (LSU) options
-.TP
-\fB-B\fP \fINUM\fR
-Number of Link State Advertisements (LSAs) to broadcast
-.TP
-\fB-P\fP \fIFILE\fR
-RAW payload file with LSAs, in plain \-pU mode
-.SS OSPF Router LSA options
-\fB-L\fP \fIADDR\fR
-Link State ID: Originating Router ID (IP address)
-.TP
-\fB-u\fP \fINUM\fR
-Number of links, default 1
-.TP
-\fB-j\fP \fIADDR\fR
-Link ID
-.TP
-\fB-k\fP \fIDATA\fR
-Link data
-.TP
-\fB-y\fP \fITYPE\fR
-Link type, default 1
-.TP
-\fB-w\fP \fITOS\fR
-Link TOS number, default 0
-.TP
-\fB-m\fP \fIMETRIC\fR
-Link TOS (0) metric (2 bytes)
-.SS OSPF Autonomous System External LSA options
-\fB-f\fP \fIADDR\fR
-Forward Address
-.TP
-\fB-g\fP \fITAG\fR
-External route tag
-.SS OSPF Network LSA options
-\fB-L\fP \fIADDR\fR
-Link State ID: Originating Router ID (IP address)
-.TP
-\fB-n\fP \fIMASK\fR
-Netmask
-.TP
-\fB-h\fP \fIADDR\fR
-Attached Router (IP address)
-.SS OSPF Summary LSA (IP Network) options
-\fB-L\fP \fIADDR\fR
-Link State ID: Network route to summarize
-.TP
-\fB-n\fP \fIMASK\fR
-Netmask of route
-.TP
-\fB-c\fP \fINUM\fR
-Cost of this route (4 bytes)
-.SS Generic LSA options for LSR and LSU packets
-\fB-G\fP \fILSA Age\fR
-Link State Advertisement Age.
-.TP
-\fB-L\fP \fIADDR\fR
-Link State ID, usually the Router ID of the originating router
-.TP
-\fB-r\fP \fIADDR\fR
-Advertising Router Address
-.TP
-\fB-s\fP \fINUM\fR
-Sequence Number
-.TP
-\fB-n\fP \fIMASK\fR
-Multi-purpose netmask
-.SS OSPF options
-\fB-m\fP \fIMETRIC\fR
+.Pp
+.Nm
+provides an interface to craft and inject OSPF packets, allowing the the
+user to specify any portion of an OSPF packet, as well as lower-lever IP
+packet information.
+.Sh OSPF Options
+.Bl -tag -width Ds
+.It Fl m Ar METRIC
 OSPF Metric
-.TP
-\fB-s\fP \fINUM\fR
+.It Fl s Ar NUM
 OSPF Sequence Number 
-.TP
-\fB-r\fP \fIADDR\fR
+.It Fl r Ar ADDR
 OSPF Advertising Router Address
-.TP
-\fB-n\fP \fIMASK\fR
+.It Fl n Ar MASK
 OSPF Netmask
-.TP
-\fB-o\fP \fIOPT\fR
+.It Fl o Ar OPT
 OSPF Options, 1 byte value
-.TP
-\fB-R\fP \fIADDR\fR
+.It Fl R Ar ADDR
 OSPF Source Router ID
-.TP
-\fB-A\fP \fIADDR\fR
+.It Fl A Ar ADDR
 OSPF Area ID, e.g. 0.0.0.1, default 0.0.0.0
-.TP
-\fB-P\fP \fIFILE\fR
+.It Fl P Ar FILE
 Filename to read for raw (HEX) OSPF packet payload, appended after
-selected packet type.  I.e., can be used with \-pU to create multi LSA
-Link State Updates.
-.TP
-.IP "-v"
-Display the injected packet in human readable form.  Use twice to see a hexdump
-of the injected package with printable ASCII characters on the right.  Use three
-times for a hexdump without decoded ASCII.
-.SH IP OPTIONS
-.IP "-S ADDR"
+selected packet type.  I.e., can be used with
+.Fl pU
+to create multi LSA Link State Updates.
+.It Fl v
+Display the injected packet in human readable form.  Use twice to see a
+hexdump of the injected package with printable ASCII characters on the
+right.  Use three times for a hexdump without decoded ASCII.
+.El
+.Ss OSPF Packet Types
+.Bl -tag -width Ds
+.It Fl p Ar TYPE
+.Pp
+.Bl -tag -width -pUE -compact
+.It Fl pH
+Hello
+.It Fl pD
+Database Description
+.It Fl pR
+Link State Request
+.It Fl pU
+Link State Update
+.It Fl pUR
+Router Links Advertisement
+.It Fl pUN
+Network Links Advertisement
+.It Fl pUS
+IP Summary Links Advertisement
+.It Fl pUE
+AS External Link Advertisement
+.El
+.Pp
+.El
+.Ss OSPF HELLO options
+.Bl -tag -width Ds
+.It Fl N Ar ADDR
+Neighbor Router Address
+.It Fl i Ar SEC
+Dead Router Interval, seconds
+.It Fl P Ar SEC
+OSPF Interval, seconds
+.El
+.Ss OSPF Database Description (DBD) options
+.Bl -tag -width Ds
+.It Fl z Ar LEN
+OSPF Maximum Datagram Length
+.It Fl x Ar TYPE
+OSPF DBD Exchange Type
+.El
+.Ss OSPF Link State Update (LSU) options
+.Bl -tag -width Ds
+.It Fl B Ar NUM
+Number of Link State Advertisements (LSAs) to broadcast
+.It Fl P Ar FILE
+RAW payload file with LSAs, in plain
+.Fl pU
+mode
+.El
+.Ss OSPF Router LSA options
+.Bl -tag -width Ds
+.It Fl L AR ADDR
+Link State ID: Originating Router ID (IP address)
+.It Fl u Ar NUM
+Number of links, default 1
+.It Fl j Ar ADDR
+Link ID
+.It Fl k Ar DATA
+Link data
+.It Fl y Ar TYPE
+Link type, default 1
+.It Fl w Ar TOS
+Link TOS number, default 0
+.It Fl m Ar METRIC
+Link TOS (0) metric (2 bytes)
+.El
+.Ss OSPF Autonomous System External LSA options
+.Bl -tag -width Ds
+.It Fl f Ar ADDR
+Forward Address
+.It Fl g Ar TAG
+External route tag
+.El
+.Ss OSPF Network LSA options
+.Bl -tag -width Ds
+.It Fl L Ar ADDR
+Link State ID: Originating Router ID (IP address)
+.It Fl n Ar MASK
+Netmask
+.It Fl h Ar ADDR
+Attached Router (IP address)
+.El
+.Ss OSPF Summary LSA (IP Network) options
+.Bl -tag -width Ds
+.It Fl L Ar ADDR
+Link State ID: Network route to summarize
+.It Fl n Ar MASK
+Netmask of route
+.It Fl c Ar NUM
+Cost of this route (4 bytes)
+.El
+.Ss Generic LSA options for LSR and LSU packets
+.Bl -tag -width Ds
+.It Fl G Ar LSA_Age
+Link State Advertisement Age.
+.It Fl L Ar ADDR
+Link State ID, usually the Router ID of the originating router
+.It Fl r Ar ADDR
+Advertising Router Address
+.It Fl s Ar NUM
+Sequence Number
+.It Fl n Ar MASK
+Multi-purpose netmask
+.El
+.Sh IP OPTIONS
+.Bl -tag -width Ds
+.It Fl S Ar ADDR
 Specify the source address within the IP header.
-.IP "-D ADDR"
+.It Fl D Ar ADDR
 Specify the destination address within the IP header.  Defaults to the
 link-local multicast address 224.0.0.5 (All OSPF Routers).
-.IP "-F OPT"
+.It Fl F Ar OPT
 Specify the IP header fragmentation options:
-
-.in +.51
-.nf
-.I -FD (don't fragment)
-.I -FM (more fragments)
-.I -FR (reserved flag)
-.I -F <offset>
-.fi
-.in -.51
-
+.Pp
+.Bl -tag -width "-F offset" -compact -offset indent
+.It Fl FD
+don't fragment
+.It Fl FM
+more fragments
+.It Fl FR
+reserved flag
+.It Fl F Ar offset
+.El
+.Pp
 IP fragmentation options can be specified individually or combined into
-a single argument to the \-F command line switch by separating the
-options with commas (eg. '\-FD,M') or spaces (eg. '\-FM 223').  The IP
-fragmentation offset is a 13-bit field with valid values from 0 to 8189.
-Don't fragment (DF), more fragments (MF) and the reserved flag (RESERVED
-or RB) are 1-bit fields.
-
-NOTE: Under normal conditions, the reserved flag is unset.
-.IP "-I ID"
-Specify the
-.I ID
-within the IP header.
-.IP "-O FILE"
-This will cause nemesis-ospf to use the specified raw (HEX)
-.I FILE
-as the options when building the IP header for the injected packet.  IP
-options can be up to 40 bytes in length.  The IP options file must be
-created manually based upon the desired options.  IP options can also be
-read from stdin by specifying '\-O \-' instead of a file.
-.IP "-t TOS"
-within the IP header.  Valid type of service values:
-
-.in +.51
-.nf
-2  (Minimize monetary cost)
-4  (Maximize reliability)
-8  (Maximize throughput)
-24 (Minimize delay)
-.fi
-.in -.51
-
-NOTE: Under normal conditions, only one type of service is set within a 
-packet.  To specify multiple types, specify the sum of the desired values as
-the type of service.
-.IP "-T TTL"
-Specify the TTL value within the IP header.  This defaults to 1 since
-the default destination IP address is a link-local multicast address.
-.SH DATA LINK OPTIONS
-.IP "-d <NAME|NUM>"
-Specify the interface name, for UNIX-like systems, or number for Windows systems,
-of the Ethernet device to use (eg. fxp0, eth0, hme0, 1).
-.IP "-H MAC"
-Specify the source MAC address, XX:XX:XX:XX:XX:XX
-.IP "-M MAC"
-Specify the destintion MAC address, XX:XX:XX:XX:XX:XX
-.IP "-Z"
-Lists available network interfaces by number for use in link-layer 
+a single argument to the
+.Fl F
+command line switch by separating the options with commas (eg.
+.Fl FD,M )
+or spaces (eg.
+.Fl FM Ar 223 ) .
+The IP fragmentation offset is a 13-bit field with valid values from 0
+to 8189.  Don't fragment (DF), more fragments (MF) and the reserved flag
+(RESERVED or RB) are 1-bit fields.
+.Pp
+.Sy NOTE:
+Under normal conditions, the reserved flag is unset.
+.It Fl I Ar ID
+Specify the IP ID within the IP header.
+.It Fl O Ar FILE
+This will cause
+.Nm
+to use the specified IP options file as the options when building the IP
+header for the injected packet.  IP options can be up to 40 bytes in
+length.  The IP options file must be created manually based upon the
+desired options.  IP options can also be read from stdin by specifying
+.Fl O-
+instead.
+.It Fl S Ar ADDR
+Specify the source IP address within the IP header.
+.It Fl t Ar TOS
+Specify the IP type of service (TOS) within the IP header.  Valid type
+of service values:
+.Pp
+.Bl -tag -width 24 -offset indent -compact
+.It 2
+Minimize monetary cost
+.It 4
+Maximize reliability
+.It 8
+Maximize throughput
+.It 24
+Minimize delay
+.El
+.Pp
+.Sy NOTE:
+Under normal conditions, only one type of service is set within a
+packet.  To specify multiple types, specify the sum of the desired
+values as the type of service.
+.It Fl T Ar TTL
+Specify the IP time-to-live (TTL) in the IP header.
+.El
+.Sh DATA LINK OPTIONS
+.Bl -tag -width Ds
+.It Fl d Ar IFNAME
+Specify the name (for UNIX-like systems) or the number (for Windows
+systems) of the
+.Ar IFNAME
+to use (eg. fxp0, eth0, hme0, 1).
+.It Fl H Ar MAC
+Specify the source
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl M Ar MAC
+Specify the destination
+.Ar MAC
+address,
+.Ar ( XX:XX:XX:XX:XX:XX ) .
+.It Fl Z
+Lists the available network interfaces by number for use in link-layer
 injection.
-
-NOTE: This feature is only relevant to Windows systems.
-.SH DIAGNOSTICS
-Nemesis-ospf returns 0 on a successful exit, 1 if it exits on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-dhcp(1), nemesis-dns(1), nemesis-ethernet(1), "
-.BR "nemesis-icmp(1), nemesis-igmp(1), nemesis-ip(1), nemesis-rip(1), "
-.BR "nemesis-tcp(1), nemesis-udp(1)"
+.Pp
+.Sy NOTE:
+This feature is only relevant to Windows systems.
+.El
+.Sh DIAGNOSTICS
+.Nm
+returns 0 on a successful exit, 1 if it exits on an error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 ,
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Mark Grimes Aq Mt mark@stateful.net ,
+.An Jeff Nathan Aq Mt jeff@snort.org
+and
+.An Joachim Nilsson Aq Mt troglobit@gmail.com
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
