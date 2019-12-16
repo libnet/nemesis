@@ -7,6 +7,28 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.4, Jeff Nathan <mailto:jeff at snort dot org>
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
+
+[v1.7][UNRELEASED]
+------------------
+
+Nemesis the Comedian
+
+### Changes
+- Convert all man pages to mdoc format
+
+### Fixes
+- Fix #6: Skip sleep/delay when sending only one frame, i.e. default
+- Fix #9: Call correct exit function in `nemesis-dhcp`
+- Fix missing `S:` to `getopt()` in `nemesis-dhcp`, reported by Westermo
+- Fix network byte ordering problem with CIADDR, YIADDR, SIADDR, and
+  GIADDR in `nemesis-dhcp`, reported by Westermo
+- Fix command line parsing of client MAC address, Ethernet source MAC
+  address, and Ethernet destination MAC address in `nemesis-dhcp`,
+  reported by Westermo
+- Fix missing newline in `nemesis-dhcp` usage text
+- Fix invalid call to `close()`, found by Valgrind
+
+
 [v1.6][] - 2019-05-16
 ---------------------
 
@@ -282,6 +304,7 @@ v0.666a - initial public release
 
 
 [UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.6...HEAD
+[v1.7]:  https://github.com/troglobit/nemesis/compare/v1.6...v1.7
 [v1.6]:  https://github.com/troglobit/nemesis/compare/v1.5...v1.6
 [v1.5]:  https://github.com/troglobit/nemesis/compare/v1.4...v1.5
 [v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
