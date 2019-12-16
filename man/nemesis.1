@@ -1,50 +1,71 @@
 .\" THE NEMESIS PROJECT
 .\" Copyright (C) 2002, 2003 Jeff Nathan <jeff@snort.org>
+.\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.TH NEMESIS 1 "8 June 2019"
-.SH NAME
-nemesis \- (The Nemesis Project)
-.SH SYNOPSIS
-.B nemesis [mode] [options]
-.SH DESCRIPTION
-.B The Nemesis Project
-is designed to be a command line-based, portable human IP stack for UNIX-like 
-and Windows systems.  The suite is broken down by protocol, and should allow 
-for useful scripting of injected packets from simple shell scripts. 
-.PP
-.B nemesis
-provides an interface to craft and inject a variety of arbitrary packet types.
-Nemesis Supports the following protocols:
-
-.in +.51
-.nf
-arp
-dns
-dhcp
-ethernet
-icmp
-igmp
-ip
-ospf
-rip
-tcp
-udp
-.fi
-.in -.51
-
-A list of supported options for each protocol is displayed by supplying a 
-protocol name on the command line followed by the option "help"
-(eg: nemesis ethernet help).
-
-.SH DIAGNOSTICS
-Nemesis modules return 0 on a successful exit, 1 upon exiting on an error.
-.SH BUGS
-Please report at https://github.com/troglobit/nemesis/issues
-.SH "AUTHOR"
-Jeff Nathan <jeff@snorg.org>
-
-Mark Grimes <mark@stateful.net> and Jeff Nathan <jeff@snort.org>
-.SH "SEE ALSO"
-.BR "nemesis-arp(1), nemesis-dhcp(1), nemesis-dns(1), nemesis-ethernet(1), "
-.BR "nemesis-icmp(1), nemesis-igmp(1), nemesis-ip(1), nemesis-ospf(1), "
-.BR "nemesis-rip(1), nemesis-tcp(1), nemesis-udp(1)"
+.Dd Dec 16, 2019
+.Dt nemesis 1 USM
+.Sh NAME
+.Nm nemesis
+.Nd The Nemesis Project
+.Sh SYNOPSIS
+.Nm
+.Op protocol
+.Op options
+.Sh DESCRIPTION
+.Nm
+is designed to be a command line-based, portable human IP stack for
+UNIX-like and Windows systems.  The suite is broken down by protocol,
+and should allow for useful scripting of injected packets from simple
+shell scripts.
+.Pp
+.Nm
+provides an interface to craft and inject a variety of arbitrary packet
+types.  Currently supported protocols:
+.Pp
+.Bl -tag -compact -offset indent
+.It arp
+.It dns
+.It dhcp
+.It ethernet
+.It icmp
+.It igmp
+.It ip
+.It ospf
+.It rip
+.It tcp
+.It udp
+.El
+.Pp
+A list of supported options for each protocol is displayed by supplying
+a protocol name on the command line followed by the option
+.Qq help ,
+for example:
+.Pp
+.Bd -literal -offset indent
+nemesis ethernet help
+.El
+.Sh DIAGNOSTICS
+All
+.Nm
+protocol modules return 0 on a successful exit, 1 upon exiting on an
+error.
+.Sh SEE ALSO
+.Xr nemesis-arp 1 ,
+.Xr nemesis-dhcp 1 ,
+.Xr nemesis-dns 1 ,
+.Xr nemesis-ethernet 1 ,
+.Xr nemesis-icmp 1 ,
+.Xr nemesis-igmp 1 ,
+.Xr nemesis-ip 1 ,
+.Xr nemesis-ospf 1 ,
+.Xr nemesis-rip 1 ,
+.Xr nemesis-tcp 1 .
+.Xr nemesis-udp 1 .
+.Sh AUTHORS
+.An Mark Grimes Aq Mt mark@stateful.net ,
+.An Jeff Nathan Aq Mt jeff@snort.org ,
+and
+.An Joachim Nilsson Aq Mt troglobit@gmail.com .
+.Sh BUGS
+Please report at
+.Lk https://github.com/troglobit/nemesis/issues
