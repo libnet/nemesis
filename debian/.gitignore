@@ -1,4 +1,6 @@
 .debhelper/*
+autoreconf.*
+debhelper-*
 files
 nemesis.substvars
 nemesis/*
