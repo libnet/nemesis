@@ -1,6 +1,3 @@
-ACLOCAL_AMFLAGS  = -I m4
-AUTOMAKE_OPTIONS = foreign no-dependencies
-
 SUBDIRS          = src man
 doc_DATA         = ChangeLog.md README.md docs/CREDITS LICENSE
 EXTRA_DIST       = ChangeLog.md README.md docs/CREDITS LICENSE makefile.win
