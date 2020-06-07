@@ -1,10 +1,12 @@
 Source: nemesis
 Section: net
-Priority: extra
+Priority: optional
 Maintainer: Joachim Nilsson <troglobit@gmail.com>
-Build-Depends: debhelper (>= 4.0.0), libnet1-dev (>= 1.1.6), autotools-dev, automake, autoconf
-Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 10), libnet1-dev (>= 1.1.6)
+Standards-Version: 4.3.0
 Homepage: http://troglobit.com/projects/nemesis/
+Vcs-Git: git://github.com/troglobit/nemesis.git
+Vcs-Browser: http://github.com/troglobit/nemesis
 
 Package: nemesis
 Architecture: any
@@ -16,6 +18,6 @@ Description: TCP/IP Packet Injection Suite
  simple shell scripts.
  .
  Key features:
-  * support for ARP, DNS, ICMP, IGMP, OSPF, RIP, TCP, UDP protocols
+  * support for ARP, DHCP, DNS, ICMP, IGMP, OSPF, RIP, TCP, UDP
   * layer 2 or layer 3 injection
   * packet payload from file
