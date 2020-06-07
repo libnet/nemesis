@@ -8,8 +8,8 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
 
-[v1.7][UNRELEASED]
-------------------
+[v1.7][] - 2020-06-07
+---------------------
 
 Nemesis the Comedian
 
@@ -303,7 +303,7 @@ v0.666a - initial public release
 - ARP, ICMP, OSPF (unfinished), TCP, UDP implemented
 
 
-[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.6...HEAD
+[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.7...HEAD
 [v1.7]:  https://github.com/troglobit/nemesis/compare/v1.6...v1.7
 [v1.6]:  https://github.com/troglobit/nemesis/compare/v1.5...v1.6
 [v1.5]:  https://github.com/troglobit/nemesis/compare/v1.4...v1.5
