@@ -78,6 +78,14 @@ Nemesis is built around [libnet][].  Windows platform builds require
 [libpcap][] as well.  Nemesis <= 1.4 was built around libnet 1.0 and
 Nemesis >= 1.5 require libnet 1.1, or later.
 
+### Debian/Ubuntu
+
+    curl -sS https://deb.troglobit.com/pubkey.gpg | sudo apt-key add -
+    echo "deb [arch=amd64] https://deb.troglobit.com/debian stable main" | sudo tee /etc/apt/sources.list.d/troglobit.list
+    sudo apt-get update && sudo apt-get install nemesis
+
+### Building from Source
+
 On Debian and Ubuntu derived GNU/Linux systems:
 
     sudo apt install libnet1-dev
@@ -93,8 +101,8 @@ The [GNU Configure & Build][buildsystem] system use `/usr/local` as the
 default install prefix.  Usually this is sufficient, the below example
 installs to `/usr` instead:
 
-    tar xf nemesis-1.5.tar.xz
-    cd nemesis-1.5/
+    tar xf nemesis-1.7.tar.xz
+    cd nemesis-1.7/
     ./configure --prefix=/usr
     make -j5
     sudo make install-strip
