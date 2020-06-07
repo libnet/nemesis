@@ -1,3 +1,19 @@
+nemesis (1.7) stable; urgency=medium
+
+  * Fix #6: Skip sleep/delay when sending only one frame, i.e. default
+  * Fix #9: Call correct exit function in `nemesis-dhcp`
+  * Fix missing `S:` to `getopt()` in `nemesis-dhcp`, reported by Westermo
+  * Fix network byte ordering problem with CIADDR, YIADDR, SIADDR, and
+    GIADDR in `nemesis-dhcp`, reported by Westermo
+  * Fix command line parsing of client MAC address, Ethernet source MAC
+    address, and Ethernet destination MAC address in `nemesis-dhcp`,
+    reported by Westermo
+  * Fix missing newline in `nemesis-dhcp` usage text
+  * Fix invalid call to `close()`, found by Valgrind
+  * Update Debian packging to standards version 4.3.0
+
+ -- Joachim Nilsson <troglobit@gmail.com>  Sun, 07 Jun 2020 11:22:18 +0200
+
 nemesis (1.6) unstable; urgency=medium
 
   * New upstream release:
