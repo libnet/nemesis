@@ -8,7 +8,7 @@ DISTCLEANFILES   = *~ DEADJOE semantic.cache *.gdb *.elf core core.* *.d
 
 ## Generate .deb package
 package:
-	@dpkg-buildpackage -uc -us -B
+	@debuild -uc -us -B --lintian-opts --profile debian -i -I --show-overrides
 
 ## Generate MD5 checksum file
 MD5 = md5sum
