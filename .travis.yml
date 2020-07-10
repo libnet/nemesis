@@ -26,7 +26,7 @@ addons:
       - libnet1-dev
   coverity_scan:
     project:
-      name: "troglobit/nemesis"
+      name: "libnet/nemesis"
       description: "TCP/IP Packet Injection"
     notification_email: troglobit@gmail.com
     build_command_prepend: "./autogen.sh && ./configure --prefix=/tmp"

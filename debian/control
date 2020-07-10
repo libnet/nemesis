@@ -5,8 +5,8 @@ Maintainer: Joachim Nilsson <troglobit@gmail.com>
 Build-Depends: debhelper (>= 10), libnet1-dev (>= 1.1.6)
 Standards-Version: 4.3.0
 Homepage: http://troglobit.com/projects/nemesis/
-Vcs-Git: git://github.com/troglobit/nemesis.git
-Vcs-Browser: http://github.com/troglobit/nemesis
+Vcs-Git: git://github.com/libnet/nemesis.git
+Vcs-Browser: http://github.com/libnet/nemesis
 
 Package: nemesis
 Architecture: any

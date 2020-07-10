@@ -1,2 +1,2 @@
 version=3
-https://github.com/troglobit/nemesis/releases/download/v(.*)/nemesis-(.*)\.tar\.gz
+https://github.com/libnet/nemesis/releases/download/v(.*)/nemesis-(.*)\.tar\.gz

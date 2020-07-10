@@ -303,10 +303,10 @@ v0.666a - initial public release
 - ARP, ICMP, OSPF (unfinished), TCP, UDP implemented
 
 
-[UNRELEASED]: https://github.com/troglobit/nemesis/compare/v1.7...HEAD
-[v1.7]:  https://github.com/troglobit/nemesis/compare/v1.6...v1.7
-[v1.6]:  https://github.com/troglobit/nemesis/compare/v1.5...v1.6
-[v1.5]:  https://github.com/troglobit/nemesis/compare/v1.4...v1.5
+[UNRELEASED]: https://github.com/libnet/nemesis/compare/v1.7...HEAD
+[v1.7]:  https://github.com/libnet/nemesis/compare/v1.6...v1.7
+[v1.6]:  https://github.com/libnet/nemesis/compare/v1.5...v1.6
+[v1.5]:  https://github.com/libnet/nemesis/compare/v1.4...v1.5
 [v1.4]:  http://sf.net/nemesis/nemesis-1.4.tar.gz
 [v1.32]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.32.tar.gz
 [v1.31]: http://ftp.twaren.net/BSD/OpenBSD/distfiles/nemesis-1.31.tar.gz

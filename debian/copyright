@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: nemesis
 Upstream-Contact: Joachim Nilsson <troglobit@gmail.com>
-Source: http://github.com/troglobit/nemesis
+Source: http://github.com/libnet/nemesis
 
 Files: *
 Copyright: 1999-2001 Mark Grimes <mark@stateful.net>

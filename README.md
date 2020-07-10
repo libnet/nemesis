@@ -8,7 +8,7 @@ down by protocol, and should allow for useful scripting of injected
 packets from simple shell scripts.
 
 The latest release is always available from GitHub at  
-> https://github.com/troglobit/nemesis/releases
+> https://github.com/libnet/nemesis/releases
 
 
 Key Features
@@ -134,7 +134,7 @@ To build from GIT you first need to clone the repository and run the
 `autogen.sh` script.  This requires `automake` and `autoconf` to be
 installed on your system.
 
-    git clone https://github.com/troglobit/nemesis.git
+    git clone https://github.com/libnet/nemesis.git
     cd nemesis/
     ./autogen.sh
     ./configure && make
@@ -156,11 +156,11 @@ ideas, please submit them using the issue tracker or as pull requests.
 
 [License]:         https://en.wikipedia.org/wiki/BSD_licenses
 [License Badge]:   https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
-[GitHub]:          https://github.com/troglobit/mini-snmpd
+[GitHub]:          https://github.com/libnet/nemesis
 [libnet]:          https://sourceforge.net/projects/libnet-dev/
 [libpcap]:         http://www.tcpdump.org/
 [buildsystem]:     https://airs.com/ian/configure/
-[Travis]:          https://travis-ci.org/troglobit/nemesis
-[Travis Status]:   https://travis-ci.org/troglobit/nemesis.png?branch=master
+[Travis]:          https://travis-ci.org/libnet/nemesis
+[Travis Status]:   https://travis-ci.org/libnet/nemesis.png?branch=master
 [Coverity Scan]:   https://scan.coverity.com/projects/15484
 [Coverity Status]: https://scan.coverity.com/projects/15484/badge.svg
