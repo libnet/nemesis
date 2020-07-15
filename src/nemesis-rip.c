@@ -149,9 +149,6 @@ static void rip_validatedata(void)
 			break;
 		}
 	}
-
-	if (riphdr.rip_addr == 0)
-		riphdr.rip_addr = libnet_get_prand(PRu32);
 }
 
 static void rip_usage(char *arg)
