@@ -164,10 +164,10 @@ extern const char *version;
 extern int         verbose;
 extern int         interval;
 extern int         count;
-int                got_link;
-int                got_payload;
-int                got_ipoptions;
-int                got_tcpoptions;
+extern int         got_link;
+extern int         got_payload;
+extern int         got_ipoptions;
+extern int         got_tcpoptions;
 
 struct file {
 	uint8_t *file_buf; /* pointer to file memory */
