@@ -43,7 +43,7 @@ Examples
 
 * IGMP v2 join for group 239.186.39.5
 
-        sudo nemesis igmp -v -p 22 -S 192.168.1.20 -i 239.186.39.5 -D 239.186.39.5
+        sudo nemesis igmp -v -p 22 -S 192.168.1.20 -g 239.186.39.5 -D 239.186.39.5
 
 * IGMP v2 query, max resp. time 10 sec, with Router Alert IP option
 
