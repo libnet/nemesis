@@ -67,7 +67,7 @@ AC_HEADER_STDC
 AC_HEADER_TIME
 AC_CHECK_HEADERS([unistd.h errno.h strings.h netdb.h limits.h libnet.h	 \
 	machine/endian.h sys/time.h sys/param.h arpa/inet.h netinet/in.h \
-	net/ethernet.h])
+	netinet/if_ether.h net/ethernet.h])
 
 # Checks for library functions.
 AC_CHECK_FUNCS([gethostbyname gettimeofday inet_ntoa isascii memset	\

@@ -6,6 +6,9 @@
  * nemesis-proto_igmp.c (IGMP Packet Generator)
  */
 
+#include <arpa/inet.h>
+#include <netinet/if_ether.h>
+
 #include "nemesis-igmp.h"
 #include "nemesis.h"
 
@@ -57,11 +60,19 @@ int buildigmp(ETHERhdr *eth, IPhdr *ip, IGMPhdr *igmp, struct file *pd,
 			  ip->ip_dst.s_addr,
 			  NULL, 0, l, 0);
 
-	if (got_link)
+	if (got_link) {
+		if (!got_dhost) {
+			char daddr[4];
+
+			inet_ntop(AF_INET, &ip->ip_dst, daddr, sizeof(daddr));
+			ETHER_MAP_IP_MULTICAST(daddr, eth->ether_dhost);
+		}
+
 		libnet_build_ethernet(eth->ether_dhost,
 				      eth->ether_shost,
 				      ETHERTYPE_IP,
 				      NULL, 0, l, 0);
+	}
 
 	n = nemesis_send_frame(l, &len);
 	if (n != (int)len) {

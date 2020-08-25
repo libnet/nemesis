@@ -165,6 +165,7 @@ extern int         verbose;
 extern int         interval;
 extern int         count;
 extern int         got_link;
+extern int         got_dhost;
 extern int         got_payload;
 extern int         got_ipoptions;
 extern int         got_tcpoptions;

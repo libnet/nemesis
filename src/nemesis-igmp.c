@@ -258,6 +258,7 @@ static void igmp_cmdline(int argc, char **argv)
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
+			got_dhost = 1;
 			break;
 
 		case 'O': /* IP options file */
