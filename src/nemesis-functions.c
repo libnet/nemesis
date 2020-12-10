@@ -58,6 +58,7 @@ int   verbose;                     /* verbosity */
 int   interval = 1000000;          /* Time in usec between packets, default 1 sec */
 int   count = 1;                   /* Number of packets to send, default 1 pkt */
 int   got_link;
+int   got_payload;
 int   got_dhost;		   /* User supplied dest mac */
 int   got_ipoptions;
 int   got_tcpoptions;
