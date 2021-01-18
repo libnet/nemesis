@@ -16,7 +16,8 @@ static ETHERhdr etherhdr;
 static IPhdr    iphdr;
 static IGMPhdr  igmphdr;
 static struct file pd, ipod;
-static int      got_group, got_type, got_code;
+static int      got_dst, got_group, got_type, got_code;
+static uint16_t num_groups;
 static char    *payloadfile   = NULL; /* payload file name */
 static char    *ipoptionsfile = NULL; /* IP options file name */
 static char    *device        = NULL; /* Ethernet device */
@@ -122,8 +123,13 @@ static void igmp_validatedata(libnet_t *l)
 	if (!got_code)
 		igmphdr.igmp_code = 0;
 	if (!got_group) {
-		inet_aton("224.0.0.1", &igmphdr.igmp_group);
-		inet_aton("224.0.0.1", &iphdr.ip_dst);
+		if (igmphdr.igmp_type == 0x22) {
+			if (!got_dst)
+				inet_aton("224.0.0.22", &iphdr.ip_dst);
+
+			if (num_groups)
+				igmphdr.igmp_group.s_addr = htonl(num_groups);
+		}
 	}
 }
 
@@ -154,6 +160,7 @@ static void igmp_usage(char *arg)
 	       "                    0x32:  Multicast router termination\n"
 	       "  -r <CODE>    Max resp. code. v1: unused, v2: query response time\n"
 	       "  -g <GROUP>   Multicast group for join/leave, or group spec. query\n"
+	       "  -n <NUM>     Number of groups in IGMPv3 report (instead of -g)\n"
 	       "  -P <FILE>    Raw IGMP payload file\n"
 	       "\n");
 	printf("IP options:\n"
@@ -187,9 +194,9 @@ static void igmp_cmdline(int argc, char **argv)
 	char        *igmp_options;
 
 #if defined(WIN32)
-	igmp_options = "c:d:D:F:g:H:i:I:M:O:p:P:r:S:t:T:vZ?";
+	igmp_options = "c:d:D:F:g:H:i:I:M:n:O:p:P:r:S:t:T:vZ?";
 #else
-	igmp_options = "c:d:D:F:g:H:i:I:M:O:p:P:r:S:t:T:v?";
+	igmp_options = "c:d:D:F:g:H:i:I:M:n:O:p:P:r:S:t:T:v?";
 #endif
 	while ((opt = getopt(argc, argv, igmp_options)) != -1) {
 		switch (opt) {
@@ -225,6 +232,7 @@ static void igmp_cmdline(int argc, char **argv)
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				igmp_exit(1);
 			}
+			got_dst = 1;
 			break;
 
 		case 'F': /* IP fragmentation options */
@@ -259,6 +267,10 @@ static void igmp_cmdline(int argc, char **argv)
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_dhost[i] = addr_tmp[i];
 			got_dhost = 1;
+			break;
+
+		case 'n':
+			num_groups = xgetint16(optarg);
 			break;
 
 		case 'O': /* IP options file */
