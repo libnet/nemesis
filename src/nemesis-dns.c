@@ -34,6 +34,8 @@ static void dns_usage(char *);
 static void dns_validatedata(void);
 static void dns_verbose(void);
 
+int dns_state = 0; /* default to UDP */
+
 void nemesis_dns(int argc, char **argv)
 {
 	const char *module = "DNS Packet Injection";
@@ -65,7 +67,7 @@ void nemesis_dns(int argc, char **argv)
 	dns_verbose();
 
 	if (got_payload) {
-		if (state) {
+		if (dns_state) {
 #if defined(WIN32)
 			if (builddatafromfile(DNSTCP_LINKBUFFSIZE, &pd, payloadfile, PAYLOADMODE) < 0)
 #else
@@ -89,7 +91,7 @@ void nemesis_dns(int argc, char **argv)
 			dns_exit(1);
 	}
 
-	if (state && got_tcpoptions) {
+	if (dns_state && got_tcpoptions) {
 		if (builddatafromfile(OPTIONSBUFFSIZE, &tcpod, tcpoptionsfile, OPTIONSMODE) < 0)
 			dns_exit(1);
 	}
@@ -145,7 +147,7 @@ static void dns_initdata(void)
 
 static void dns_validatedata(void)
 {
-	if (state && tcphdr.th_flags == 0)
+	if (dns_state && tcphdr.th_flags == 0)
 		tcphdr.th_flags |= TH_SYN;
 }
 
@@ -301,7 +303,7 @@ static void dns_cmdline(int argc, char **argv)
 		case 'k': /* use TCP */
 			iphdr.ip_tos = 0;
 			iphdr.ip_p   = IPPROTO_TCP;
-			state        = 1;
+			dns_state    = 1;
 			break;
 
 		case 'M': /* Ethernet destination address */
@@ -457,7 +459,7 @@ static void dns_verbose(void)
 
 		nemesis_printip(&iphdr);
 
-		if (state)
+		if (dns_state)
 			nemesis_printtcp(&tcphdr);
 		else
 			nemesis_printudp(&udphdr);

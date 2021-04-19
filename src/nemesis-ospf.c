@@ -43,6 +43,8 @@ static void ospf_usage(char *);
 static void ospf_validatedata(void);
 static void ospf_verbose(void);
 
+int ospf_mode; /* OSPF injection mode */
+
 void nemesis_ospf(int argc, char **argv)
 {
 	const char *module = "OSPF Packet Injection";
@@ -826,9 +828,9 @@ static void ospf_verbose(void)
 
 		nemesis_printospf(&ospfhdr);
 
-		if (mode == 1) {
-		} else if (mode == 2) {
-		} else if (mode == 3) {
+		if (ospf_mode == 1) {
+		} else if (ospf_mode == 2) {
+		} else if (ospf_mode == 3) {
 		}
 	}
 }
