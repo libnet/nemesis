@@ -30,7 +30,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 
 	dns_packetlen = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
 
-	if (state == 0)
+	if (dns_state == 0)
 		dns_packetlen += LIBNET_UDP_H + LIBNET_UDP_DNSV4_H;
 	else
 		dns_packetlen += LIBNET_TCP_H + tcpod->file_len + LIBNET_TCP_DNSV4_H;
@@ -44,7 +44,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 	printf("DEBUG: DNS payload size  %zd.\n", pd->file_len);
 #endif
 
-	libnet_build_dnsv4(((state == 0)
+	libnet_build_dnsv4(((dns_state == 0)
 			    ? LIBNET_UDP_DNSV4_H
 			    : LIBNET_TCP_DNSV4_H) + pd->file_len,
 			   dns->id,
@@ -52,7 +52,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 			   dns->num_q, dns->num_answ_rr, dns->num_auth_rr,
 			   dns->num_addi_rr, pd->file_buf, pd->file_len, l, 0);
 
-	if (state == 0) {
+	if (dns_state == 0) {
 		libnet_build_udp(udp->uh_sport,
 				 udp->uh_dport,
 				 LIBNET_UDP_H + LIBNET_UDP_DNSV4_H + pd->file_len,
@@ -114,11 +114,11 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 		if (verbose) {
 			if (got_link) {
 				printf("Wrote %d byte DNS (%s) packet through linktype %s.\n",
-				       n, ((state == 0) ? "UDP" : "TCP"),
+				       n, ((dns_state == 0) ? "UDP" : "TCP"),
 				       nemesis_lookup_linktype(l->link_type));
 			} else {
 				printf("Wrote %d byte DNS (%s) packet\n",
-				       n, ((state == 1) ? "UDP" : "TCP"));
+				       n, ((dns_state == 1) ? "UDP" : "TCP"));
 			}
 		}
 	}
