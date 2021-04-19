@@ -31,7 +31,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 
 	icmp_packetlen = link_offset + LIBNET_IPV4_H + pd->file_len + ipod->file_len;
 
-	switch (icmp_mode) {
+	switch (mode) {
 	case ICMP_ECHO:
 		icmp_packetlen += LIBNET_ICMPV4_ECHO_H;
 		break;
@@ -60,7 +60,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 	printf("DEBUG: ICMP payload size  %zd.\n", pd->file_len);
 #endif
 
-	switch (icmp_mode) {
+	switch (mode) {
 	case ICMP_ECHO:
 		libnet_build_icmpv4_echo(icmp->icmp_type,
 					 icmp->icmp_code,
@@ -123,7 +123,7 @@ int buildicmp(ETHERhdr *eth, IPhdr *ip, ICMPhdr *icmp, IPhdr *ipunreach,
 		break;
 	}
 
-	if ((icmp_mode == ICMP_UNREACH || icmp_mode == ICMP_TIMXCEED || icmp_mode == ICMP_REDIRECT) && got_origoptions) {
+	if ((mode == ICMP_UNREACH || mode == ICMP_TIMXCEED || mode == ICMP_REDIRECT) && got_origoptions) {
 		if (libnet_build_ipv4_options(origod->file_buf, origod->file_len, l, 0) == -1)
 			fprintf(stderr, "ERROR: Unable to add original IP options, discarding them.\n");
 	}

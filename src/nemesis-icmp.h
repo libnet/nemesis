@@ -39,8 +39,8 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-extern int icmp_mode; /* ICMP injection mode */
-extern int got_origoptions;
+int mode; /* ICMP injection mode */
+int got_origoptions;
 
 int buildicmp(ETHERhdr *, IPhdr *, ICMPhdr *, IPhdr *, struct file *, struct file *, struct file *, libnet_t *);
 

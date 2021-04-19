@@ -35,9 +35,6 @@ static void icmp_usage(char *);
 static void icmp_validatedata(void);
 static void icmp_verbose(void);
 
-int icmp_mode;
-int got_origoptions;
-
 void nemesis_icmp(int argc, char **argv)
 {
 	const char *module = "ICMP Packet Injection";
@@ -119,7 +116,7 @@ static void icmp_initdata(void)
 	ipunreach.ip_ttl        = 255;                     /* ICMP unreach IP TTL */
 	ipunreach.ip_p          = 17;                      /* ICMP unreach IP protocol */
 
-	icmp_mode                = ICMP_ECHO;               /* default to ICMP echo */
+	mode                     = ICMP_ECHO;               /* default to ICMP echo */
 	icmphdr.icmp_type        = 0;                       /* ICMP type */
 	icmphdr.icmp_code        = 0;                       /* ICMP code */
 	icmphdr.hun.echo.id      = 0;                       /* ICMP ID */
@@ -145,12 +142,12 @@ static void icmp_validatedata(void)
 		icmp_exit(1);
 	}
 
-	if (got_origoptions && !(icmp_mode == ICMP_UNREACH || icmp_mode == ICMP_REDIRECT || icmp_mode == ICMP_TIMXCEED)) {
+	if (got_origoptions && !(mode == ICMP_UNREACH || mode == ICMP_REDIRECT || mode == ICMP_TIMXCEED)) {
 		fprintf(stderr, "ERROR: -l is only valid with ICMP redirect, unreach or time exceeded injection.\n");
 		icmp_exit(1);
 	}
 
-	if (pd.file_len == 0 && (icmp_mode == ICMP_UNREACH || icmp_mode == ICMP_REDIRECT || icmp_mode == ICMP_TIMXCEED)) {
+	if (pd.file_len == 0 && (mode == ICMP_UNREACH || mode == ICMP_REDIRECT || mode == ICMP_TIMXCEED)) {
 		udphdr.uh_sport = libnet_get_prand(PRu16);
 		udphdr.uh_dport = libnet_get_prand(PRu16);
 		udphdr.uh_ulen  = htons(20);
@@ -164,7 +161,7 @@ static void icmp_validatedata(void)
 	}
 
 	/* Attempt to send valid packets if the user hasn't decided to craft an anomolous packet */
-	switch (icmp_mode) {
+	switch (mode) {
 	case ICMP_ECHO: /* send an echo request */
 		if (!got_type)
 			icmphdr.icmp_type = ICMP_ECHO;
@@ -448,32 +445,32 @@ static void icmp_cmdline(int argc, char **argv)
 			}
 			switch (cmd_mode) {
 			case 'E': /* ICMP echo injection */
-				icmp_mode = ICMP_ECHO;
+				mode = ICMP_ECHO;
 				got_mode++;
 				break;
 
 			case 'M': /* ICMP mask injection */
-				icmp_mode = ICMP_MASKREQ;
+				mode = ICMP_MASKREQ;
 				got_mode++;
 				break;
 
 			case 'U': /* ICMP unreach injection */
-				icmp_mode = ICMP_UNREACH;
+				mode = ICMP_UNREACH;
 				got_mode++;
 				break;
 
 			case 'X': /* ICMP time exceeded injection */
-				icmp_mode = ICMP_TIMXCEED;
+				mode = ICMP_TIMXCEED;
 				got_mode++;
 				break;
 
 			case 'R': /* ICMP redirect injection */
-				icmp_mode = ICMP_REDIRECT;
+				mode = ICMP_REDIRECT;
 				got_mode++;
 				break;
 
 			case 'T': /* ICMP timestamp injection */
-				icmp_mode = ICMP_TSTAMP;
+				mode = ICMP_TSTAMP;
 				got_mode++;
 				break;
 
@@ -570,6 +567,6 @@ static void icmp_verbose(void)
 			nemesis_printeth(&etherhdr);
 
 		nemesis_printip(&iphdr);
-		nemesis_printicmp(&icmphdr, icmp_mode);
+		nemesis_printicmp(&icmphdr, mode);
 	}
 }
