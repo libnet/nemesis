@@ -826,11 +826,9 @@ static void ospf_verbose(void)
 
 		nemesis_printospf(&ospfhdr);
 
-/*		Unused at the moment
 		if (mode == 1) {
 		} else if (mode == 2) {
 		} else if (mode == 3) {
 		}
-*/
 	}
 }

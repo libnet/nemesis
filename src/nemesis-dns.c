@@ -34,8 +34,6 @@ static void dns_usage(char *);
 static void dns_validatedata(void);
 static void dns_verbose(void);
 
-int state;
-
 void nemesis_dns(int argc, char **argv)
 {
 	const char *module = "DNS Packet Injection";

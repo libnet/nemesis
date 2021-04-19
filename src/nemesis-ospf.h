@@ -43,8 +43,7 @@ extern DBDhdr       dbdhdr;
 extern NETLSAhdr    netlsahdr;
 extern SUMLSAhdr    sumlsahdr;
 
-// Unused at the moment
-//int mode; /* OSPF injection mode */
+int mode; /* OSPF injection mode */
 
 int buildospf(ETHERhdr *, IPhdr *, struct file *, struct file *, libnet_t *, int);
 

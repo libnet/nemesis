@@ -35,9 +35,6 @@ static void icmp_usage(char *);
 static void icmp_validatedata(void);
 static void icmp_verbose(void);
 
-int mode;
-int got_origoptions;
-
 void nemesis_icmp(int argc, char **argv)
 {
 	const char *module = "ICMP Packet Injection";

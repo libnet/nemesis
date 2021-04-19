@@ -29,7 +29,7 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-extern int state; /* default to UDP */
+int state; /* default to UDP */
 
 int builddns(ETHERhdr *, IPhdr *, TCPhdr *, UDPhdr *, DNShdr *, struct file *, struct file *, struct file *, libnet_t *);
 
