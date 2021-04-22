@@ -118,7 +118,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 				       nemesis_lookup_linktype(l->link_type));
 			} else {
 				printf("Wrote %d byte DNS (%s) packet\n",
-				       n, ((dns_state == 1) ? "UDP" : "TCP"));
+				       n, ((dns_state == 0) ? "UDP" : "TCP"));
 			}
 		}
 	}
