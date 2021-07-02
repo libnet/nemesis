@@ -7,7 +7,7 @@ env:
   PROJECT_NAME: nemesis
   CONTACT_EMAIL: troglobit@gmail.com
   COVERITY_NAME: libnet-nemesis
-  COVERITY_NAME: troglobit%2Fnemesis
+  COVERITY_PROJ: troglobit%2Fnemesis
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
           TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
         run: |
           wget -q https://scan.coverity.com/download/cxx/linux64 \
-               --post-data "token=$TOKEN&project=${COVERITY_NAME}" \
+               --post-data "token=$TOKEN&project=${COVERITY_PROJ}" \
                -O cov-analysis-linux64.tar.gz
           mkdir cov-analysis-linux64
           tar xzf cov-analysis-linux64.tar.gz --strip 1 -C cov-analysis-linux64
@@ -49,4 +49,4 @@ jobs:
             --form file=@${PROJECT_NAME}.tgz \
             --form version=trunk \
             --form description="${PROJECT_NAME} $(git rev-parse HEAD)" \
-            https://scan.coverity.com/builds?project=${COVERITY_NAME}
+            https://scan.coverity.com/builds?project=${COVERITY_PROJ}
