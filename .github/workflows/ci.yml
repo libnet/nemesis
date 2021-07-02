@@ -1,0 +1,22 @@
+name: Bob the Builder
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies ...
+      run: |
+        sudo apt-get -y install tree libnet-dev
+    - name: Configure & Build ...
+      run: |
+        ./autogen.sh
+        ./configure --prefix=/tmp
+        make V=1 -j5
+        make install-strip
+        tree /tmp
+
