@@ -1,6 +1,6 @@
 N E M E S I S  -  Crafting & Injection
 ======================================
-[![License Badge][]][License]  [![Travis Status][]][Travis] [![Coverity Status][]][Coverity Scan] <img align="right" src="docs/logo.png">
+[![License Badge][]][License]  [![GitHub Status][]][GitHub] [![Coverity Status][]][Coverity Scan] <img align="right" src="docs/logo.png">
 
 The Nemesis Project is designed to be a command line based, portable
 human IP stack for UNIX-like and Windows systems.  The suite is broken
@@ -160,7 +160,7 @@ ideas, please submit them using the issue tracker or as pull requests.
 [libnet]:          https://sourceforge.net/projects/libnet-dev/
 [libpcap]:         http://www.tcpdump.org/
 [buildsystem]:     https://airs.com/ian/configure/
-[Travis]:          https://travis-ci.org/libnet/nemesis
-[Travis Status]:   https://travis-ci.org/libnet/nemesis.png?branch=master
+[GitHub]:          https://github.com/libnet/nemesis/actions/workflows/ci.yml/
+[GitHub Status]:   https://github.com/libnet/nemesis/actions/workflows/ci.yml/badge.svg
 [Coverity Scan]:   https://scan.coverity.com/projects/15484
 [Coverity Status]: https://scan.coverity.com/projects/15484/badge.svg
