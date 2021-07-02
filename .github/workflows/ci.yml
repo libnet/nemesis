@@ -6,7 +6,11 @@ on:
 
 jobs:
   build:
+    name: ${{ matrix.compiler }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies ...
@@ -15,8 +19,7 @@ jobs:
     - name: Configure & Build ...
       run: |
         ./autogen.sh
-        ./configure --prefix=/tmp
+        ./configure --prefix=/usr CC=${{ matrix.compiler }}
         make V=1 -j5
-        make install-strip
-        tree /tmp
-
+        make install-strip DESTDIR=/tmp
+        tree /tmp/usr
