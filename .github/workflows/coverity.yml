@@ -1,7 +1,7 @@
 name: Coverity Scan
 on:
   push:
-    branches: [master]
+    branches: [dev]
 
 env:
   PROJECT_NAME: nemesis
