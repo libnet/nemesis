@@ -19,8 +19,6 @@ jobs:
         with:
           path: cov-analysis-linux64
           key: ${{ runner.os }}-coverity
-      - name: Install stuff
-        run: ./tests/ci/install.sh
       - name: Download Coverity Scan
         if: steps.coverity-toolchain-cache.outputs.cache-hit != 'true'
         env:
@@ -31,10 +29,13 @@ jobs:
                -O cov-analysis-linux64.tar.gz
           mkdir cov-analysis-linux64
           tar xzf cov-analysis-linux64.tar.gz --strip 1 -C cov-analysis-linux64
+      - name: Install dependencies ...
+        run: |
+          sudo apt-get -y install tree libnet-dev
       - name: Build
         run: |
           ./autogen.sh
-          ./configure --with-snmp
+          ./configure
           export PATH=`pwd`/cov-analysis-linux64/bin:$PATH
           cov-build --dir cov-int make
       - name: Submit result to Coverity Scan
