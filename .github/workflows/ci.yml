@@ -34,4 +34,6 @@ jobs:
         apt-get install -y build-essential autoconf automake libnet-dev dpkg-dev debhelper devscripts
     - name: Debian package ...
       run: |
+        ./autogen.sh
+        ./configure
         make package
