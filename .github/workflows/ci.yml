@@ -17,8 +17,7 @@ jobs:
     - name: Install dependencies ...
       run: |
         apt-get update
-        apt-get install -y tree libnet-dev lsb-release
-        lsb_release -a
+        apt-get install -y build-essential autoconf automake tree libnet-dev
     - name: Configure & Build ...
       run: |
         ./autogen.sh
