@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies ...
       run: |
         apt-get update
-        apt-get -y install tree libnet-dev lsb-release
+        apt-get install -y tree libnet-dev lsb-release
         lsb_release -a
     - name: Configure & Build ...
       run: |
