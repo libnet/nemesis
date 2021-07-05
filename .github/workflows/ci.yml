@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies ...
       run: |
         apt-get update
-        apt-get install -y build-essential autoconf automake tree libnet-dev
+        apt-get install -y build-essential autoconf automake ${{ matrix.compiler }} tree libnet-dev
     - name: Configure & Build ...
       run: |
         ./autogen.sh
