@@ -1,3 +1,16 @@
+nemesis (1.8) stable; urgency=medium
+
+  * igmp: automatic translation of IP multicast group to MAC dst address
+  * igmp: improved usability for composing IGMPv3 reports: 1) default to
+    224.0.0.2 as destination group, 2) add `-n NUM` to control number of
+    group records (appended to report)
+  * Fix IGMPv2 join example in README
+  * Fix logic for printing DNS protocol
+  * Fix #12: allow 0.0.0.0 as RIP address
+  * Fix #13: multiple definitions of variables
+
+ -- Joachim Wiberg <troglobit@gmail.com>  Mon, 05 Jul 2021 15:27:20 +0200
+
 nemesis (1.7) stable; urgency=medium
 
   * Fix #6: Skip sleep/delay when sending only one frame, i.e. default

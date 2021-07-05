@@ -8,6 +8,24 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
 
+[v1.8][UNRELEASED] - 2021-07-xx
+-------------------------------
+
+Nemesis the Mover, found a new home in the libnet project
+
+### Changes
+- Add automatic IP multicast group to MAC multicast address translation
+- Improved usability for composing IGMPv3 reports:
+  - Default to 224.0.0.2 for IGMPv3 report type
+  - Add `-n NUM` to control number of group records
+
+### Fixes
+- Fix IGMP v2 join example in README
+- Fix logic for printing DNS protocol: TCP/UDP, by Brett Kuskie
+- Fix #12: allow 0.0.0.0 as RIP address
+- Fix #13: multiple definitions of variables, by Brett Kuskie
+
+
 [v1.7][] - 2020-06-07
 ---------------------
 
@@ -304,6 +322,7 @@ v0.666a - initial public release
 
 
 [UNRELEASED]: https://github.com/libnet/nemesis/compare/v1.7...HEAD
+[v1.8]:  https://github.com/libnet/nemesis/compare/v1.7...v1.8
 [v1.7]:  https://github.com/libnet/nemesis/compare/v1.6...v1.7
 [v1.6]:  https://github.com/libnet/nemesis/compare/v1.5...v1.6
 [v1.5]:  https://github.com/libnet/nemesis/compare/v1.4...v1.5
