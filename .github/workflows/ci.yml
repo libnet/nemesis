@@ -7,7 +7,8 @@ on:
 jobs:
   build:
     name: ${{ matrix.compiler }}
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
+    container: debian:stable
     strategy:
       matrix:
         compiler: [gcc, clang]
@@ -15,6 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies ...
       run: |
+        lsb_release -a
         sudo apt-get -y install tree libnet-dev
     - name: Configure & Build ...
       run: |
