@@ -3,9 +3,13 @@ name: Bob the Builder
 on:
   push:
     branches: [master]
+env:
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+  MAKEFLAGS: -j2
 
 jobs:
   build:
+    # Verify we can build on latest Ubuntu with both gcc and clang
     name: ${{ matrix.compiler }}
     runs-on: ubuntu-latest
     strategy:
@@ -24,6 +28,7 @@ jobs:
         make install-strip DESTDIR=/tmp
         tree /tmp/usr
   debian:
+    # Verify Debian package building
     runs-on: ubuntu-latest
     container: debian:stable
     steps:
