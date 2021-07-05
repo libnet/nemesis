@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies ...
       run: |
-        sudo apt-get -y install tree libnet-dev lsb-release
+        apt-get -y install tree libnet-dev lsb-release
         lsb_release -a
     - name: Configure & Build ...
       run: |
