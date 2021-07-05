@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:stable
     steps:
+    - uses: actions/checkout@v2
     - name: Install dependencies ...
       run: |
         apt-get update
