@@ -1,0 +1,78 @@
+name: Release General
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+      - name: Create release ...
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Nemesis ${{ github.ref }}
+          draft: false
+          prerelease: false
+  tarball:
+    name: Build and upload release tarball
+    needs: release
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installing dependencies ...
+        run: |
+          sudo apt-get install -y libnet-dev
+      - name: Creating Makefiles ...
+        run: |
+          ./autogen.sh
+          ./configure
+      - name: Build release ...
+        run: |
+          make distcheck
+          mkdir artifacts/
+          mv ../*.tar.* ../*.md5 ../*.sha* artifacts/
+      - name: Upload release artifacts ...
+        uses: skx/github-action-publish-binaries@release-0.15
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          releaseId: ${{ needs.release.outputs.release_id }}
+          args: artifacts/*
+  debian:
+    name: Build and upload Debian package
+    needs: release
+    runs-on: ubuntu-latest
+    container: debian:stable
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installing dependencies
+        run: |
+          apt-get update
+          apt-get install -y build-essential autoconf automake libnet-dev \
+                             dpkg-dev debhelper devscripts
+      - name: Building Debian package
+        run: |
+          ./autogen.sh
+          ./configure
+          make package
+          mkdir artifacts/
+          mv ../*deb ../*.build* ../*.changes artifacts/
+      - name: Uploading Debian package
+        uses: skx/github-action-publish-binaries@release-0.15
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          releaseId: ${{ needs.release.outputs.release_id }}
+          args: artifacts/*
