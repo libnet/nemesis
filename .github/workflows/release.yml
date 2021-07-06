@@ -41,6 +41,7 @@ jobs:
       - name: Build release ...
         run: |
           make distcheck
+          ls ../
           mkdir artifacts/
           mv ../*.tar.* ../*.md5 ../*.sha* artifacts/
       - name: Upload release artifacts ...

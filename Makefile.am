@@ -10,9 +10,9 @@ package:
 ## Generate checksum files, works now but may b0rk "make check" when we add unit tests
 distcheck-hook:
 	@for file in $(DIST_ARCHIVES); do						\
-		md5sum    $$file > ../$$file.md5;					\
-		sha256sum $$file > ../$$file.sha256;					\
-		mv $$file ../;								\
+		md5sum    $$file > $(top_srcdir)/$$file.md5;				\
+		sha256sum $$file > $(top_srcdir)/$$file.sha256;				\
+		ln $$file $(top_srcdir)/;						\
 	done
 
 ## Check if tagged in git
