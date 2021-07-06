@@ -14,6 +14,11 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
+      - name: Extract ChangeLog entry ...
+        # Hack to extract latest entry for body_path below
+        run: |
+          awk '/-----*/{if (x == 1) exit; x=1;next}x' ChangeLog.md \
+              |head -n -1 > release.md
       - name: Create release ...
         id: create_release
         uses: actions/create-release@v1
@@ -22,6 +27,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Nemesis ${{ github.ref }}
+          body_path: release.md
           draft: false
           prerelease: false
   tarball:
