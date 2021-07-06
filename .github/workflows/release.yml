@@ -41,9 +41,9 @@ jobs:
       - name: Build release ...
         run: |
           make distcheck
-          ls ../
-          mkdir artifacts/
-          mv ../*.tar.* ../*.md5 ../*.sha* artifacts/
+          ls -lF ../
+          mkdir -p artifacts/
+          cp -v ../*.tar.* ../*.md5 ../*.sha* artifacts/
       - name: Upload release artifacts ...
         uses: skx/github-action-publish-binaries@release-0.15
         env:
@@ -68,8 +68,8 @@ jobs:
           ./autogen.sh
           ./configure
           make package
-          mkdir artifacts/
-          mv ../*deb ../*.build* ../*.changes artifacts/
+          mkdir -p artifacts/
+          cp -v ../*deb ../*.build* ../*.changes artifacts/
       - name: Uploading Debian package
         uses: skx/github-action-publish-binaries@release-0.15
         env:
