@@ -14,11 +14,13 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
+      - uses: actions/checkout@v2
       - name: Extract ChangeLog entry ...
         # Hack to extract latest entry for body_path below
         run: |
           awk '/-----*/{if (x == 1) exit; x=1;next}x' ChangeLog.md \
               |head -n -1 > release.md
+          cat release.md
       - name: Create release ...
         id: create_release
         uses: actions/create-release@v1
