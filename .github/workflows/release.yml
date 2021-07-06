@@ -43,7 +43,7 @@ jobs:
           make distcheck
           ls -lF ../
           mkdir -p artifacts/
-          cp -v ../*.tar.* ../*.md5 ../*.sha* artifacts/
+          mv ../*.tar.* artifacts/
       - name: Upload release artifacts ...
         uses: skx/github-action-publish-binaries@release-0.15
         env:
@@ -69,7 +69,7 @@ jobs:
           ./configure
           make package
           mkdir -p artifacts/
-          cp -v ../*deb ../*.build* ../*.changes artifacts/
+          mv ../*deb ../*.build* ../*.changes artifacts/
       - name: Uploading Debian package
         uses: skx/github-action-publish-binaries@release-0.15
         env:
