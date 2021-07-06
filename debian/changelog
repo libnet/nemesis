@@ -9,7 +9,7 @@ nemesis (1.8) stable; urgency=medium
   * Fix #12: allow 0.0.0.0 as RIP address
   * Fix #13: multiple definitions of variables
 
- -- Joachim Wiberg <troglobit@gmail.com>  Mon, 05 Jul 2021 15:27:20 +0200
+ -- Joachim Wiberg <troglobit@gmail.com>  Tue, 06 Jul 2021 14:11:31 +0200
 
 nemesis (1.7) stable; urgency=medium
 

@@ -8,10 +8,10 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
 
-[v1.8][UNRELEASED] - 2021-07-xx
--------------------------------
+[v1.8][] - 2021-07-06
+---------------------
 
-Nemesis the Mover, found a new home in the libnet project
+Nemesis the Mover, found a new home in the libnet project.
 
 ### Changes
 - Add automatic IP multicast group to MAC multicast address translation
@@ -321,7 +321,7 @@ v0.666a - initial public release
 - ARP, ICMP, OSPF (unfinished), TCP, UDP implemented
 
 
-[UNRELEASED]: https://github.com/libnet/nemesis/compare/v1.7...HEAD
+[UNRELEASED]: https://github.com/libnet/nemesis/compare/v1.8...HEAD
 [v1.8]:  https://github.com/libnet/nemesis/compare/v1.7...v1.8
 [v1.7]:  https://github.com/libnet/nemesis/compare/v1.6...v1.7
 [v1.6]:  https://github.com/libnet/nemesis/compare/v1.5...v1.6
