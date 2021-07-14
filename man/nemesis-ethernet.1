@@ -49,24 +49,24 @@ to create a payload resembling the structure of a packet type not supported by
 nemesis.  Used in this manner, virtually any link layer frame can be injected. 
 .It Fl T Ar TYPE
 Specify the Ethernet type/length field, as an integer.  Valid Ethernet
-types include:
+types include, for instance:
 .Pp
-.Bl -tag -width 12345 -offset indent -compact
-.It 512
+.Bl -tag -width 0x8100 -offset indent -compact
+.It 0x0200
 PUP
-.It 2048
+.It 0x0800
 IP
-.It 2054
+.It 0x0806
 ARP
-.It 32821
+.It 0x8035
 RARP
-.It 33024
+.It 0x8100
 802.1Q
-.It 34525
+.It 0x86dd
 IPv6
-.It 34915
+.It 0x8863
 PPPOE discovery
-.It 34916
+.It 0x8864
 PPPOE session
 .El
 .It Fl v
