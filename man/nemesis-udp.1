@@ -3,14 +3,14 @@
 .\" Copyright (C) 2001 - 2003 Jeff Nathan <jeff@snort.org>
 .\" Copyright (C) 2019 Joachim Nilsson <troglobit@gmail.com>
 .\"
-.Dd Dec 16, 2019
+.Dd Jul 20, 2021
 .Dt nemesis-udp 1 USM
 .Sh NAME
 .Nm nemesis-udp
 .Nd UDP Protocol (The Nemesis Project)
 .Sh SYNOPSIS
 .Nm
-.Op Fl vZ?
+.Op Fl v6Z?
 .Op Fl d Ar IFNAME
 .Op Fl c Ar COUNT
 .Op Fl D Ar ADDR
@@ -39,6 +39,12 @@ to specify any portion of a UDP packet as well as lower-level IP packet
 information.
 .Sh GENERAL OPTIONS
 .Bl -tag -width Ds
+.It Fl 6
+Use IPv6.  When enabled, the
+.Fl S Ar ADDR
+and
+.Fl D Ar ADDR
+options are expected to be IPv6 addresses.
 .It Fl c Ar COUNT
 Number of packets to send, default: 1.
 .It Fl i Ar INTERVAL
@@ -77,6 +83,11 @@ Specify the destintion port within the UDP header.
 .Bl -tag -width Ds
 .It Fl D Ar ADDR
 Specify the destination IP address within the IP header.
+.It Fl S Ar ADDR
+Specify the source IP address within the IP header.
+.El
+.Ss IPv4 OPTIONS
+.Bl -tag -width Ds
 .It Fl F Ar OPT
 Specify the fragmentation options in the IP header:
 .Pp
@@ -114,8 +125,6 @@ length.  The IP options file must be created manually based upon the
 desired options.  IP options can also be read from stdin by specifying
 .Fl O-
 instead.
-.It Fl S Ar ADDR
-Specify the source IP address within the IP header.
 .It Fl t Ar TOS
 Specify the IP type of service (TOS) within the IP header.  Valid type
 of service values:
@@ -137,6 +146,11 @@ packet.  To specify multiple types, specify the sum of the desired
 values as the type of service.
 .It Fl T Ar TTL
 Specify the IP time-to-live (TTL) in the IP header.
+.El
+.Ss IPv6 OPTIONS
+.Bl -tag -width Ds
+.It Fl H Ar LIMIT
+Set hop limit, similar to IPv4 TTL, max 255.
 .El
 .Sh DATA LINK OPTIONS
 .Bl -tag -width Ds

@@ -14,11 +14,13 @@
 
 static ETHERhdr etherhdr;
 static IPhdr    iphdr;
+static IP6hdr   ip6hdr;
 static UDPhdr   udphdr;
 static struct file pd, ipod;
 static char    *payloadfile   = NULL; /* payload file name */
 static char    *ipoptionsfile = NULL; /* IP options file name */
 static char    *device        = NULL; /* Ethernet device */
+static int      opt6;                 /* Set if IPv6 (-6) selected */
 
 #if defined(WIN32)
 static char *ifacetmp = NULL;
@@ -46,7 +48,7 @@ void nemesis_udp(int argc, char **argv)
 	udp_initdata();
 	udp_cmdline(argc, argv);
 
-	l = libnet_init(got_link ? LIBNET_LINK_ADV : LIBNET_RAW4, device, errbuf);
+	l = libnet_init(got_link ? LIBNET_LINK_ADV : opt6 ? LIBNET_RAW6 : LIBNET_RAW4, device, errbuf);
 	if (!l)
 		udp_exit(1);
 	if (got_link) {
@@ -73,7 +75,7 @@ void nemesis_udp(int argc, char **argv)
 			udp_exit(1);
 	}
 
-	if (buildudp(&etherhdr, &iphdr, &udphdr, &pd, &ipod, l) < 0) {
+	if (buildudp(&etherhdr, opt6 ? NULL : &iphdr, opt6 ? &ip6hdr : NULL, &udphdr, &pd, &ipod, l) < 0) {
 		puts("\nUDP Injection Failure");
 		udp_exit(1);
 	}
@@ -95,9 +97,13 @@ static void udp_initdata(void)
 	iphdr.ip_p          = IPPROTO_UDP;             /* IP protocol TCP */
 	iphdr.ip_off        = 0;                       /* IP fragmentation offset */
 	iphdr.ip_ttl        = 255;                     /* IP TTL */
-	udphdr.uh_sport     = libnet_get_prand(PRu16);
-	/* UDP source port */
-	udphdr.uh_dport = 33435; /* UDP destination port */
+
+	ip6hdr.ip_nh        = IPPROTO_UDP;
+	ip6hdr.ip_hl        = 255;
+
+	udphdr.uh_sport     = libnet_get_prand(PRu16); /* UDP source port */
+	udphdr.uh_dport = 33435;                       /* UDP destination port */
+
 	pd.file_buf     = NULL;
 	pd.file_len     = 0;
 	ipod.file_buf   = NULL;
@@ -109,11 +115,13 @@ static void udp_usage(char *arg)
 	nemesis_printtitle(title);
 
 	printf("UDP usage:\n"
-	       "  %s [-v (verbose)] [options]\n"
+	       "  %s [-v6] [options]\n"
 	       "\n", arg);
 	printf("General Options:\n"
+	       "  -6           Use IPv6\n"
 	       "  -c <COUNT>   Send count number of packets\n"
 	       "  -i <WAIT>    Interval to wait between packets\n"
+	       "  -v           Verbose output\n"
 	       "\n");
 	printf("UDP options:\n"
 	       "  -x <PORT>    Source port\n"
@@ -123,11 +131,16 @@ static void udp_usage(char *arg)
 	printf("IP options:\n"
 	       "  -S <ADDR>    Source IP address\n"
 	       "  -D <ADDR>    Destination IP address\n"
+	       "\n");
+	printf("IPv4 options:\n"
 	       "  -I <ID>      IP ID\n"
 	       "  -T <TTL>     IP TTL\n"
 	       "  -t <TOS>     IP TOS\n"
 	       "  -F <OPT>     IP fragmentation options: -F[D],[M],[R],[offset]\n"
 	       "  -O <FILE>    Raw IP options file\n"
+	       "\n");
+	printf("IPv6 options:\n"
+	       "  -h <LIMIT>   IP Hop Limit, max 255\n"
 	       "\n");
 	printf("Data Link Options:\n"
 #if defined(WIN32)
@@ -144,6 +157,24 @@ static void udp_usage(char *arg)
 	udp_exit(1);
 }
 
+static int udp_ipaddr(char *arg, struct in_addr *in4, struct libnet_in6_addr *in6)
+{
+	if (opt6) {
+		libnet_t tmp;
+
+		*in6 = libnet_name2addr6(&tmp, arg, LIBNET_RESOLVE);
+		if (libnet_in6_is_error(*in6))
+			return 1;
+
+		return 0;
+	}
+
+	if ((nemesis_name_resolve(optarg, &in4->s_addr)) < 0)
+		return 1;
+
+	return 0;
+}
+
 static void udp_cmdline(int argc, char **argv)
 {
 	int          opt, i;
@@ -151,12 +182,17 @@ static void udp_cmdline(int argc, char **argv)
 	char        *udp_options;
 
 #if defined(WIN32)
-	udp_options = "c:d:D:F:H:i:I:M:O:P:S:t:T:x:y:vZ?";
+	udp_options = "6c:d:D:F:H:h:i:I:M:O:P:S:t:T:x:y:vZ?";
 #else
-	udp_options = "c:d:D:F:H:i:I:M:O:P:S:t:T:x:y:v?";
+	udp_options = "6c:d:D:F:H:h:i:I:M:O:P:S:t:T:x:y:v?";
 #endif
 	while ((opt = getopt(argc, argv, udp_options)) != -1) {
 		switch (opt) {
+		case '6':
+			etherhdr.ether_type = ETHERTYPE_IPV6;
+			opt6 = 1;
+			break;
+
 		case 'c':
 			count = atoi(optarg);
 			break;
@@ -185,7 +221,7 @@ static void udp_cmdline(int argc, char **argv)
 			break;
 
 		case 'D': /* destination IP address */
-			if ((nemesis_name_resolve(optarg, &iphdr.ip_dst.s_addr)) < 0) {
+			if (udp_ipaddr(optarg, &iphdr.ip_dst, &ip6hdr.ip_dst)) {
 				fprintf(stderr, "ERROR: Invalid destination IP address: \"%s\".\n", optarg);
 				udp_exit(1);
 			}
@@ -202,6 +238,10 @@ static void udp_cmdline(int argc, char **argv)
 			       &addr_tmp[1], &addr_tmp[2], &addr_tmp[3], &addr_tmp[4], &addr_tmp[5]);
 			for (i = 0; i < 6; i++)
 				etherhdr.ether_shost[i] = addr_tmp[i];
+			break;
+
+		case 'h': /* IPv6 hop limit */
+			ip6hdr.ip_hl = xgetint8(optarg);
 			break;
 
 		case 'I': /* IP ID */
@@ -241,7 +281,7 @@ static void udp_cmdline(int argc, char **argv)
 			break;
 
 		case 'S': /* source IP address */
-			if ((nemesis_name_resolve(optarg, &iphdr.ip_src.s_addr)) < 0) {
+			if (udp_ipaddr(optarg, &iphdr.ip_src, &ip6hdr.ip_src)) {
 				fprintf(stderr, "ERROR: Invalid source IP address: \"%s\".\n", optarg);
 				udp_exit(1);
 			}
@@ -317,7 +357,10 @@ static void udp_verbose(void)
 		if (got_link)
 			nemesis_printeth(&etherhdr);
 
-		nemesis_printip(&iphdr);
+		if (opt6)
+			nemesis_printip6(&ip6hdr);
+		else
+			nemesis_printip(&iphdr);
 		nemesis_printudp(&udphdr);
 	}
 }

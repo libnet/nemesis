@@ -665,6 +665,18 @@ void nemesis_printip(IPhdr *ip)
 		free(dst);
 }
 
+void nemesis_printip6(IP6hdr *ip)
+{
+	char src[INET6_ADDRSTRLEN], dst[INET6_ADDRSTRLEN];
+
+	inet_ntop(AF_INET6, &ip->ip_src, src, sizeof(src));
+	inet_ntop(AF_INET6, &ip->ip_dst, dst, sizeof(dst));
+
+	printf("                [IP] %s > %s\n", src, dst);
+	printf("             [IP NH] %u\n", ip->ip_nh);
+	printf("             [IP HL] %u\n", ip->ip_hl);
+}
+
 /**
  * Verbosely print portions of the TCP header in ASCII form.
  *

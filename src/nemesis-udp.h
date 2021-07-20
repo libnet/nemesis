@@ -29,6 +29,6 @@
 #include "nemesis.h"
 #include <libnet.h>
 
-int buildudp(ETHERhdr *, IPhdr *, UDPhdr *, struct file *, struct file *, libnet_t *);
+int buildudp(ETHERhdr *, IPhdr *, IP6hdr *, UDPhdr *, struct file *, struct file *, libnet_t *);
 
 #endif /* NEMESIS_UDP_H_ */

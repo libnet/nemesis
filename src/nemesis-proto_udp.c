@@ -9,7 +9,7 @@
 #include "nemesis-udp.h"
 #include "nemesis.h"
 
-int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
+int buildudp(ETHERhdr *eth, IPhdr *ip, IP6hdr *ip6, UDPhdr *udp, struct file *pd,
              struct file *ipod, libnet_t *l)
 {
 	uint32_t len = 0, udp_len = 0, link_offset = 0;
@@ -24,7 +24,10 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 		link_offset = LIBNET_ETH_H;
 	}
 
-	len     = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
+	if (ip)
+		len = link_offset + LIBNET_IPV4_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
+	else
+		len = link_offset + LIBNET_IPV6_H + LIBNET_UDP_H + pd->file_len + ipod->file_len;
 	udp_len = len - link_offset;
 
 #ifdef DEBUG
@@ -36,28 +39,41 @@ int buildudp(ETHERhdr *eth, IPhdr *ip, UDPhdr *udp, struct file *pd,
 	libnet_build_udp(udp->uh_sport, udp->uh_dport, pd->file_len + LIBNET_UDP_H,
 			 0, pd->file_buf, pd->file_len, l, 0);
 
-	if (got_ipoptions) {
-		if ((libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0)) == -1) {
-			fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
+	if (ip) {
+		if (got_ipoptions) {
+			if (libnet_build_ipv4_options(ipod->file_buf, ipod->file_len, l, 0) == -1)
+				fprintf(stderr, "ERROR: Unable to add IP options, discarding them.\n");
 		}
-	}
 
-	libnet_build_ipv4(udp_len,
-			  ip->ip_tos,
-			  ip->ip_id,
-			  ip->ip_off,
-			  ip->ip_ttl,
-			  ip->ip_p,
-			  0,
-			  ip->ip_src.s_addr,
-			  ip->ip_dst.s_addr,
-			  NULL,
-			  0,
-			  l,
-			  0);
+		libnet_build_ipv4(udp_len,
+				  ip->ip_tos,
+				  ip->ip_id,
+				  ip->ip_off,
+				  ip->ip_ttl,
+				  ip->ip_p,
+				  0,
+				  ip->ip_src.s_addr,
+				  ip->ip_dst.s_addr,
+				  NULL,
+				  0,
+				  l,
+				  0);
+	} else
+		libnet_build_ipv6(0,
+				  1,
+				  udp_len - LIBNET_IPV6_H,
+				  ip6->ip_nh,
+				  ip6->ip_hl,
+				  ip6->ip_src,
+				  ip6->ip_dst,
+				  NULL,
+				  0,
+				  l,
+				  0);
 
 	if (got_link)
-		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, ETHERTYPE_IP, NULL, 0, l, 0);
+		libnet_build_ethernet(eth->ether_dhost, eth->ether_shost, eth->ether_type,
+				      NULL, 0, l, 0);
 
 	n = nemesis_send_frame(l, &len);
 	if (n != (int)len) {
