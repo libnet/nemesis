@@ -8,6 +8,13 @@ All notable changes to the project are documented in this file.
 - Versions <= v1.31, Mark Grimes <mailto:mark at stateful dot net>
 
 
+[v1.9][UNRELEASED]
+---------------------
+
+### Changes
+- Initial UDP over IPv6 support
+
+
 [v1.8][] - 2021-07-06
 ---------------------
 
@@ -322,6 +329,7 @@ v0.666a - initial public release
 
 
 [UNRELEASED]: https://github.com/libnet/nemesis/compare/v1.8...HEAD
+[v1.9]:  https://github.com/libnet/nemesis/compare/v1.8...v1.9
 [v1.8]:  https://github.com/libnet/nemesis/compare/v1.7...v1.8
 [v1.7]:  https://github.com/libnet/nemesis/compare/v1.6...v1.7
 [v1.6]:  https://github.com/libnet/nemesis/compare/v1.5...v1.6
