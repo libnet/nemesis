@@ -3,8 +3,8 @@
 # Suggested reading:  "GNU Autoconf, Automake and Libtool" New Riders Press
 
 AC_PREREQ(2.61)
-AC_INIT(nemesis, 1.8, https://github.com/libnet/nemesis/issues,,
-	http://troglobit.com/projects/nemesis/)
+AC_INIT(nemesis, 1.9-beta1, https://github.com/libnet/nemesis/issues,,
+	https://troglobit.com/projects/nemesis/)
 AM_INIT_AUTOMAKE([1.11 foreign])
 AM_SILENT_RULES([yes])
 
