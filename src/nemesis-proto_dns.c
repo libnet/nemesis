@@ -46,7 +46,7 @@ int builddns(ETHERhdr *eth, IPhdr *ip, TCPhdr *tcp, UDPhdr *udp, DNShdr *dns,
 
 	libnet_build_dnsv4(((dns_state == 0)
 			    ? LIBNET_UDP_DNSV4_H
-			    : LIBNET_TCP_DNSV4_H) + pd->file_len,
+			    : LIBNET_TCP_DNSV4_H),
 			   dns->id,
 			   dns->flags,
 			   dns->num_q, dns->num_answ_rr, dns->num_auth_rr,
